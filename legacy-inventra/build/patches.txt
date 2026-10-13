@@ -1,0 +1,273 @@
+<<<<<<<
+const TODAY=new Date(),KEY='stockwise_v1',$=s=>document.getElementById(s);
+=======
+const TODAY=new Date(),KEY='inventra_demo_v2',C=InventraCore,$=s=>document.getElementById(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+>>>>>>>
+<<<<<<<
+S={user:null,P:P0.map(p=>({...p})),sales:{},px:{},mv:[],R:[],N:[],watch:[1,2,6],alerts:[],nid:1,rid:1};
+S.P.forEach(p=>{S.sales[p.id]=genSales(p);S.px[p.id]={};
+=======
+S={user:null,ver:2,seedDate:C.todayISO(),P:P0.map(p=>({...p})),archived:[],SR:[],snooze:{},px:{},mv:[],R:[],N:[],watch:[1,2,6],alerts:[],nid:1,rid:1};
+S.P.forEach(p=>{const g=genSales(p);g.forEach((q,i)=>S.SR.push({pid:p.id,date:C.addDays(S.seedDate,-(g.length-i)),qty:q,demo:true}));S.px[p.id]={};
+>>>>>>>
+<<<<<<<
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{const x=localStorage.getItem(KEY);if(x){S=JSON.parse(x);return}}catch(e){}seed()}
+=======
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Could not save: browser storage is full or blocked.',1)}}
+function load(){try{const x=localStorage.getItem(KEY);if(x){S=JSON.parse(x);if(S.ver===2){const d=C.diffDays(S.seedDate,C.todayISO());if(d>0){S.SR.forEach(r=>{if(r.demo)r.date=C.addDays(r.date,d)});S.seedDate=C.todayISO()}return}}}catch(e){}seed()}
+>>>>>>>
+<<<<<<< RANGE
+const sl=p=>S.sales[p.id],avg=
+|||
+const status=p=>
+=======
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+let MEMO={};
+/* Demand series = complete calendar days only (ends yesterday), built from DATED sales records. */
+const sl=p=>MEMO['s'+p.id]||(MEMO['s'+p.id]=(()=>{const d=S.SR.filter(r=>r.pid===p.id).map(r=>r.date).sort();return d.length?C.dailySeries(S.SR,p.id,d[0],C.addDays(C.todayISO(),-1)):[]})());
+const ch=p=>MEMO['c'+p.id]||(MEMO['c'+p.id]=C.chooseForecast(sl(p),60));
+const accTxt=c=>c.accuracy?`Typical daily error ${Math.round(c.accuracy.wapeDaily*100)}% over ${c.accuracy.windows} backtest windows (measured on this product's own history; not a guarantee).`:'Accuracy cannot be measured yet: not enough history.';
+function fc(p,n){const c=ch(p);if(!c.ok)return null;const s=sl(p),days=c.daily.slice(0,n);return{days,sum:days.reduce((a,b)=>a+b,0),c,trend:avg(s.slice(-7))/Math.max(1,avg(s.slice(-28,-7)))}}
+const openPO=p=>C.openPOQty(S.R,p.id);
+const daysLeft=p=>{const c=ch(p);if(!c.ok)return null;let cum=0;for(let k=0;k<c.daily.length;k++){cum+=c.daily[k];if(cum>=p.stock)return c.daily[k]>0?k+(p.stock-(cum-c.daily[k]))/c.daily[k]:k}return 999};
+function rec(p){const c=ch(p);if(!c.ok)return null;const pend=S.R.filter(r=>r.pid==p.id&&r.status=='Pending Approval').reduce((a,r)=>a+r.qty,0);
+const r=C.recommend({onHand:p.stock,openPO:openPO(p),pendingQty:pend,leadDays:p.lead,forecast:c,maxLevel:p.max,shelfLifeDays:p.shelf??null});
+if(r.action=='none'||r.action=='no_forecast')return null;const dl=daysLeft(p),d=dl==null?999:dl;
+return{p,q:r.qty,dl:d,rp:r.reorderPoint,orderBy:Math.max(0,d-p.lead),arrive:p.lead,cost:r.qty*p.cost,why:r.reasons.join(' '),warnings:r.warnings,review:r.action=='review',urgent:d<=p.lead+2}}
+>>>>>>>
+<<<<<<<
+function render(){if(!S.user)return login();CH.forEach(c=>c.destroy());CH=[];pend=[];
+=======
+function render(){if(!S.user)return login();MEMO={};CH.forEach(c=>c.destroy());CH=[];pend=[];
+>>>>>>>
+<<<<<<<
+<div class="pg">${PG[pg]()}</div>
+=======
+<div class="pg"><div class="ins w"><b>DEMO DATA.</b> Sales, suppliers, prices and people here are simulated. Nothing reflects a real business.</div>${PG[pg]()}</div>
+>>>>>>>
+<<<<<<<
+Review AI recommendations
+=======
+Review recommendations
+>>>>>>>
+<<<<<<<
+<h3>AI Insights</h3>
+=======
+<h3>Insights (rule-based)</h3>
+>>>>>>>
+<<<<<<<
+and the weighted-moving-average forecast.
+=======
+and a backtested forecast.
+>>>>>>>
+<<<<<<<
+Next 30 days: <b>${Math.round(f.sum)}</b> units, confidence ${f.conf}%.
+=======
+Next 30 days: <b>${Math.round(f.sum)}</b> units. ${accTxt(f.c)}
+>>>>>>>
+<<<<<<<
+price:2,exp:999};
+=======
+price:2,exp:999,lead:3};
+>>>>>>>
+<<<<<<<
+${i('exp','Days to expiry (999 = none)','number')}</div>
+=======
+${i('exp','Days to expiry (999 = none)','number')}${i('lead','Lead time (days)','number')}</div>
+>>>>>>>
+<<<<<<<
+['stock','min','max','cost','price','exp'].forEach
+=======
+['stock','min','max','cost','price','exp','lead'].forEach
+>>>>>>>
+<<<<<<<
+price:n('price'),exp:n('exp')};
+=======
+price:n('price'),exp:n('exp'),lead:n('lead')};
+>>>>>>>
+<<<<<<<
+if(id)Object.assign(S.P.find(p=>p.id==id),o);else{const np={id:Math.max(...S.P.map(p=>p.id))+1,lead:3,base:0,tr:0,surge:1,hist:0,bc:'6290000000',...o};S.P.push(np);S.sales[np.id]=[];S.px[np.id]={};
+=======
+if(id){const q=S.P.find(p=>p.id==id),dq=o.stock-q.stock;delete o.stock;Object.assign(q,o);if(dq){q.stock+=dq;S.mv.unshift({pid:id,t:now(),type:'Adjustment',q:dq,who:WHO()})}}else{const np={id:Math.max(0,...S.P.map(p=>p.id),...S.archived.map(p=>p.id))+1,base:0,tr:0,surge:1,hist:0,bc:'6290000000',...o};S.P.push(np);S.px[np.id]={};
+>>>>>>>
+<<<<<<<
+function del(id){if(!confirm('Delete this product and its history?'))return;S.P=S.P.filter(p=>p.id!=id);save();toast('Product deleted');render()}
+=======
+function del(id){const c=C.canDeleteProduct({requests:S.R},id);if(!c.ok)return toast('Cannot archive: '+c.blockers.join('; '),1);if(!confirm('Archive this product? Its sales and order history are kept.'))return;const p=S.P.find(x=>x.id==id);S.archived.push({...p,archived:true,archivedOn:C.todayISO()});S.P=S.P.filter(x=>x.id!=id);save();toast('Product archived');render()}
+>>>>>>>
+<<<<<<<
+>Delete</button>
+=======
+>Archive</button>
+>>>>>>>
+<<<<<<<
+p.stock+=d;if(t=='Sale')S.sales[p.id].push(Math.abs(q));S.mv.unshift
+=======
+if(t=='Sale'){const rs=C.recordSale({products:S.P,sales:S.SR,movements:[],requests:S.R},{pid:id,date:C.todayISO(),qty:Math.abs(q),who:WHO()});if(!rs.ok)return $('fe').textContent=rs.error}else p.stock+=d;S.mv.unshift
+>>>>>>>
+<<<<<<<
+Order quantity = forecast demand over lead time + 14 days + safety stock − (stock + open POs), capped at max level and expiry-limited sales.
+=======
+Order quantity = forecast demand over lead time + 14 days + safety stock (from measured forecast error, 95% service level) − (stock + open POs). Limits such as the maximum level appear as warnings; nothing is cut silently.
+>>>>>>>
+<<<<<<<
+const R=S.P.map(rec).filter(Boolean).sort(
+=======
+const R=S.P.filter(p=>!(S.snooze[p.id]>C.todayISO())).map(rec).filter(Boolean).sort(
+>>>>>>>
+<<<<<<<
+Why: ${x.why} Current stock
+=======
+Why: ${x.why} ${x.warnings.map(w=>'<br><b class="up">⚠ '+w+'</b>').join('')}<br>Current stock
+>>>>>>>
+<<<<<<<
+<div>Suggested qty<br><b>${x.q}</b></div><div>Est. cost<br>
+=======
+<div>Suggested qty<br><b>${x.review?'Manual review':x.q}</b></div><div>Est. cost (excl. shipping)<br>
+>>>>>>>
+<<<<<<<
+>Dismiss</button>
+=======
+>Snooze 3 days</button>
+>>>>>>>
+<<<<<<<
+function dis(id){S.P.find(p=>p.id==id).dis=1;S.dismissed=(S.dismissed||[]).concat(id);toast('Dismissed (shown again if risk changes)');go('restock')}
+=======
+function dis(id){S.snooze[id]=C.addDays(C.todayISO(),3);save();toast('Snoozed for 3 days');go('restock')}
+>>>>>>>
+<<<<<<<
+${p?p.name:'Deleted product'}
+=======
+${(p||S.archived.find(x=>x.id==r.pid)||{name:'Unknown product'}).name}
+>>>>>>>
+<<<<<<<
+const h=s.slice(-30),lb=Array.from({length:30+14},(_,i)=>fd(i-30+1));const bt=h.map((_,i)=>{if(i<14)return null;const w=s.slice(s.length-30+i-14,s.length-30+i),t=w.reduce((a,v,j)=>a+v*(j+1),0)/105;return Math.round(t)});
+=======
+const h0=s.slice(-30),h=[...Array(30-h0.length).fill(null),...h0],lb=Array.from({length:30+14},(_,i)=>fd(i-30));const bt=h.map((_,i)=>{const t=s.length-30+i,r=t>=28?C.forecast(s.slice(0,t),1,f.c.method):null;return r?Math.round(r[0]):null});
+>>>>>>>
+<<<<<<<
+'Back-test (what the model predicted)'
+=======
+'Back-test (1-day-ahead, using only earlier data)'
+>>>>>>>
+<<<<<<<
+Method: 14-day weighted moving average (recent days weigh more) plus a damped 7-day trend. Estimates, not guarantees. A more advanced model can replace fc() later.
+=======
+The method is chosen per product by backtesting simple models on that product's own dated sales history. Estimates, not guarantees.
+>>>>>>>
+<<<<<<<
+Confidence ${f.conf}% (based on day-to-day volatility). Demand is
+=======
+${accTxt(f.c)} Method: ${f.c.method}. Demand is
+>>>>>>>
+<<<<<<<
+ Weekly pattern detected in history.
+=======
+ ${f.c.weekly.detected?'Weekly pattern detected (weekday explains '+Math.round(f.c.weekly.eta2*100)+'% of variance).':'No reliable weekly pattern detected.'}
+>>>>>>>
+<<<<<<<
+<th>Confidence</th>
+=======
+<th>Typical daily error</th>
+>>>>>>>
+<<<<<<<
+<td>${x.f7.conf}%</td><td>${Math.round(x.f14.sum+1.65*sd(sl(x.q).slice(-14))*Math.sqrt(x.q.lead))}</td>
+=======
+<td>${x.f7.c.accuracy?Math.round(x.f7.c.accuracy.wapeDaily*100)+'%':'n/a'}</td><td>${Math.round(x.f14.sum+C.zForService(.95)*x.f7.c.sigma*Math.sqrt(x.q.lead))}</td>
+>>>>>>>
+<<<<<<<
+<p class="sub" style="margin-top:10px">Estimated saving: buying next 30 days of forecast demand at the lowest current quote vs the 30-day average price: <b>${m$(Math.max(0,sav))}</b> (estimate).</p>
+=======
+<p class="sub" style="margin-top:10px">Spread between highest and lowest current quote: <b>${lo>0?((Math.max(...best)/lo-1)*100).toFixed(1)+'%':'n/a'}</b> (simulated quotes).</p>
+>>>>>>>
+<<<<<<< 
+'selected':''}>${x}</option>
+=======
+'selected':''}>${esc(x)}</option>
+>>>>>>>
+<<<<<<< 
+<td><b>${p.name}</b><br><span class="sub" style="margin:0">${p.cat}</span></td><td>${p.sku}</td><td>${p.wh}</td>
+=======
+<td><b>${esc(p.name)}</b><br><span class="sub" style="margin:0">${esc(p.cat)}</span></td><td>${esc(p.sku)}</td><td>${esc(p.wh)}</td>
+>>>>>>>
+<<<<<<< 
+modal(`<h1>${p.name}</h1><p class="sub">${p.sku} · barcode ${p.bc} · ${p.wh}</p>
+=======
+modal(`<h1>${esc(p.name)}</h1><p class="sub">${esc(p.sku)} · barcode ${esc(p.bc)} · ${esc(p.wh)}</p>
+>>>>>>>
+<<<<<<< 
+<h1>Record movement: ${p.name}</h1>
+=======
+<h1>Record movement: ${esc(p.name)}</h1>
+>>>>>>>
+<<<<<<< 
+<b style="flex:1">${x.p.name}</b>
+=======
+<b style="flex:1">${esc(x.p.name)}</b>
+>>>>>>>
+<<<<<<< 
+<h1>Compare suppliers: ${p.name}</h1>
+=======
+<h1>Compare suppliers: ${esc(p.name)}</h1>
+>>>>>>>
+<<<<<<< 
+${(p||S.archived.find(x=>x.id==r.pid)||{name:'Unknown product'}).name}</td>
+=======
+${esc((p||S.archived.find(x=>x.id==r.pid)||{name:'Unknown product'}).name)}</td>
+>>>>>>>
+<<<<<<< 
+'selected':''}>${x.name}</option>
+=======
+'selected':''}>${esc(x.name)}</option>
+>>>>>>>
+<<<<<<< 
++x.name}</option>
+=======
++esc(x.name)}</option>
+>>>>>>>
+<<<<<<< 
+<h3>${p.name}: actual vs forecast</h3>
+=======
+<h3>${esc(p.name)}: actual vs forecast</h3>
+>>>>>>>
+<<<<<<< 
+Not enough sales history for ${p.name} (
+=======
+Not enough sales history for ${esc(p.name)} (
+>>>>>>>
+<<<<<<< ALL 2
+<td>${x.q.name}</td>
+=======
+<td>${esc(x.q.name)}</td>
+>>>>>>>
+<<<<<<< 
+<b>${n.msg}</b>
+=======
+<b>${esc(n.msg)}</b>
+>>>>>>>
+<<<<<<< ALL 2
+${i[1]}
+=======
+${esc(i[1])}
+>>>>>>>
+<<<<<<< 
+<div class="toast ${e?'e':''}">${m}</div>
+=======
+<div class="toast ${e?'e':''}">${esc(m)}</div>
+>>>>>>>
+<<<<<<< 
+value="${p[k]}"
+=======
+value="${esc(p[k]??'')}"
+>>>>>>>
+<<<<<<< 
+value="${F.q}"
+=======
+value="${esc(F.q)}"
+>>>>>>>
+<<<<<<< 
+<b>${t.m}</b><br><span class="sub" style="margin:0">${t.t} · ${t.w}</span>
+=======
+<b>${esc(t.m)}</b><br><span class="sub" style="margin:0">${esc(t.t)} · ${esc(t.w)}</span>
+>>>>>>>

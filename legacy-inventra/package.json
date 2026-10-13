@@ -1,0 +1,1 @@
+{"name":"inventra","version":"0.2.0","private":true,"scripts":{"test":"node build/build.js && node --test \"test/*.test.js\""}}
