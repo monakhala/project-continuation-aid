@@ -14,16 +14,152 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      inventra_invites: {
+        Row: {
+          accepted_at: string | null
+          email: string
+          expires_at: string
+          id: string
+          role: Database["public"]["Enums"]["inventra_role"]
+          token: string
+          workspace_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          email: string
+          expires_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["inventra_role"]
+          token?: string
+          workspace_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["inventra_role"]
+          token?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventra_invites_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "inventra_workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventra_workspaces: {
+        Row: {
+          data: Json
+          id: string
+          name: string
+          owner_id: string
+          recovery: Json | null
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          data?: Json
+          id?: string
+          name?: string
+          owner_id: string
+          recovery?: Json | null
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          data?: Json
+          id?: string
+          name?: string
+          owner_id?: string
+          recovery?: Json | null
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["inventra_role"]
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["inventra_role"]
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["inventra_role"]
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "inventra_workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      inventra_accept_invite: {
+        Args: { invite_token: string }
+        Returns: string
+      }
+      inventra_create_workspace: { Args: never; Returns: string }
+      inventra_invite: {
+        Args: {
+          invite_email: string
+          invite_role: Database["public"]["Enums"]["inventra_role"]
+          w: string
+        }
+        Returns: string
+      }
+      inventra_member: { Args: { w: string }; Returns: boolean }
+      inventra_save_workspace: {
+        Args: {
+          expected_version: number
+          keep_recovery?: boolean
+          next_data: Json
+          w: string
+        }
+        Returns: number
+      }
     }
     Enums: {
-      [_ in never]: never
+      inventra_role: "head" | "manager" | "warehouse" | "supplier"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +286,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      inventra_role: ["head", "manager", "warehouse", "supplier"],
+    },
   },
 } as const
