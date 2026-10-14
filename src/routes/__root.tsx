@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { InventraProvider } from '@/components/inventra/provider';
 import { Toaster } from '@/components/ui/sonner';
+import { LangProvider } from '@/lib/inventra/i18n';
 
 function NotFoundComponent() {
   return (
@@ -93,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: 'stylesheet', href:'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap' },
+      { rel: 'stylesheet', href:'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap' },
     ],
   }),
   shellComponent: RootShell,
@@ -122,7 +123,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <InventraProvider><Outlet /><Toaster /></InventraProvider>
+      <LangProvider><InventraProvider><Outlet /><Toaster /></InventraProvider></LangProvider>
     </QueryClientProvider>
   );
 }
