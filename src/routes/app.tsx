@@ -13,9 +13,9 @@ import {inviteMember} from '@/lib/inventra/workspace.functions';
 import {supabase} from '@/integrations/supabase/client';
 import C from '@/lib/inventra/core';
 
-type Search={s?:Section|'copilot'};
+type Search={s?:Section|'copilot'|undefined};
 export const Route=createFileRoute('/app')({
-  validateSearch:(s:Record<string,unknown>):Search=>({s:[...sections,'copilot'].includes(s.s as string)?s.s as Search['s']:undefined}),
+  validateSearch:(s:Record<string,unknown>):Search=>({s:[...sections,'copilot'].includes(s['s'] as string)?s['s'] as Search['s']:undefined}),
   head:()=>({meta:[{title:'Workspace — Inventra'},{name:'description',content:'Your Inventra inventory workspace: stock, forecasts, restocking and purchase orders.'},{property:'og:title',content:'Workspace — Inventra'},{property:'og:description',content:'Stock, forecasts, restocking and purchase orders.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),
   component:AppPage,
 });

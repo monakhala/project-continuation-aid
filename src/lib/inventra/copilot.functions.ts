@@ -7,7 +7,7 @@ export const askCopilot=createServerFn({method:'POST'})
     return {question:i.question,lang:(i.lang==='ar'?'ar':'en') as 'en'|'ar',summary:i.summary};
   })
   .handler(async({data})=>{
-    const key=process.env.LOVABLE_API_KEY;if(!key)throw new Error('AI is not configured.');
+    const key=process.env['LOVABLE_API_KEY'];if(!key)throw new Error('AI is not configured.');
     const ar=data.lang==='ar';
     const sys=`You are Inventra's inventory copilot. Answer ONLY from the inventory summary provided. Never invent demand, prices or accuracy figures; if data is missing, say so. Be concise, use short bullet points, plain text (no markdown tables). Reply in ${ar?'Modern Standard Arabic':'English'}.`;
     const res=await fetch('https://ai.gateway.lovable.dev/v1/responses',{method:'POST',headers:{'Lovable-API-Key':key,'Content-Type':'application/json','X-Lovable-AIG-SDK':'fetch'},body:JSON.stringify({model:'openai/gpt-6-astra',stream:true,store:false,reasoning:{effort:'low'},instructions:sys,input:`Inventory summary (JSON):\n${data.summary}\n\nQuestion: ${data.question}`})});
