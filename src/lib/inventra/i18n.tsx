@@ -26,6 +26,15 @@ const en={
   signInTitle:'Welcome to Inventra',password:'Password',google:'Continue with Google',haveAccount:'Already have an account? Sign in',noAccount:'New here? Create an account',checkEmail:'Check your email to confirm your account.',
   askPlaceholder:'Ask about stock, restock budget, pricing…',ask:'Ask',thinking:'Thinking…',
   q1:'Which products risk running out in 14 days?',q2:'What restock budget do I need?',q3:'Any pricing issues?',
+  pricing:'Price intelligence',curPrice:'Current price',compPrice:'Competitor benchmark',gm:'Gross margin',elast:'Demand elasticity',optPrice:'Recommended price',lift:'Weekly profit lift',notSet:'Not set',notMeasurable:'Not measurable',
+  elastHelp:'Measured from your recorded price changes against weekly sales (log-log fit). Shown only when the fit is meaningful.',compHelp:'Competitor prices are entered by you and are not verified live.',
+  trendTitle:'Price vs. weekly sales volume',volume:'Units / week',hold:'Hold',fit:'fit',weeks:'weeks',
+  summary:'Executive summary',health:'Inventory health',activeSkus:'Active SKUs',exposure:'Stockout exposure',coverage:'SKUs below reorder',
+  kValuation:'Total inventory valuation',kMargin:'Average gross margin',kLift:'Price optimization lift',kUrgent:'Urgent restock items',
+  vs30:'vs. 30 days ago',ofGP:'of weekly gross profit',capitalNeeded:'capital required',perWeek:'/ week',
+  insights:'Operational insights',noInsights:'No issues detected in the current data.',
+  insErosion:'Margin erosion risk',insAdjust:'Fast mover — price adjustment',insDead:'Dead stock accumulation',insStockout:'Stocked out',
+  sevHigh:'High',sevMed:'Medium',sevLow:'Low',viewAll:'Open',priority:'Priority',signal:'Signal',item:'Item',metric:'Metric',
   readOnly:'Your role can view but not change this.',lang:'العربية',footer:'Forecasts are estimates from your own history, never guarantees.',
 };
 type Dict=typeof en;
@@ -54,6 +63,15 @@ const ar:Dict={
   signInTitle:'مرحبًا بك في Inventra',password:'كلمة المرور',google:'المتابعة باستخدام Google',haveAccount:'لديك حساب؟ سجّل الدخول',noAccount:'جديد هنا؟ أنشئ حسابًا',checkEmail:'تحقق من بريدك لتأكيد حسابك.',
   askPlaceholder:'اسأل عن المخزون أو ميزانية الشراء أو الأسعار…',ask:'اسأل',thinking:'جارٍ التفكير…',
   q1:'ما المنتجات المعرضة للنفاد خلال 14 يومًا؟',q2:'ما ميزانية إعادة التخزين المطلوبة؟',q3:'هل توجد مشكلات في التسعير؟',
+  pricing:'ذكاء التسعير',curPrice:'السعر الحالي',compPrice:'سعر المنافس',gm:'هامش الربح الإجمالي',elast:'مرونة الطلب',optPrice:'السعر المقترح',lift:'زيادة الربح الأسبوعية',notSet:'غير محدد',notMeasurable:'غير قابل للقياس',
+  elastHelp:'تُقاس من تغييرات الأسعار المسجلة مقابل المبيعات الأسبوعية، وتظهر فقط عندما يكون القياس ذا دلالة.',compHelp:'أسعار المنافسين تُدخلها أنت وليست مُتحققًا منها لحظيًا.',
+  trendTitle:'السعر مقابل حجم المبيعات الأسبوعي',volume:'وحدة / أسبوع',hold:'إبقاء',fit:'دقة الملاءمة',weeks:'أسابيع',
+  summary:'الملخص التنفيذي',health:'صحة المخزون',activeSkus:'المنتجات النشطة',exposure:'التعرض للنفاد',coverage:'منتجات تحت حد الطلب',
+  kValuation:'إجمالي قيمة المخزون',kMargin:'متوسط هامش الربح',kLift:'عائد تحسين الأسعار',kUrgent:'منتجات تحتاج طلبًا عاجلًا',
+  vs30:'مقارنة بقبل 30 يومًا',ofGP:'من الربح الأسبوعي',capitalNeeded:'رأس المال المطلوب',perWeek:'/ أسبوع',
+  insights:'رؤى تشغيلية',noInsights:'لا توجد مشكلات في البيانات الحالية.',
+  insErosion:'خطر تآكل الهامش',insAdjust:'منتج سريع الحركة — تعديل السعر',insDead:'تراكم مخزون راكد',insStockout:'نفد المخزون',
+  sevHigh:'مرتفع',sevMed:'متوسط',sevLow:'منخفض',viewAll:'فتح',priority:'الأولوية',signal:'الإشارة',item:'المنتج',metric:'المؤشر',
   readOnly:'دورك يسمح بالعرض فقط.',lang:'English',footer:'التوقعات تقديرات من سجلك، وليست ضمانات.',
 };
 const dicts={en,ar};
