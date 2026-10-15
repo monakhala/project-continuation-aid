@@ -24,7 +24,7 @@ export function elasticity(d:WorkspaceData,p:Product):{e:number;r2:number;n:numb
   const w=weekly(d,p).filter(x=>x.qty>0&&x.price>0);if(w.length<6)return null;
   const prices=new Set(w.map(x=>x.price));if(prices.size<2)return null;
   const X=w.map(x=>Math.log(x.price)),Y=w.map(x=>Math.log(x.qty)),mx=X.reduce((a,b)=>a+b,0)/X.length,my=Y.reduce((a,b)=>a+b,0)/Y.length;
-  let sxy=0,sxx=0,syy=0;X.forEach((x,i)=>{sxy+=(x-mx)*(Y[i]-my);sxx+=(x-mx)**2;syy+=(Y[i]-my)**2;});
+  let sxy=0,sxx=0,syy=0;X.forEach((x,i)=>{sxy+=(x-mx)*((Y[i]??my)-my);sxx+=(x-mx)**2;syy+=((Y[i]??my)-my)**2;});
   if(sxx<1e-6||syy<1e-9)return null;const e=sxy/sxx,r2=(sxy*sxy)/(sxx*syy);
   return {e,r2,n:w.length};}
 
