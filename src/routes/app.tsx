@@ -58,16 +58,6 @@ function AppPage(){
 const canEdit=(r:Role)=>r!=='supplier';
 function Stat({label,value,tone=''}:{label:string;value:string|number;tone?:string}){return <div className={card}><p className="text-sm text-muted-foreground">{label}</p><p className={`mt-1 text-2xl font-bold ${tone}`}>{value}</p></div>;}
 
-function Dashboard(){
-  const {t}=useT(),{data:d}=useInventra();
-  const low=d.P.filter(p=>p.stock>0&&p.stock<=p.min).length,out=d.P.filter(p=>p.stock===0).length;
-  const val=d.P.reduce((s,p)=>s+p.stock*p.cost,0),open=d.R.filter(r=>!['Received','Cancelled'].includes(r.status)).length;
-  const recs=d.P.map(p=>({p,r:recommendation(d,p)})).filter(x=>x.r.action==='order');
-  return <div className="space-y-5">
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><Stat label={t('products')} value={d.P.length}/><Stat label={t('lowStock')} value={low} tone="text-warning"/><Stat label={t('outStock')} value={out} tone="text-destructive"/><Stat label={t('stockValue')} value={money(d,val)}/><Stat label={t('openOrders')} value={open}/></div>
-    <div className={card}><h2 className="mb-3 font-semibold">{t('recommended')}</h2>{recs.length?<ul className="divide-y divide-border">{recs.map(({p,r})=><li key={p.id} className="flex justify-between py-2 text-sm"><span>{p.name}</span><span className="font-semibold">{r.qty}</span></li>)}</ul>:<p className="text-sm text-muted-foreground">{t('noAction')}</p>}</div>
-  </div>;
-}
 
 function Inventory(){
   const {t}=useT(),{data:d,commit,role,busy}=useInventra();const [adding,setAdding]=useState(false);const [sale,setSale]=useState<number|null>(null);
