@@ -2,9 +2,10 @@ import {createFileRoute,Link,useNavigate} from '@tanstack/react-router';
 import {useState,useMemo,useRef} from 'react';
 import {toast} from 'sonner';
 import {useServerFn} from '@tanstack/react-start';
-import {LayoutDashboard,Boxes,PackagePlus,ClipboardList,LineChart,Bell,Database,Users,Sparkles,LogOut,Menu} from 'lucide-react';
+import {LayoutDashboard,Boxes,PackagePlus,ClipboardList,LineChart,Bell,Database,Users,Sparkles,LogOut,Menu,Tags} from 'lucide-react';
 import {Brand} from '@/components/inventra/brand';
 import {useInventra} from '@/components/inventra/provider';
+import {ExecutiveDashboard,PriceIntelligence} from '@/components/inventra/executive';
 import {useT,LangToggle} from '@/lib/inventra/i18n';
 import {sections,type Section,type WorkspaceData,type Role} from '@/lib/inventra/types';
 import {forecastFor,recommendation,status,money,download} from '@/lib/inventra/data';
@@ -19,8 +20,8 @@ export const Route=createFileRoute('/app')({
   head:()=>({meta:[{title:'Workspace — Inventra'},{name:'description',content:'Your Inventra inventory workspace: stock, forecasts, restocking and purchase orders.'},{property:'og:title',content:'Workspace — Inventra'},{property:'og:description',content:'Stock, forecasts, restocking and purchase orders.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),
   component:AppPage,
 });
-const icons={dashboard:LayoutDashboard,inventory:Boxes,restock:PackagePlus,orders:ClipboardList,forecast:LineChart,notifications:Bell,data:Database,team:Users,copilot:Sparkles};
-const card='rounded-xl border border-border bg-card p-5';
+const icons={dashboard:LayoutDashboard,inventory:Boxes,restock:PackagePlus,orders:ClipboardList,forecast:LineChart,pricing:Tags,notifications:Bell,data:Database,team:Users,copilot:Sparkles};
+const card='rounded-md border border-border bg-card p-5';
 const btn='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground disabled:opacity-50';
 const btn2='rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent disabled:opacity-50';
 const inp='rounded-md border border-input bg-background px-3 py-2 text-sm';
@@ -29,15 +30,15 @@ function AppPage(){
   const {s='dashboard'}=Route.useSearch();const nav=useNavigate();
   const {t}=useT();const ctx=useInventra();const [open,setOpen]=useState(false);
   const items=[...sections.filter(x=>x!=='team'||(!ctx.demo&&ctx.role==='head')),'copilot'] as const;
-  const Body={dashboard:Dashboard,inventory:Inventory,restock:Restock,orders:Orders,forecast:Forecast,pricing:Inventory,notifications:Notifications,data:Backup,team:Team,copilot:Copilot}[s];
+  const Body={dashboard:ExecutiveDashboard,inventory:Inventory,restock:Restock,orders:Orders,forecast:Forecast,pricing:PriceIntelligence,notifications:Notifications,data:Backup,team:Team,copilot:Copilot}[s];
   return <div className="flex min-h-screen bg-background text-foreground">
     <aside className={`${open?'flex':'hidden'} fixed inset-y-0 start-0 z-30 w-60 flex-col bg-sidebar p-4 text-sidebar-foreground md:sticky md:top-0 md:flex md:h-screen`}>
-      <div className="mb-6 [&_.brand-link]:text-sidebar-foreground"><Brand/></div>
-      <nav className="flex-1 space-y-1">{items.filter(x=>x!=='pricing').map(k=>{const I=icons[k as keyof typeof icons];return <Link key={k} to="/app" search={{s:k}} onClick={()=>setOpen(false)} className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm ${s===k?'bg-sidebar-accent text-sidebar-accent-foreground':'hover:bg-sidebar-accent/60'}`}><I size={17}/>{t(k as 'dashboard')}</Link>;})}</nav>
+      <div className="mb-6 border-b border-sidebar-border pb-4 [&_.brand-link]:text-sidebar-accent-foreground"><Brand/></div>
+      <nav className="flex-1 space-y-1">{items.map(k=>{const I=icons[k as keyof typeof icons];return <Link key={k} to="/app" search={{s:k}} onClick={()=>setOpen(false)} className={`flex items-center gap-3 rounded-md border-s-2 px-3 py-2 text-sm ${s===k?'border-sidebar-primary bg-sidebar-accent text-sidebar-accent-foreground':'border-transparent hover:bg-sidebar-accent/60'}`}><I size={17}/>{t(k as 'dashboard')}</Link>;})}</nav>
       {ctx.session&&<button onClick={async()=>{await supabase.auth.signOut();void nav({to:'/'});}} className="flex items-center gap-2 px-3 py-2 text-sm opacity-80 hover:opacity-100"><LogOut size={16}/>{t('signOut')}</button>}
     </aside>
     <main className="min-w-0 flex-1">
-      <header className="flex flex-wrap items-center gap-3 border-b border-border px-5 py-3">
+      <header className="sticky top-0 z-20 flex flex-wrap items-center gap-3 border-b border-border bg-card px-5 py-3">
         <button className="md:hidden" onClick={()=>setOpen(!open)} aria-label="Menu"><Menu/></button>
         <h1 className="text-lg font-semibold">{t(s as 'dashboard')}</h1>
         <span className="text-sm text-muted-foreground">· {ctx.demo?t('workspaceDemo'):ctx.name} · {t(ctx.role==='supplier'?'supplierRole':ctx.role)}</span>
@@ -46,7 +47,7 @@ function AppPage(){
           <LangToggle/>
         </div>
       </header>
-      {ctx.demo&&<div className="bg-warning/25 px-5 py-2 text-sm font-medium">{t('demoBadge')}</div>}
+      {ctx.demo&&<div className="border-b border-warning/40 bg-warning/10 px-5 py-1.5 text-xs font-medium text-foreground">{t('demoBadge')}</div>}
       <div className="p-5">
         {!ctx.demo&&ctx.loading?<p className="text-muted-foreground">…</p>:!ctx.demo&&ctx.workspaces.length===0?<div className={card}><p>{t('noWs')}</p><button className={`${btn} mt-3`} disabled={ctx.busy} onClick={()=>void ctx.initialize()}>{t('createWs')}</button></div>:<Body/>}
       </div>
@@ -57,16 +58,6 @@ function AppPage(){
 const canEdit=(r:Role)=>r!=='supplier';
 function Stat({label,value,tone=''}:{label:string;value:string|number;tone?:string}){return <div className={card}><p className="text-sm text-muted-foreground">{label}</p><p className={`mt-1 text-2xl font-bold ${tone}`}>{value}</p></div>;}
 
-function Dashboard(){
-  const {t}=useT(),{data:d}=useInventra();
-  const low=d.P.filter(p=>p.stock>0&&p.stock<=p.min).length,out=d.P.filter(p=>p.stock===0).length;
-  const val=d.P.reduce((s,p)=>s+p.stock*p.cost,0),open=d.R.filter(r=>!['Received','Cancelled'].includes(r.status)).length;
-  const recs=d.P.map(p=>({p,r:recommendation(d,p)})).filter(x=>x.r.action==='order');
-  return <div className="space-y-5">
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><Stat label={t('products')} value={d.P.length}/><Stat label={t('lowStock')} value={low} tone="text-warning"/><Stat label={t('outStock')} value={out} tone="text-destructive"/><Stat label={t('stockValue')} value={money(d,val)}/><Stat label={t('openOrders')} value={open}/></div>
-    <div className={card}><h2 className="mb-3 font-semibold">{t('recommended')}</h2>{recs.length?<ul className="divide-y divide-border">{recs.map(({p,r})=><li key={p.id} className="flex justify-between py-2 text-sm"><span>{p.name}</span><span className="font-semibold">{r.qty}</span></li>)}</ul>:<p className="text-sm text-muted-foreground">{t('noAction')}</p>}</div>
-  </div>;
-}
 
 function Inventory(){
   const {t}=useT(),{data:d,commit,role,busy}=useInventra();const [adding,setAdding]=useState(false);const [sale,setSale]=useState<number|null>(null);
