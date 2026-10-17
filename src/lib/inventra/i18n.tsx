@@ -9,8 +9,8 @@ const en={
   f1:'Honest forecasts',f1d:'Every forecast is backtested on the product’s own history. Too little data? It says so instead of guessing.',
   f2:'Traceable restocking',f2d:'Recommendations explain reorder points, lead time, pack sizes and shelf life in plain words.',
   f3:'Team roles',f3d:'Owners, managers, warehouse staff and suppliers each see and do only what their role allows.',
-  f4:'AI copilot in English & Arabic',f4d:'Ask about stockout risk, restock budget or pricing — answers are grounded in your numbers.',
-  demoBadge:'Demo data — sample products, not your business',
+  f4:'AI copilot in English & Arabic',f4d:'Ask about stockout risk, restock budget or pricing. Answers are grounded in your numbers.',
+  demoBadge:'Sample data. These products are examples, not your business',
   dashboard:'Dashboard',inventory:'Inventory',restock:'Restock',orders:'Purchase orders',forecast:'Forecast',notifications:'Notifications',data:'Backup',team:'Team',copilot:'AI copilot',
   products:'Products',lowStock:'Low stock',outStock:'Out of stock',stockValue:'Stock value',openOrders:'Open orders',
   name:'Name',sku:'SKU',category:'Category',stock:'Stock',min:'Min',price:'Price',cost:'Cost',status:'Status',actions:'Actions',
@@ -33,9 +33,20 @@ const en={
   kValuation:'Total inventory valuation',kMargin:'Average gross margin',kLift:'Price optimization lift',kUrgent:'Urgent restock items',
   vs30:'vs. 30 days ago',ofGP:'of weekly gross profit',capitalNeeded:'capital required',perWeek:'/ week',
   insights:'Operational insights',noInsights:'No issues detected in the current data.',
-  insErosion:'Margin erosion risk',insAdjust:'Fast mover — price adjustment',insDead:'Dead stock accumulation',insStockout:'Stocked out',
+  insErosion:'Margin erosion risk',insAdjust:'Fast mover, price adjustment',insDead:'Dead stock accumulation',insStockout:'Stocked out',
   sevHigh:'High',sevMed:'Medium',sevLow:'Low',viewAll:'Open',priority:'Priority',signal:'Signal',item:'Item',metric:'Metric',
   readOnly:'Your role can view but not change this.',lang:'العربية',footer:'Forecasts are estimates from your own history, never guarantees.',
+  menu:'Menu',sample:'Sample data',na:'n/a',actual:'Actual',fcLabel:'Forecast',band:'Likely range',
+  qDash:'How is the business doing today?',aDash:'{h} of {n} products are healthy and {u} need restocking.',
+  qInv:'What is in stock right now?',aInv:'{n} products: {l} running low and {o} out of stock.',
+  qRestock:'What should I reorder this week?',aRestock:'Reorder {n} products for about {c}.',aRestockNone:'Nothing needs reordering this week.',
+  qOrders:'Which orders need approval or receiving?',aOrders:'{p} waiting for approval and {c} waiting to be received.',
+  qForecast:'How much will I sell in the next 14 days?',aForecast:'About {n} units across {k} products with enough history.',aForecastNone:'There is not enough sales history to forecast yet.',
+  qNotif:'What needs my attention?',aNotif:'{n} unread messages.',aNotifNone:'You are all caught up.',
+  qPricing:'Which prices should change?',aPricing:'{n} products have a suggested price change.',aPricingNone:'No price changes are suggested right now.',
+  emptyInv:'Add your first product to start tracking stock.',emptyRestock:'Add products to get reorder suggestions.',emptyOrders:'Orders appear here after you create one from Restock.',emptyForecast:'Add products and record sales to see a forecast.',emptyPricing:'Add products to compare prices.',
+  goInventory:'Open inventory',goRestock:'Open restock',goDashboard:'Back to dashboard',
+  stPending:'Waiting for approval',stConfirmed:'Confirmed',stReceived:'Received',stCancelled:'Cancelled',
 };
 type Dict=typeof en;
 const ar:Dict={
@@ -47,7 +58,7 @@ const ar:Dict={
   f2:'إعادة تخزين قابلة للتتبع',f2d:'التوصيات تشرح نقطة إعادة الطلب ومدة التوريد وحجم العبوة ومدة الصلاحية بكلمات واضحة.',
   f3:'أدوار الفريق',f3d:'المالك والمدير وموظفو المستودع والموردون؛ كلٌّ يرى ويفعل ما يسمح به دوره فقط.',
   f4:'مساعد ذكي بالعربية والإنجليزية',f4d:'اسأل عن خطر النفاد أو ميزانية الشراء أو الأسعار؛ الإجابات مبنية على أرقامك.',
-  demoBadge:'بيانات تجريبية — منتجات نموذجية وليست بيانات عملك',
+  demoBadge:'بيانات تجريبية: منتجات نموذجية وليست بيانات عملك',
   dashboard:'لوحة التحكم',inventory:'المخزون',restock:'إعادة التخزين',orders:'أوامر الشراء',forecast:'التوقعات',notifications:'الإشعارات',data:'النسخ الاحتياطي',team:'الفريق',copilot:'المساعد الذكي',
   products:'المنتجات',lowStock:'مخزون منخفض',outStock:'نفد المخزون',stockValue:'قيمة المخزون',openOrders:'أوامر مفتوحة',
   name:'الاسم',sku:'رمز المنتج',category:'الفئة',stock:'المخزون',min:'الحد الأدنى',price:'السعر',cost:'التكلفة',status:'الحالة',actions:'إجراءات',
@@ -70,9 +81,20 @@ const ar:Dict={
   kValuation:'إجمالي قيمة المخزون',kMargin:'متوسط هامش الربح',kLift:'عائد تحسين الأسعار',kUrgent:'منتجات تحتاج طلبًا عاجلًا',
   vs30:'مقارنة بقبل 30 يومًا',ofGP:'من الربح الأسبوعي',capitalNeeded:'رأس المال المطلوب',perWeek:'/ أسبوع',
   insights:'رؤى تشغيلية',noInsights:'لا توجد مشكلات في البيانات الحالية.',
-  insErosion:'خطر تآكل الهامش',insAdjust:'منتج سريع الحركة — تعديل السعر',insDead:'تراكم مخزون راكد',insStockout:'نفد المخزون',
+  insErosion:'خطر تآكل الهامش',insAdjust:'منتج سريع الحركة، تعديل السعر',insDead:'تراكم مخزون راكد',insStockout:'نفد المخزون',
   sevHigh:'مرتفع',sevMed:'متوسط',sevLow:'منخفض',viewAll:'فتح',priority:'الأولوية',signal:'الإشارة',item:'المنتج',metric:'المؤشر',
   readOnly:'دورك يسمح بالعرض فقط.',lang:'English',footer:'التوقعات تقديرات من سجلك، وليست ضمانات.',
+  menu:'القائمة',sample:'بيانات تجريبية',na:'غير متاح',actual:'الفعلي',fcLabel:'التوقع',band:'النطاق المرجح',
+  qDash:'كيف حال العمل اليوم؟',aDash:'{h} من {n} منتجات بحالة جيدة و{u} تحتاج إعادة تخزين.',
+  qInv:'ما الموجود في المخزون الآن؟',aInv:'{n} منتجات: {l} منخفضة و{o} نافدة.',
+  qRestock:'ماذا أطلب هذا الأسبوع؟',aRestock:'اطلب {n} منتجات بتكلفة تقارب {c}.',aRestockNone:'لا شيء يحتاج إعادة طلب هذا الأسبوع.',
+  qOrders:'أي الطلبات تحتاج موافقة أو استلامًا؟',aOrders:'{p} بانتظار الموافقة و{c} بانتظار الاستلام.',
+  qForecast:'كم سأبيع في الأيام الـ14 القادمة؟',aForecast:'نحو {n} وحدة عبر {k} منتجات لها سجل كافٍ.',aForecastNone:'لا يوجد سجل مبيعات كافٍ للتوقع بعد.',
+  qNotif:'ما الذي يحتاج انتباهي؟',aNotif:'{n} رسائل غير مقروءة.',aNotifNone:'لا جديد لديك.',
+  qPricing:'أي الأسعار يجب تغييرها؟',aPricing:'{n} منتجات لها سعر مقترح جديد.',aPricingNone:'لا تغييرات مقترحة على الأسعار الآن.',
+  emptyInv:'أضف منتجك الأول لبدء تتبع المخزون.',emptyRestock:'أضف منتجات للحصول على اقتراحات الطلب.',emptyOrders:'تظهر الطلبات هنا بعد إنشائها من صفحة إعادة التخزين.',emptyForecast:'أضف منتجات وسجّل مبيعات لرؤية التوقع.',emptyPricing:'أضف منتجات لمقارنة الأسعار.',
+  goInventory:'فتح المخزون',goRestock:'فتح إعادة التخزين',goDashboard:'العودة للوحة التحكم',
+  stPending:'بانتظار الموافقة',stConfirmed:'مؤكد',stReceived:'تم الاستلام',stCancelled:'ملغى',
 };
 const dicts={en,ar};
 const Ctx=createContext<{lang:Lang;setLang:(l:Lang)=>void;t:(k:keyof Dict)=>string}>({lang:'en',setLang:()=>{},t:k=>en[k]});
@@ -85,3 +107,5 @@ export function LangProvider({children}:{children:ReactNode}){
 }
 export const useT=()=>useContext(Ctx);
 export function LangToggle(){const {lang,setLang,t}=useT();return <button type="button" onClick={()=>setLang(lang==='ar'?'en':'ar')} className="rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent">{t('lang')}</button>;}
+
+export const fmt=(s:string,v:Record<string,string|number>)=>s.replace(/\{(\w+)\}/g,(_,k)=>String(v[k]??''));
