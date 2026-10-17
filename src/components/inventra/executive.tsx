@@ -20,7 +20,7 @@ function Delta({v,unit='%',good=1}:{v:number|null;unit?:string;good?:1|-1}){
 
 function Kpi({label,value,delta,note}:{label:string;value:string;delta:React.ReactNode;note:string}){
   return <div className="px-5 py-4"><p className="text-xs font-medium text-muted-foreground">{label}</p>
-    <p className="mt-1.5 text-2xl font-semibold tracking-tight tnum">{value}</p>
+    <p className="mt-2 kpi-num">{value}</p>
     <div className="mt-1 flex items-center gap-2">{delta}<span className="text-xs text-muted-foreground">{note}</span></div></div>;
 }
 
@@ -34,7 +34,7 @@ export function ExecutiveDashboard(){
   const target:Record<Insight['kind'],'pricing'|'restock'|'inventory'>={erosion:'pricing',adjust:'pricing',dead:'inventory',stockout:'restock'};
   const sev=(s:number)=>s===3?[t('sevHigh'),'bg-destructive']:s===2?[t('sevMed'),'bg-warning']:[t('sevLow'),'bg-muted-foreground'];
   return <div className="space-y-5">
-    <section className="flex flex-wrap items-stretch overflow-hidden rounded-md bg-sidebar text-sidebar-foreground">
+    <section className="flex flex-wrap items-stretch overflow-hidden rounded-lg border border-border bg-sidebar text-sidebar-foreground">
       <div className="min-w-[200px] flex-1 border-e border-sidebar-border px-5 py-4">
         <p className="text-[11px] font-semibold uppercase tracking-wider opacity-70">{t('summary')}</p>
         <p className="mt-1 text-sm text-sidebar-accent-foreground">{t('health')}: <b className="text-lg tnum">{health}/100</b></p>

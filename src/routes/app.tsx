@@ -21,7 +21,7 @@ export const Route=createFileRoute('/app')({
   component:AppPage,
 });
 const icons={dashboard:LayoutDashboard,inventory:Boxes,restock:PackagePlus,orders:ClipboardList,forecast:LineChart,pricing:Tags,notifications:Bell,data:Database,team:Users,copilot:Sparkles};
-const card='rounded-md border border-border bg-card p-5';
+const card='rounded-lg border border-border bg-card p-6';
 const btn='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground disabled:opacity-50';
 const btn2='rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent disabled:opacity-50';
 const inp='rounded-md border border-input bg-background px-3 py-2 text-sm';
@@ -32,7 +32,7 @@ function AppPage(){
   const items=[...sections.filter(x=>x!=='team'||(!ctx.demo&&ctx.role==='head')),'copilot'] as const;
   const Body={dashboard:ExecutiveDashboard,inventory:Inventory,restock:Restock,orders:Orders,forecast:Forecast,pricing:PriceIntelligence,notifications:Notifications,data:Backup,team:Team,copilot:Copilot}[s];
   return <div className="flex min-h-screen bg-background text-foreground">
-    <aside className={`${open?'flex':'hidden'} fixed inset-y-0 start-0 z-30 w-60 flex-col bg-sidebar p-4 text-sidebar-foreground md:sticky md:top-0 md:flex md:h-screen`}>
+    <aside className={`${open?'flex':'hidden'} fixed inset-y-0 start-0 z-30 w-60 flex-col border-e border-sidebar-border bg-sidebar p-4 text-sidebar-foreground md:sticky md:top-0 md:flex md:h-screen`}>
       <div className="mb-6 border-b border-sidebar-border pb-4 [&_.brand-link]:text-sidebar-accent-foreground"><Brand/></div>
       <nav className="flex-1 space-y-1">{items.map(k=>{const I=icons[k as keyof typeof icons];return <Link key={k} to="/app" search={{s:k}} onClick={()=>setOpen(false)} className={`flex items-center gap-3 rounded-md border-s-2 px-3 py-2 text-sm ${s===k?'border-sidebar-primary bg-sidebar-accent text-sidebar-accent-foreground':'border-transparent hover:bg-sidebar-accent/60'}`}><I size={17}/>{t(k as 'dashboard')}</Link>;})}</nav>
       {ctx.session&&<button onClick={async()=>{await supabase.auth.signOut();void nav({to:'/'});}} className="flex items-center gap-2 px-3 py-2 text-sm opacity-80 hover:opacity-100"><LogOut size={16}/>{t('signOut')}</button>}
@@ -56,7 +56,7 @@ function AppPage(){
 }
 
 const canEdit=(r:Role)=>r!=='supplier';
-function Stat({label,value,tone=''}:{label:string;value:string|number;tone?:string}){return <div className={card}><p className="text-sm text-muted-foreground">{label}</p><p className={`mt-1 text-2xl font-bold ${tone}`}>{value}</p></div>;}
+function Stat({label,value,tone=''}:{label:string;value:string|number;tone?:string}){return <div className={card}><p className="text-sm text-muted-foreground">{label}</p><p className={`mt-2 kpi-num ${tone}`}>{value}</p></div>;}
 
 
 function Inventory(){

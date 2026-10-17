@@ -28,7 +28,7 @@ function Landing(){
           {!session&&<Link to="/auth" className="rounded-md border border-border px-5 py-3 font-medium hover:bg-accent">{t('signUp')}</Link>}
         </div>
       </div>
-      <img src={warehouse} alt="Warehouse shelves" className="aspect-[4/3] w-full rounded-xl object-cover shadow-lg" width={1024} height={768}/>
+      <img src={warehouse} alt="Warehouse shelves" className="aspect-[4/3] w-full rounded-lg object-cover" width={1024} height={768}/>
     </section>
     <section className="border-t border-border bg-card">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-16 sm:grid-cols-2 lg:grid-cols-4">
