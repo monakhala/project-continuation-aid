@@ -21,7 +21,7 @@ export const Route=createFileRoute('/app')({
   component:AppPage,
 });
 const icons={dashboard:LayoutDashboard,inventory:Boxes,restock:PackagePlus,orders:ClipboardList,forecast:LineChart,pricing:Tags,notifications:Bell,data:Database,team:Users,copilot:Sparkles};
-const card='rounded-md border border-border bg-card p-5';
+const card='rounded-lg border border-border bg-card p-6';
 const btn='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground disabled:opacity-50';
 const btn2='rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent disabled:opacity-50';
 const inp='rounded-md border border-input bg-background px-3 py-2 text-sm';
