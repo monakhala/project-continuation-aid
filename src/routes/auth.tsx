@@ -22,7 +22,7 @@ function Auth(){
   async function google(){const r=await lovable.auth.signInWithOAuth('google',{redirect_uri:window.location.origin+'/auth'});if(r.error)toast.error(r.error.message);}
   return <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
     <div className="absolute end-4 top-4"><LangToggle/></div>
-    <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-sm">
+    <div className="w-full max-w-sm rounded-lg border border-border bg-card p-6">
       <Brand/><h1 className="mt-4 text-xl font-semibold">{t('signInTitle')}</h1>
       <form onSubmit={submit} className="mt-5 space-y-3">
         <input type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder={t('email')} className="w-full rounded-md border border-input bg-background px-3 py-2"/>
