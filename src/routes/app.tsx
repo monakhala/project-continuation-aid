@@ -118,7 +118,7 @@ function ForecastChart({actual,fc,wape}:{actual:number[];fc:number[];wape:number
   const path=(vs:number[],o:number)=>vs.map((v,i)=>`${i?'L':'M'}${x(i+o)},${y(v)}`).join(' ');
   const o=actual.length-1,fcl=[actual[actual.length-1]??fc[0]??0,...fc];
   const band=wape===null?'':`M${x(o)},${y(fcl[0]!)} `+hi.map((v,i)=>`L${x(i+o+1)},${y(v)}`).join(' ')+' '+[...lo].reverse().map((v,i)=>`L${x(o+fc.length-i)},${y(v)}`).join(' ')+' Z';
-  return <svg viewBox={`0 0 ${W} ${H}`} className="mt-4 w-full" dir="ltr" role="img" aria-label={t('forecast')}>
+  return <svg viewBox={`0 0 ${W} ${H}`} className="mt-4 w-full" direction="ltr" role="img" aria-label={t('forecast')}>
     {[0,.5,1].map(f=><g key={f}><line x1={pl} x2={W-pr} y1={pt+ih*(1-f)} y2={pt+ih*(1-f)} className="stroke-border" strokeWidth={0.5}/><text x={pl-4} y={pt+ih*(1-f)+3} textAnchor="end" className="fill-muted-foreground text-[9px] tnum">{Math.round(max*f)}</text></g>)}
     <line x1={x(o)} x2={x(o)} y1={pt} y2={pt+ih} className="stroke-border" strokeDasharray="2 3"/>
     {band&&<path d={band} className="fill-primary/10"/>}
