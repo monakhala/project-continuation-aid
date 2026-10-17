@@ -28,7 +28,7 @@ export function Status({tone,children}:{tone:Tone;children:ReactNode}){
   return <span className="inline-flex items-center gap-2 whitespace-nowrap"><span className={`h-2 w-2 shrink-0 rounded-full ${dot[tone]}`}/>{children}</span>;
 }
 
-export function Empty({line,action,to,onClick}:{line:string;action:string;to?:Section;onClick?:()=>void}){
+export function Empty({line,action,to,onClick}:{line:string;action:string;to?:Section;onClick?:(()=>void)|undefined}){
   const cls='mt-4 inline-flex rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground';
   return <div className="rounded-lg border border-dashed border-border px-6 py-12 text-center">
     <p className="text-sm text-muted-foreground">{line}</p>
