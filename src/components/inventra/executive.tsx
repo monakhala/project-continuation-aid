@@ -14,7 +14,8 @@ const td='border-t border-border px-4 py-3 tnum';
 const pct=(n:number,dp=1)=>`${(n*100).toFixed(dp)}%`;
 
 function Delta({v,unit='%',good=1}:{v:number|null;unit?:string;good?:1|-1}){
-  if(v===null||!isFinite(v))return <span className="text-xs text-muted-foreground">—</span>;
+  const {t}=useT();
+  if(v===null||!isFinite(v))return <span className="text-xs text-muted-foreground">{t('na')}</span>;
   const flat=Math.abs(v)<0.05,up=v>0,ok=flat?null:(up?good===1:good===-1);
   const I=flat?Minus:up?ArrowUpRight:ArrowDownRight;
   return <span className={`inline-flex items-center gap-0.5 text-xs font-semibold tnum ${ok===null?'text-muted-foreground':ok?'text-success':'text-destructive'}`} dir="ltr"><I size={13}/>{up?'+':''}{v.toFixed(1)}{unit}</span>;
@@ -63,13 +64,13 @@ export function ExecutiveDashboard(){
             <td className={td}><span className="inline-flex items-center gap-2 text-xs font-medium"><span className={`h-2 w-2 rounded-full ${c}`}/>{s}</span></td>
             <td className={td}>{label[x.kind]}</td><td className={`${td} font-medium`}>{x.name}</td><td className={`${td} text-end font-semibold`} dir="ltr">{x.metric}</td>
             <td className={`${td} text-end`}><Link to="/app" search={{s:target[x.kind]}} className="text-xs font-medium text-primary hover:underline">{t('viewAll')} →</Link></td></tr>;})}</tbody></table></div>
-          :<div className="px-6 pb-6"><Empty line={t('noInsights')} action={t('goInventory')} to="inventory"/></div>}
+          :<div className="flex flex-wrap items-center justify-between gap-3 px-6 pb-6"><p className="text-sm text-muted-foreground">{t('noInsights')}</p><Link to="/app" search={{s:'inventory'}} className="text-sm font-medium text-primary hover:underline">{t('goInventory')} →</Link></div>}
       </section>
       <section className={panel}>
         <header className="px-6 py-5"><h2 className="font-semibold">{t('recommended')}</h2></header>
         {a.recs.length?<div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr><th className={th}>{t('item')}</th><th className={`${th} text-end`}>{t('qty')}</th><th className={`${th} text-end`}>{t('cost')}</th></tr></thead>
           <tbody>{a.recs.map(({p,r})=><tr key={p.id} className="hover:bg-muted/40"><td className={td}>{p.name}</td><td className={`${td} text-end font-semibold`}>{r.qty}</td><td className={`${td} text-end`}>{money(d,r.qty*p.cost)}</td></tr>)}</tbody></table></div>
-          :<div className="px-6 pb-6"><Empty line={t('noAction')} action={t('goInventory')} to="inventory"/></div>}
+          :<div className="flex flex-wrap items-center justify-between gap-3 px-6 pb-6"><p className="text-sm text-muted-foreground">{t('noAction')}</p><Link to="/app" search={{s:'inventory'}} className="text-sm font-medium text-primary hover:underline">{t('goInventory')} →</Link></div>}
       </section>
     </div>
     </>}
@@ -79,7 +80,7 @@ export function ExecutiveDashboard(){
 function TrendChart({pid}:{pid:number}){
   const {t}=useT(),{data:d}=useInventra();const p=d.P.find(x=>x.id===pid);
   const w=useMemo(()=>p?weekly(d,p):[],[d,p]);
-  if(!p||!w.length)return <div className="px-6 pb-6"><Empty line={t('noForecast')} action={t('goInventory')} to="inventory"/></div>;
+  if(!p||!w.length)return <div className="flex flex-wrap items-center justify-between gap-3 px-6 pb-6"><p className="text-sm text-muted-foreground">{t('noForecast')}</p><Link to="/app" search={{s:'inventory'}} className="text-sm font-medium text-primary hover:underline">{t('goInventory')} →</Link></div>;
   const W=720,H=220,pad={l:44,r:52,t:14,b:28},iw=W-pad.l-pad.r,ih=H-pad.t-pad.b;
   const qMax=Math.max(1,...w.map(x=>x.qty)),ps=w.map(x=>x.price),pMin=Math.min(...ps)*0.95,pMax=Math.max(...ps)*1.05||1;
   const bw=iw/w.length,x=(i:number)=>pad.l+i*bw+bw/2,yP=(v:number)=>pad.t+ih-((v-pMin)/(pMax-pMin||1))*ih;
@@ -93,7 +94,7 @@ function TrendChart({pid}:{pid:number}){
       {w.map((v,i)=><rect key={i} x={pad.l+i*bw+bw*0.18} width={bw*0.64} y={pad.t+ih-(v.qty/qMax)*ih} height={(v.qty/qMax)*ih} className="fill-chart-3/50"/>)}
       <path d={line} fill="none" strokeWidth={2} className="stroke-primary"/>
       {w.map((v,i)=><circle key={i} cx={x(i)} cy={yP(v.price)} r={3} className="fill-card stroke-primary" strokeWidth={2}/>)}
-      {w.map((v,i)=>i%2===0&&<text key={i} x={x(i)} y={H-8} textAnchor="middle" className="fill-muted-foreground text-[10px]">{v.start.slice(5)}</text>)}
+      {w.map((v,i)=>i%2===0&&<text key={i} x={x(i)} y={H-8} textAnchor="middle" className="fill-muted-foreground text-[10px]">{v.start.slice(5).replace('-', '/')}</text>)}
     </svg></div>;
 }
 
@@ -119,8 +120,8 @@ export function PriceIntelligence(){
             {gap!==null&&<div className={`text-[11px] tnum ${gap>5?'text-warning':gap<-5?'text-primary':'text-muted-foreground'}`} dir="ltr">{gap>0?'+':''}{gap.toFixed(1)}%</div>}</td>
           <td className={`${td} text-end`}><span className={r.gm<0.2?'font-semibold text-destructive':r.gm<0.3?'font-semibold text-warning':''}>{pct(r.gm)}</span></td>
           <td className={`${td} text-end`}>{r.el?<span title={`${t('fit')} R² ${r.el.r2.toFixed(2)} · ${r.el.n} ${t('weeks')}`} dir="ltr">{r.el.e.toFixed(2)}<span className="ms-1 text-[11px] text-muted-foreground">R² {r.el.r2.toFixed(2)}</span></span>:<span className="text-xs text-muted-foreground">{t('notMeasurable')}</span>}</td>
-          <td className={`${td} text-end font-semibold`}>{r.opt===null?<span className="text-xs font-normal text-muted-foreground">—</span>:r.opt===r.p.price?<span className="text-xs font-normal text-muted-foreground">{t('hold')}</span>:<span className="text-primary">{money(d,r.opt)}</span>}</td>
-          <td className={`${td} text-end`}>{r.liftWeekly>0?<span className="font-semibold text-success" dir="ltr">+{money(d,r.liftWeekly)}</span>:<span className="text-muted-foreground">—</span>}</td></tr>;})}</tbody></table></div>
+          <td className={`${td} text-end font-semibold`}>{r.opt===null?<span className="text-xs font-normal text-muted-foreground">{t('na')}</span>:r.opt===r.p.price?<span className="text-xs font-normal text-muted-foreground">{t('hold')}</span>:<span className="text-primary">{money(d,r.opt)}</span>}</td>
+          <td className={`${td} text-end`}>{r.liftWeekly>0?<span className="font-semibold text-success" dir="ltr">+{money(d,r.liftWeekly)}</span>:<span className="text-muted-foreground">{t('na')}</span>}</td></tr>;})}</tbody></table></div>
       <p className="border-t border-border px-6 py-4 text-xs leading-relaxed text-muted-foreground">{t('elastHelp')}</p>
     </section>
     <section className={panel}>
