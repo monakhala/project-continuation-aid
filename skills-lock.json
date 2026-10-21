@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "awesome-design-md": {
+      "source": "Tekkiiiii/the-agency",
+      "sourceType": "github",
+      "skillPath": "skills/awesome-design-md/SKILL.md",
+      "computedHash": "c47ee9576003d14a4ae944e160081f65057a70f21055f38cdd87d4c8e80126cc"
+    }
+  }
+}

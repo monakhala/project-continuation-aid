@@ -177,7 +177,7 @@ const hashData=o=>{const s=JSON.stringify(o);let h=0x811c9dc5;for(let i=0;i<s.le
 
 /* ---------- backup / restore / saved-data validation ---------- */
 const DATA_KEYS=['P','archived','SR','mv','R','N','snooze','watch','alerts','px','imports','settings','nid','rid'];
-const PFIELDS=['id','sku','name','cat','wh','stock','min','max','cost','price','exp','lead','bc','moq','pack','shelf','src','archived','archivedOn'];
+const PFIELDS=['id','sku','name','cat','wh','stock','min','max','cost','price','exp','lead','bc','moq','pack','shelf','src','archived','archivedOn','repCost','batch_number','expiry_date','locations'];
 const PO_STATUS=['Pending Approval','Approved','Sent to Supplier','Confirmed','Partially Received','Received','Rejected','Cancelled'];
 const LIM={P:20000,SR:500000};
 function validateData(d){const err=[],warn=[],E=m=>err.length<50?err.push(m):0;
@@ -211,7 +211,7 @@ function validateBackup(o){const errors=[],warnings=[];if(!o||typeof o!=='object
  const v=validateData(o.data);errors.push(...v.errors);warnings.push(...v.warnings);return{ok:!errors.length,errors,warnings,summary:{...v.summary,workspace:o.workspace,exportedAt:o.exportedAt}}}
 /* Whitelist copy: unknown keys (including __proto__ tricks) never reach the live state. */
 function restoreData(d){const cp=x=>JSON.parse(JSON.stringify(x)),pick=p=>{const o={};for(const f of PFIELDS)if(p[f]!==undefined)o[f]=p[f];return o};
- return{P:d.P.map(pick),archived:(d.archived||[]).map(pick),SR:d.SR.map(r=>({pid:r.pid,date:r.date,qty:r.qty})),mv:cp(d.mv||[]),R:cp(d.R||[]),N:cp(d.N||[]),snooze:cp(d.snooze||{}),watch:cp(d.watch||[]),alerts:cp(d.alerts||[]),px:{},imports:cp(d.imports||[]).map(i=>({...i,undo:undefined})),settings:{currency:/^[A-Z]{3}$/.test(d.settings&&d.settings.currency)?d.settings.currency:'USD'},nid:Number.isInteger(d.nid)?d.nid:1,rid:Number.isInteger(d.rid)?d.rid:1}}
+ return{P:d.P.map(pick),archived:(d.archived||[]).map(pick),SR:d.SR.map(r=>({pid:r.pid,date:r.date,qty:r.qty})),mv:cp(d.mv||[]),R:cp(d.R||[]),N:cp(d.N||[]),snooze:cp(d.snooze||{}),watch:cp(d.watch||[]),alerts:cp(d.alerts||[]),px:{},imports:cp(d.imports||[]).map(i=>({...i,undo:undefined})),settings:{currency:/^[A-Z]{3}$/.test(d.settings&&d.settings.currency)?d.settings.currency:'EGP'},nid:Number.isInteger(d.nid)?d.nid:1,rid:Number.isInteger(d.rid)?d.rid:1}}
 
 return{parseISO,addDays,diffDays,todayISO,dailySeries,METHODS,forecast,backtest,weeklyPattern,chooseForecast,zForService,recommend,OPEN_PO,PENDING,openPOQty,recordSale,canDeleteProduct,archiveProduct,parseCSV,detectDelimiter,checkCSVText,FIELDS,detectMapping,readCSV,validateSalesCSV,mergeSales,validateProductsCSV,toStored,planProductImport,applyProductPlan,hashData,validateData,buildBackup,validateBackup,restoreData,DATA_KEYS}
 })();
