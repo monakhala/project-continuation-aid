@@ -132,13 +132,13 @@ describe('Task D: Multi-Location Warehouse Hubs', () => {
       const hubs = Object.keys(p.locations);
       const fromHub = hubs[0]!;
       const toHub = hubs[1]!;
-      const initialFrom = p.locations[fromHub];
-      const initialTo = p.locations[toHub];
+      const initialFrom = p.locations[fromHub]!;
+      const initialTo = p.locations[toHub]!;
       const transferQty = 10;
 
       // Execute transfer
-      p.locations[fromHub] -= transferQty;
-      p.locations[toHub] += transferQty;
+      p.locations[fromHub] = initialFrom - transferQty;
+      p.locations[toHub] = initialTo + transferQty;
 
       expect(p.locations[fromHub]).toBe(initialFrom - transferQty);
       expect(p.locations[toHub]).toBe(initialTo + transferQty);
