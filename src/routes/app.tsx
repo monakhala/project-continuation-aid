@@ -374,7 +374,7 @@ function Inventory(){
                       className={btn2}
                       title={t('transferAction')}
                       onClick={()=>{
-                        const dest=hubs.find(h=>h!==p.wh)??hubs[0];
+                        const dest=hubs.find(h=>h!==p.wh)??hubs[0]??p.wh;
                         setTransfer({pid:p.id,fromWh:p.wh,toWh:dest,qty:Math.min(p.stock,10)});
                       }}
                     >

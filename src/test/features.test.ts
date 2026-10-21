@@ -130,8 +130,8 @@ describe('Task D: Multi-Location Warehouse Hubs', () => {
 
     if (p && p.locations) {
       const hubs = Object.keys(p.locations);
-      const fromHub = hubs[0];
-      const toHub = hubs[1];
+      const fromHub = hubs[0]!;
+      const toHub = hubs[1]!;
       const initialFrom = p.locations[fromHub];
       const initialTo = p.locations[toHub];
       const transferQty = 10;
