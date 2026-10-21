@@ -64,6 +64,7 @@ const en={
   kRepValuation:'Replacement inventory value',
   kRepMargin:'Replacement margin',
   // Cash-Constrained Restock Allocator (Task B)
+  budgetNote:'Highest urgency items are funded first.',
   budgetCap:'Working capital budget cap',
   budgetCapPlaceholder:'e.g. 50000',
   allocatedSpend:'Allocated restock spend',
@@ -182,6 +183,7 @@ const ar:Dict={
   kRepValuation:'قيمة المخزون بسعر الإحلال',
   kRepMargin:'متوسط هامش الإحلال',
   // Cash-Constrained Restock Allocator (Task B)
+  budgetNote:'تمويل العناصر الأكثر إلحاحًا أولًا.',
   budgetCap:'سقف رأس المال العامل',
   budgetCapPlaceholder:'مثال: 50000',
   allocatedSpend:'الإنفاق المخصص',

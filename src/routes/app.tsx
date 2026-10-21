@@ -144,7 +144,7 @@ function Inventory(){
       // Sync locations if present
       const p=x.P.find(item=>item.id===pid);
       if(p&&p.locations&&p.locations[p.wh]!=null){
-        p.locations[p.wh]=Math.max(0,p.locations[p.wh]-q);
+        p.locations[p.wh]=Math.max(0,(p.locations[p.wh]??0)-q);
       }
     }).then(ok=>ok&&setSale(null));
   }

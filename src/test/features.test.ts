@@ -39,7 +39,7 @@ describe('Task A: Currency & Replacement Cost Tracking (Inflation Shield)', () =
       exp: 999
     });
 
-    const row = priceRow(d, d.P[0]);
+    const row = priceRow(d, d.P[0]!);
     expect(row.isEroded).toBe(true);
     expect(row.repGm).toBeLessThan(0); // Negative replacement margin
 
