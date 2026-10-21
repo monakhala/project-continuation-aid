@@ -144,7 +144,7 @@ function Inventory(){
       // Sync locations if present
       const p=x.P.find(item=>item.id===pid);
       if(p&&p.locations&&p.locations[p.wh]!=null){
-        p.locations[p.wh]=Math.max(0,p.locations[p.wh]-q);
+        p.locations[p.wh]=Math.max(0,(p.locations[p.wh]??0)-q);
       }
     }).then(ok=>ok&&setSale(null));
   }
@@ -374,7 +374,7 @@ function Inventory(){
                       className={btn2}
                       title={t('transferAction')}
                       onClick={()=>{
-                        const dest=hubs.find(h=>h!==p.wh)??hubs[0];
+                        const dest=hubs.find(h=>h!==p.wh)??hubs[0]??p.wh;
                         setTransfer({pid:p.id,fromWh:p.wh,toWh:dest,qty:Math.min(p.stock,10)});
                       }}
                     >

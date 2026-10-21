@@ -39,7 +39,7 @@ describe('Task A: Currency & Replacement Cost Tracking (Inflation Shield)', () =
       exp: 999
     });
 
-    const row = priceRow(d, d.P[0]);
+    const row = priceRow(d, d.P[0]!);
     expect(row.isEroded).toBe(true);
     expect(row.repGm).toBeLessThan(0); // Negative replacement margin
 
@@ -130,15 +130,15 @@ describe('Task D: Multi-Location Warehouse Hubs', () => {
 
     if (p && p.locations) {
       const hubs = Object.keys(p.locations);
-      const fromHub = hubs[0];
-      const toHub = hubs[1];
-      const initialFrom = p.locations[fromHub];
-      const initialTo = p.locations[toHub];
+      const fromHub = hubs[0]!;
+      const toHub = hubs[1]!;
+      const initialFrom = p.locations[fromHub]!;
+      const initialTo = p.locations[toHub]!;
       const transferQty = 10;
 
       // Execute transfer
-      p.locations[fromHub] -= transferQty;
-      p.locations[toHub] += transferQty;
+      p.locations[fromHub] = initialFrom - transferQty;
+      p.locations[toHub] = initialTo + transferQty;
 
       expect(p.locations[fromHub]).toBe(initialFrom - transferQty);
       expect(p.locations[toHub]).toBe(initialTo + transferQty);

@@ -13,9 +13,9 @@ export interface Product {
   cost: number;
   price: number;
   exp: number;
-  repCost?: number;
-  batch_number?: string;
-  expiry_date?: string;
+  repCost?: number | undefined;
+  batch_number?: string | undefined;
+  expiry_date?: string | undefined;
   locations?: Record<string, number>;
   lead?: number;
   moq?: number;
