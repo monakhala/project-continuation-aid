@@ -80,6 +80,9 @@ const en={
   applyBudget:'Apply cap',
   budgetSummary:'Budget allocator: {c} allocated of {b} cap across {a} items ({d} deferred).',
   allAllocatedCreated:'Created purchase orders for all allocated items.',
+  exportPdf:'Export PDF',pdfReportTitle:'Inventra Restock Plan',fundedItems:'Funded SKUs',deferredItems:'Deferred SKUs',totalSpend:'Total Spend',
+  aiAdjustTitle:'AI Restock Assistant / Adjust Plan',aiAdjustPromptPlaceholder:'Describe demand changes or supplier constraints…',
+  generateAdjustments:'Adjust Plan',applyAdjustments:'Apply',discardAdjustments:'Discard',proposedPlan:'Proposed Plan',
   // Batch & Expiry Tracking (Task C)
   batchNumber:'Batch number',
   expiryDate:'Expiry date',
@@ -199,6 +202,9 @@ const ar:Dict={
   applyBudget:'تطبيق السقف',
   budgetSummary:'تخصيص الميزانية: تم تخصيص {c} من أصل {b} عبر {a} منتجات ({d} مؤجل).',
   allAllocatedCreated:'تم إنشاء طلبات شراء لكافة المنتجات المخصصة بنجاح.',
+  exportPdf:'تصدير PDF',pdfReportTitle:'خطة إعادة التخزين من Inventra',fundedItems:'المنتجات الممولة',deferredItems:'المنتجات المؤجلة',totalSpend:'إجمالي الإنفاق',
+  aiAdjustTitle:'مساعد إعادة التخزين الذكي / تعديل الخطة',aiAdjustPromptPlaceholder:'صف تغييرات الطلب أو قيود الموردين…',
+  generateAdjustments:'تعديل الخطة',applyAdjustments:'تطبيق',discardAdjustments:'تراجع',proposedPlan:'الخطة المقترحة',
   // Batch & Expiry Tracking (Task C)
   batchNumber:'رقم التشغيلة',
   expiryDate:'تاريخ الصلاحية',

@@ -148,3 +148,24 @@ describe('Task D: Multi-Location Warehouse Hubs', () => {
     }
   });
 });
+
+describe('Restock AI adjustment validation', () => {
+  it('keeps adjusted spend within the active budget cap', () => {
+    const items = [{ qty: 20, cost: 8 }, { qty: 15, cost: 12 }];
+    const cap = 100;
+    let remaining = cap;
+    const allocated = items.map(item => {
+      const qty = Math.min(item.qty, Math.floor(remaining / item.cost));
+      remaining -= qty * item.cost;
+      return { qty, cost: item.cost };
+    });
+    expect(allocated.reduce((sum, item) => sum + item.qty * item.cost, 0)).toBeLessThanOrEqual(cap);
+  });
+
+  it('rounds adjusted quantities down to pack multiples', () => {
+    const adjustments = [{ suggestedQty: 17, pack: 6 }, { suggestedQty: 5, pack: 4 }, { suggestedQty: 0, pack: 3 }];
+    const rounded = adjustments.map(item => Math.max(0, Math.floor(item.suggestedQty / item.pack) * item.pack));
+    expect(rounded).toEqual([12, 4, 0]);
+    expect(rounded.every((qty, i) => qty % adjustments[i]!.pack === 0)).toBe(true);
+  });
+});

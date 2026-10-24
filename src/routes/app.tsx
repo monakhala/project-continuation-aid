@@ -393,8 +393,13 @@ function Inventory(){
 
 function Restock(){
   const {t,lang}=useT(),{data:d,commit,role,busy}=useInventra();
+  const ask=useServerFn(askCopilot);
   const [budgetCapInput,setBudgetCapInput]=useState<string>('');
   const [transferItem,setTransferItem]=useState<{p:Product;sourceHub:string;qty:number}|null>(null);
+  const [adjustNotes,setAdjustNotes]=useState('');
+  const [proposedPlan,setProposedPlan]=useState<{qty:Record<number,number>;rationale:Record<number,string>}|null>(null);
+  const [appliedPlan,setAppliedPlan]=useState<{qty:Record<number,number>;rationale:Record<number,string>}|null>(null);
+  const [adjusting,setAdjusting]=useState(false);
 
   const budgetCap=useMemo(()=>{
     const val=parseFloat(budgetCapInput);
@@ -428,18 +433,20 @@ function Restock(){
     let defCnt=0;
 
     const allocated=scored.map((item,rank)=>{
+      const requestedQty=appliedPlan?.qty[item.p.id]??item.r.qty;
+      const requestedCost=requestedQty*item.costPerUnit;
       if(budgetCap===null){
-        spent+=item.lineCost;
-        expGP+=item.r.qty*item.unitGP;
+        spent+=requestedCost;
+        expGP+=requestedQty*item.unitGP;
         allocCnt++;
-        return {...item,rank:rank+1,allocQty:item.r.qty,allocStatus:'allocated' as const};
+        return {...item,rank:rank+1,allocQty:requestedQty,allocStatus:'allocated' as const};
       }
       const rem=budgetCap-spent;
-      if(spent+item.lineCost<=budgetCap){
-        spent+=item.lineCost;
-        expGP+=item.r.qty*item.unitGP;
+      if(spent+requestedCost<=budgetCap){
+        spent+=requestedCost;
+        expGP+=requestedQty*item.unitGP;
         allocCnt++;
-        return {...item,rank:rank+1,allocQty:item.r.qty,allocStatus:'allocated' as const};
+        return {...item,rank:rank+1,allocQty:requestedQty,allocStatus:'allocated' as const};
       } else if(rem>0){
         const pack=item.p.pack??1;
         const packCost=pack*item.costPerUnit;
@@ -463,7 +470,7 @@ function Restock(){
       allocatedCount:allocCnt,
       deferredCount:defCnt
     };
-  },[due,budgetCap,d]);
+  },[due,budgetCap,d,appliedPlan]);
 
   const defaultCost=due.reduce((a,x)=>a+x.r.qty*(x.p.repCost??x.p.cost),0);
 
@@ -476,6 +483,47 @@ function Restock(){
         x.N.unshift({id:x.nid++,text:`${item.p.name}: purchase request for ${item.allocQty} awaiting approval.`,read:false});
       });
     }).then(ok=>ok&&toast.success(t('allAllocatedCreated')));
+  }
+
+  async function proposeRestockPlan(){
+    if(!adjustNotes.trim())return;
+    setAdjusting(true);
+    try{
+      const candidates=allocatedRows.map(({p,r,allocQty})=>({pid:p.id,name:p.name,sku:p.sku,stock:p.stock,reorderPoint:p.min,unitCost:p.repCost??p.cost,pack:p.pack??1,qty:allocQty,recommendation:r.qty}));
+      const question=`Return only a JSON array with objects {pid, suggestedQty, rationale}. Use only listed pid values; quantities must be nonnegative integers and pack multiples. Keep total cost within the budget cap ${budgetCap??'none'}. Unmentioned products keep their current qty. Manager notes: ${adjustNotes}`;
+      const answer=await ask({data:{question,lang,summary:JSON.stringify({currency:d.settings.currency,budgetCap,items:candidates})}});
+      const suggestions=JSON.parse(answer.match(/\[[\s\S]*\]/)?.[0]??'[]') as Array<{pid:number|string;suggestedQty:number;rationale:string}>;
+      const qty:Record<number,number>=Object.fromEntries(allocatedRows.map(x=>[x.p.id,x.allocQty])),rationale:Record<number,string>={};
+      let remaining=budgetCap===null?Infinity:Math.max(0,budgetCap-allocatedRows.reduce((s,x)=>s+x.allocQty*(x.p.repCost??x.p.cost),0));
+      for(const suggestion of suggestions){
+        const row=allocatedRows.find(x=>String(x.p.id)===String(suggestion.pid));
+        if(!row||!Number.isFinite(suggestion.suggestedQty))continue;
+        const pack=row.p.pack??1,cost=row.p.repCost??row.p.cost;
+        const desired=Math.max(0,Math.floor(suggestion.suggestedQty/pack)*pack);
+        const extra=Math.max(0,desired-row.allocQty),reduction=Math.max(0,row.allocQty-desired);
+        remaining+=reduction*cost;
+        const accepted=budgetCap===null?desired:row.allocQty+Math.min(extra,Math.floor(remaining/(cost*pack))*pack);
+        remaining-=Math.max(0,accepted-row.allocQty)*cost;
+        qty[row.p.id]=accepted;rationale[row.p.id]=String(suggestion.rationale??'');
+      }
+      setProposedPlan({qty,rationale});
+    }catch{toast.error(lang==='ar'?'تعذّر إنشاء اقتراح التعديل.':'Could not create an adjustment proposal.');}
+    finally{setAdjusting(false);}
+  }
+
+  function exportPdf(){
+    const win=window.open('','_blank');if(!win)return;
+    const doc=win.document;doc.open();
+    doc.write(`<!doctype html><html><head><meta charset="utf-8"><title>${t('pdfReportTitle')}</title><style>body{font:14px Arial,sans-serif;padding:32px;color:#172033}h1{margin-bottom:4px}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{border:1px solid #ccd2dc;padding:8px;text-align:start}th{background:#f1f4f8}.summary{line-height:1.5}@media print{body{padding:0}}</style></head><body></body></html>`);doc.close();
+    const add=(tag:string,text:string,parent:HTMLElement=doc.body)=>{const el=doc.createElement(tag);el.textContent=text;parent.append(el);return el;};
+    add('h1',t('pdfReportTitle'));
+    add('p',`${new Date().toISOString().slice(0,10)} · ${d.settings.currency||'EGP'}`);
+    const summary=add('div','');summary.className='summary';
+    [`${t('budgetCap')}: ${budgetCap===null?'—':money(d,budgetCap,lang)}`,`${t('allocatedSpend')}: ${money(d,totalAllocated,lang)}`,`${t('expectedGP')}: ${money(d,totalExpectedGP,lang)}`,`${t('fundedItems')}: ${allocatedCount}`,`${t('deferredItems')}: ${deferredCount}`].forEach(x=>add('p',x,summary));
+    const table=add('table',''),head=doc.createElement('thead'),body=doc.createElement('tbody');table.append(head,body);
+    const hr=doc.createElement('tr');[t('sku'),t('recommended'),t('qty'),t('cost'),t('totalSpend'),t('status')].forEach(x=>add('th',x,hr));head.append(hr);
+    allocatedRows.forEach(x=>{const row=doc.createElement('tr');[`${x.p.sku} · ${x.p.name}`,String(x.r.qty),String(x.allocQty),money(d,x.costPerUnit,lang),money(d,x.allocQty*x.costPerUnit,lang),x.allocQty===0?'Deferred':x.allocQty<x.r.qty?'Partial':'Allocated'].forEach(v=>add('td',v,row));body.append(row);});
+    win.focus();win.print();win.close();
   }
 
   function executeTransferOrder(p:Product,sourceHub:string,qty:number){
@@ -565,21 +613,27 @@ function Restock(){
               <p className="text-lg font-semibold text-success tnum">+{money(d,totalExpectedGP,lang)}</p>
               <p className="text-[11px] text-muted-foreground">{t('budgetNote')}</p>
             </div>
-            <div className="flex items-center sm:justify-end">
+            <div className="flex flex-wrap items-center gap-2 sm:justify-end">
               {canEdit(role)&&(
-                <button
-                  disabled={busy||allocatedCount===0}
-                  onClick={createAllAllocatedPOs}
-                  className={btn}
-                >
-                  {t('createAllAllocated')} ({allocatedCount})
-                </button>
+                <>
+                  <button disabled={busy||allocatedCount===0} onClick={createAllAllocatedPOs} className={btn}>{t('createAllAllocated')} ({allocatedCount})</button>
+                  <button type="button" onClick={exportPdf} className={btn2}>{t('exportPdf')}</button>
+                </>
               )}
             </div>
           </div>
         )}
       </div>
     )}
+    {due.length>0&&<section className={`${card} space-y-3`}>
+      <h2 className="font-semibold">{t('aiAdjustTitle')}</h2>
+      <textarea value={adjustNotes} onChange={e=>setAdjustNotes(e.target.value)} placeholder={t('aiAdjustPromptPlaceholder')} className={`${inp} min-h-24 w-full`}/>
+      <button type="button" disabled={adjusting||!adjustNotes.trim()} onClick={()=>void proposeRestockPlan()} className={btn}>{adjusting?t('thinking'):t('generateAdjustments')}</button>
+      {proposedPlan&&<div className="rounded border border-primary/30 bg-accent/30 p-3"><p className="font-semibold">{t('proposedPlan')}</p>
+        {Object.entries(proposedPlan.qty).map(([id,q])=><p key={id} className="text-sm">{allocatedRows.find(x=>String(x.p.id)===id)?.p.name}: {q} <span title={proposedPlan.rationale[Number(id)]}>{proposedPlan.rationale[Number(id)]}</span></p>)}
+        <div className="mt-2 flex gap-2"><button type="button" onClick={()=>{setAppliedPlan(proposedPlan);setProposedPlan(null);}} className={btn}>{t('applyAdjustments')}</button><button type="button" onClick={()=>setProposedPlan(null)} className={btn2}>{t('discardAdjustments')}</button></div>
+      </div>}
+    </section>}
 
     {!d.P.length?<Empty line={t('emptyRestock')} action={t('goInventory')} to="inventory"/>:
     <div className="overflow-x-auto rounded-lg border border-border bg-card">
