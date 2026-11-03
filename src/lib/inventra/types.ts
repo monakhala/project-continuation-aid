@@ -28,7 +28,8 @@ export interface Product {
 
 export interface Sale { pid: number; date: string; qty: number; }
 export interface Movement { pid: number; t: string; type: string; q: number; who: string; note?: string; fromWh?: string; toWh?: string; }
-export interface Order { id: number; pid: number; qty: number; got: number; status: string; t: string; supplier?: string; }
+export interface Order { id: number; pid: number; qty: number; got: number; status: string; t: string; supplier?: string; paid?: number | undefined; unitCost?: number | undefined; }
+export interface Supplier { id: number; name: string; terms: number; creditLimit: number; }
 export interface ImportRecord { id: number; t: string; kind: string; file: string; outcome: string; summary: string; undo?: { snap: string; hash: string }; }
 export interface WorkspaceData {
   P: Product[];
