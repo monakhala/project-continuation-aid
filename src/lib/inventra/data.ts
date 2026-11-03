@@ -14,6 +14,7 @@ export const emptyData = (): WorkspaceData => ({
   SR: [],
   mv: [],
   R: [],
+  sup: [],
   N: [],
   imports: [],
   settings: { currency: 'EGP' },

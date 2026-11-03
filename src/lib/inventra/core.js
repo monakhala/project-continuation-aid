@@ -176,7 +176,7 @@ function applyProductPlan(st,plan,{who='',t=''}={}){let next=Math.max(0,...st.pr
 const hashData=o=>{const s=JSON.stringify(o);let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return h.toString(16)+':'+s.length};
 
 /* ---------- backup / restore / saved-data validation ---------- */
-const DATA_KEYS=['P','archived','SR','mv','R','N','snooze','watch','alerts','px','imports','settings','nid','rid'];
+const DATA_KEYS=['P','archived','SR','mv','R','sup','N','snooze','watch','alerts','px','imports','settings','nid','rid'];
 const PFIELDS=['id','sku','name','cat','wh','stock','min','max','cost','price','exp','lead','bc','moq','pack','shelf','src','archived','archivedOn','repCost','batch_number','expiry_date','locations'];
 const PO_STATUS=['Pending Approval','Approved','Sent to Supplier','Confirmed','Partially Received','Received','Rejected','Cancelled'];
 const LIM={P:20000,SR:500000};
@@ -203,6 +203,7 @@ function validateData(d){const err=[],warn=[],E=m=>err.length<50?err.push(m):0;
   const k=r.pid+'|'+r.date;if(seen.has(k))E('Sales record #'+(i+1)+': duplicate product/date.');seen.add(k)});
  (d.R||[]).forEach((r,i)=>{if(!r||!ids.has(r.pid))E('Order #'+(i+1)+' refers to an unknown product.');else{if(!(typeof r.qty==='number'&&r.qty>0))E('Order #'+(i+1)+': quantity must be positive.');if(!PO_STATUS.includes(r.status))E('Order #'+(i+1)+': unknown status.');if(r.got!=null&&!(r.got>=0&&r.got<=r.qty))E('Order #'+(i+1)+': received quantity is out of range.')}});
  (d.mv||[]).forEach((m,i)=>{if(!m||!ids.has(m.pid)||typeof m.q!=='number'||!isFinite(m.q))E('Movement #'+(i+1)+' is invalid.')});
+ if(d.sup!==undefined){if(!Array.isArray(d.sup))E('"sup" must be a list.');else{const snames=new Set();d.sup.forEach((s,i)=>{if(!s||typeof s!=='object')return E('Supplier #'+(i+1)+' is invalid.');if(typeof s.name!=='string'||!s.name.trim())E('Supplier #'+(i+1)+': name is missing.');else if(snames.has(s.name))E('Supplier #'+(i+1)+': duplicate supplier name.');else snames.add(s.name);if(!fin(s.terms))E('Supplier #'+(i+1)+': credit days must be a number of at least 0.');if(!fin(s.creditLimit))E('Supplier #'+(i+1)+': credit limit must be a number of at least 0.')})}}
  return{errors:err,warnings:warn,summary:{products:d.P.length,archived:(d.archived||[]).length,sales:d.SR.length,salesFrom:lo,salesTo:hi,movements:(d.mv||[]).length,requests:(d.R||[]).length,imports:(d.imports||[]).length}}}
 function buildBackup(S,{workspace,now}){const data={};for(const k of DATA_KEYS)data[k]=S[k];return{app:'Inventra',format:'inventra-backup',schemaVersion:1,workspace,exportedAt:now,data}}
 function validateBackup(o){const errors=[],warnings=[];if(!o||typeof o!=='object'||o.format!=='inventra-backup'||o.app!=='Inventra')return{ok:false,errors:['This is not an Inventra backup file.'],warnings,summary:{}};
@@ -211,7 +212,7 @@ function validateBackup(o){const errors=[],warnings=[];if(!o||typeof o!=='object
  const v=validateData(o.data);errors.push(...v.errors);warnings.push(...v.warnings);return{ok:!errors.length,errors,warnings,summary:{...v.summary,workspace:o.workspace,exportedAt:o.exportedAt}}}
 /* Whitelist copy: unknown keys (including __proto__ tricks) never reach the live state. */
 function restoreData(d){const cp=x=>JSON.parse(JSON.stringify(x)),pick=p=>{const o={};for(const f of PFIELDS)if(p[f]!==undefined)o[f]=p[f];return o};
- return{P:d.P.map(pick),archived:(d.archived||[]).map(pick),SR:d.SR.map(r=>({pid:r.pid,date:r.date,qty:r.qty})),mv:cp(d.mv||[]),R:cp(d.R||[]),N:cp(d.N||[]),snooze:cp(d.snooze||{}),watch:cp(d.watch||[]),alerts:cp(d.alerts||[]),px:{},imports:cp(d.imports||[]).map(i=>({...i,undo:undefined})),settings:{currency:/^[A-Z]{3}$/.test(d.settings&&d.settings.currency)?d.settings.currency:'EGP'},nid:Number.isInteger(d.nid)?d.nid:1,rid:Number.isInteger(d.rid)?d.rid:1}}
+ return{P:d.P.map(pick),archived:(d.archived||[]).map(pick),SR:d.SR.map(r=>({pid:r.pid,date:r.date,qty:r.qty})),mv:cp(d.mv||[]),R:cp(d.R||[]),sup:cp(d.sup||[]),N:cp(d.N||[]),snooze:cp(d.snooze||{}),watch:cp(d.watch||[]),alerts:cp(d.alerts||[]),px:{},imports:cp(d.imports||[]).map(i=>({...i,undo:undefined})),settings:{currency:/^[A-Z]{3}$/.test(d.settings&&d.settings.currency)?d.settings.currency:'EGP'},nid:Number.isInteger(d.nid)?d.nid:1,rid:Number.isInteger(d.rid)?d.rid:1}}
 
 return{parseISO,addDays,diffDays,todayISO,dailySeries,METHODS,forecast,backtest,weeklyPattern,chooseForecast,zForService,recommend,OPEN_PO,PENDING,openPOQty,recordSale,canDeleteProduct,archiveProduct,parseCSV,detectDelimiter,checkCSVText,FIELDS,detectMapping,readCSV,validateSalesCSV,mergeSales,validateProductsCSV,toStored,planProductImport,applyProductPlan,hashData,validateData,buildBackup,validateBackup,restoreData,DATA_KEYS}
 })();
