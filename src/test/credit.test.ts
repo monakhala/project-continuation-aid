@@ -28,30 +28,30 @@ function fixture(): WorkspaceData {
 describe('Supplier credit terms & payables runway', () => {
   it('schedules due dates from agreed credit days and buckets overdue vs this week', () => {
     const d = fixture(), today = C.todayISO();
-    expect(dueDateOf(d.R[0], 30)).toBe(C.addDays(today, -10));
-    expect(bucketOf(dueDateOf(d.R[0], 30), today)).toBe('overdue');
-    expect(dueDateOf(d.R[1], 30)).toBe(C.addDays(today, 2));
-    expect(bucketOf(dueDateOf(d.R[1], 30), today)).toBe('week');
-    expect(bucketOf(dueDateOf(d.R[2], 10), today)).toBe('week');
+    expect(dueDateOf(d.R[0]!, 30)).toBe(C.addDays(today, -10));
+    expect(bucketOf(dueDateOf(d.R[0]!, 30), today)).toBe('overdue');
+    expect(dueDateOf(d.R[1]!, 30)).toBe(C.addDays(today, 2));
+    expect(bucketOf(dueDateOf(d.R[1]!, 30), today)).toBe('week');
+    expect(bucketOf(dueDateOf(d.R[2]!, 10), today)).toBe('week');
   });
   it('treats unknown suppliers as cash terms (due immediately)', () => {
     const d = fixture(), today = C.todayISO();
-    expect(bucketOf(dueDateOf(d.R[4], 0), today)).toBe('overdue');
+    expect(bucketOf(dueDateOf(d.R[4]!, 0), today)).toBe('overdue');
   });
   it('never counts negative remaining after payments and excludes pending approval from payables', () => {
     const d = fixture();
-    expect(orderTotal(d, d.R[2])).toBe(500);
-    expect(orderRemaining(d, d.R[2])).toBe(300);
-    const paid = { ...d.R[2], paid: 999 };
+    expect(orderTotal(d, d.R[2]!)).toBe(500);
+    expect(orderRemaining(d, d.R[2]!)).toBe(300);
+    const paid = { ...d.R[2]!, paid: 999 };
     expect(orderRemaining(d, paid)).toBe(0);
     const rows = payableRows(d);
     expect(rows.map(r => r.o.id)).toEqual([1, 5, 2, 3]);
-    expect(orderRemaining(d, d.R[3])).toBeGreaterThan(0);
+    expect(orderRemaining(d, d.R[3]!)).toBeGreaterThan(0);
     expect(rows.some(r => r.o.id === 4)).toBe(false);
   });
   it('falls back to product cost when an order has no recorded unit cost', () => {
     const d = fixture();
-    expect(orderTotal(d, d.R[4])).toBe(500);
+    expect(orderTotal(d, d.R[4]!)).toBe(500);
   });
   it('sums the runway per bucket', () => {
     const d = fixture();
