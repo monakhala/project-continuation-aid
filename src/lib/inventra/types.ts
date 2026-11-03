@@ -37,6 +37,7 @@ export interface WorkspaceData {
   SR: Sale[];
   mv: Movement[];
   R: Order[];
+  sup: Supplier[];
   N: { id: number; text: string; read: boolean }[];
   imports: ImportRecord[];
   settings: { currency: Currency | string };
