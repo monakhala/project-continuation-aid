@@ -34,7 +34,7 @@ export function bucketOf(due: string, today: string): Bucket {
   return 'later';
 }
 
-export interface PayableRow { o: Order; supplier?: Supplier; terms: number; due: string; total: number; remaining: number; bucket: Bucket; }
+export interface PayableRow { o: Order; supplier?: Supplier | undefined; terms: number; due: string; total: number; remaining: number; bucket: Bucket; }
 
 export function payableRows(d: WorkspaceData): PayableRow[] {
   const today = C.todayISO();
