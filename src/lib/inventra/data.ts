@@ -14,6 +14,8 @@ export const emptyData = (): WorkspaceData => ({
   SR: [],
   mv: [],
   R: [],
+  transfers: [],
+  shipments: [],
   sup: [],
   N: [],
   imports: [],
@@ -170,6 +172,16 @@ export function demoData(): WorkspaceData {
     { id: 2, pid: 5, qty: 80, got: 0, status: 'Confirmed', t: C.todayISO(), supplier: 'SwiftDist' }
   ];
   d.rid = 3;
+  d.transfers = [
+    { id: 1, fromWh: 'Main Warehouse - 10th of Ramadan', toWh: 'Cairo Store / Transit Hub', items: [{ pid: 2, qty: 12 }], status: 'completed', t: C.addDays(C.todayISO(), -3), receivedAt: C.addDays(C.todayISO(), -2) },
+    { id: 2, fromWh: 'Main Warehouse - 10th of Ramadan', toWh: 'Alexandria Hub', items: [{ pid: 5, qty: 8 }], status: 'in_transit', t: C.todayISO() }
+  ];
+  d.shipments = [
+    { id: 1, tracking: 'BST-10482', courier: 'Bosta', customer: 'Cairo Market', items: [{ pid: 1, qty: 2 }], codAmount: 220, fee: 35, status: 'in_transit', t: C.todayISO() },
+    { id: 2, tracking: 'MYL-20811', courier: 'Mylerz', customer: 'Nile Grocers', items: [{ pid: 2, qty: 1 }], codAmount: 215, fee: 30, status: 'delivered', t: C.addDays(C.todayISO(), -1), deliveredAt: C.todayISO() },
+    { id: 3, tracking: 'BST-10439', courier: 'Bosta', customer: 'Delta Foods', items: [{ pid: 5, qty: 1 }], codAmount: 450, remittedAmount: 440, fee: 35, status: 'remitted', t: C.addDays(C.todayISO(), -4), deliveredAt: C.addDays(C.todayISO(), -3), remittedAt: C.addDays(C.todayISO(), -2) },
+    { id: 4, tracking: 'MYL-20798', courier: 'Mylerz', customer: 'Alex Pantry', items: [{ pid: 6, qty: 1 }], codAmount: 580, fee: 30, status: 'rto', t: C.addDays(C.todayISO(), -5) }
+  ];
   d.N = [
     { id: 1, text: 'Basmati Rice 5kg: selling price is below replacement cost (EGP 420).', read: false },
     { id: 2, text: 'Protein Bar Box (12): batch LOT-2026-PB40 expires within 12 days.', read: false },
