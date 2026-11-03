@@ -45,7 +45,8 @@ describe('Supplier credit terms & payables runway', () => {
     const paid = { ...d.R[2]!, paid: 999 };
     expect(orderRemaining(d, paid)).toBe(0);
     const rows = payableRows(d);
-    expect(rows.map(r => r.o.id)).toEqual([1, 5, 2, 3]);
+    // Payables are ordered by earliest due date, including cash terms due today.
+    expect(rows.map(r => r.o.id)).toEqual([1, 5, 3, 2]);
     expect(orderRemaining(d, d.R[3]!)).toBeGreaterThan(0);
     expect(rows.some(r => r.o.id === 4)).toBe(false);
   });

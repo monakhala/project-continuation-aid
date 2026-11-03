@@ -48,5 +48,5 @@ export interface WorkspaceData {
   nid: number;
   rid: number;
 }
-export const sections = ['dashboard', 'inventory', 'restock', 'orders', 'forecast', 'pricing', 'notifications', 'data', 'team'] as const;
+export const sections = ['dashboard', 'inventory', 'restock', 'orders', 'credit', 'forecast', 'pricing', 'notifications', 'data', 'team'] as const;
 export type Section = typeof sections[number];

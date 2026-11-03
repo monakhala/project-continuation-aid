@@ -15,6 +15,7 @@ import {askCopilot} from '@/lib/inventra/copilot.functions';
 import {inviteMember} from '@/lib/inventra/workspace.functions';
 import {supabase} from '@/integrations/supabase/client';
 import C from '@/lib/inventra/core';
+import {payableRows,runway,supplierCreditRows,creditCheck,orderTotal} from '@/lib/inventra/credit';
 
 type Search={s?:Section|'copilot'|undefined};
 export const Route=createFileRoute('/app')({
@@ -31,7 +32,7 @@ function AppPage(){
   const {s='dashboard'}=Route.useSearch();const nav=useNavigate();
   const {t}=useT();const ctx=useInventra();const [open,setOpen]=useState(false);
   const items=[...sections.filter(x=>x!=='team'||(!ctx.demo&&ctx.role==='head')),'copilot'] as const;
-  const Body={dashboard:ExecutiveDashboard,inventory:Inventory,restock:Restock,orders:Orders,forecast:Forecast,pricing:PriceIntelligence,notifications:Notifications,data:Backup,team:Team,copilot:Copilot}[s];
+  const Body={dashboard:ExecutiveDashboard,inventory:Inventory,restock:Restock,orders:Orders,credit:SupplierCredit,forecast:Forecast,pricing:PriceIntelligence,notifications:Notifications,data:Backup,team:Team,copilot:Copilot}[s];
 
   const setCurrency=(curr:Currency)=>{
     void ctx.commit(x=>{
@@ -479,7 +480,7 @@ function Restock(){
     if(!toOrder.length)return;
     void commit(x=>{
       toOrder.forEach(item=>{
-        x.R.push({id:x.rid++,pid:item.p.id,qty:item.allocQty,got:0,status:'Pending Approval',t:C.todayISO()});
+        x.R.push({id:x.rid++,pid:item.p.id,qty:item.allocQty,got:0,status:'Pending Approval',t:C.todayISO(),unitCost:item.costPerUnit});
         x.N.unshift({id:x.nid++,text:`${item.p.name}: purchase request for ${item.allocQty} awaiting approval.`,read:false});
       });
     }).then(ok=>ok&&toast.success(t('allAllocatedCreated')));
@@ -731,7 +732,7 @@ function Restock(){
                     disabled={busy||(budgetCap!==null&&allocQty===0)}
                     onClick={()=>void commit(x=>{
                       const q=budgetCap!==null?allocQty:r.qty;
-                      x.R.push({id:x.rid++,pid:p.id,qty:q,got:0,status:'Pending Approval',t:C.todayISO()});
+                      x.R.push({id:x.rid++,pid:p.id,qty:q,got:0,status:'Pending Approval',t:C.todayISO(),unitCost:p.repCost??p.cost});
                       x.N.unshift({id:x.nid++,text:`${p.name}: purchase request for ${q} awaiting approval.`,read:false});
                     }).then(ok=>ok&&toast.success('✓'))}
                   >
@@ -762,9 +763,27 @@ function Restock(){
   </div>;
 }
 
+function SupplierCredit(){
+  const {t,lang}=useT(),{data:d,commit,role,busy}=useInventra();
+  const r=runway(d),rows=payableRows(d),suppliers=supplierCreditRows(d);
+  function addSupplier(e:React.FormEvent<HTMLFormElement>){e.preventDefault();const f=new FormData(e.currentTarget),name=String(f.get('name')||'').trim(),terms=Math.max(0,Number(f.get('terms'))||0),creditLimit=Math.max(0,Number(f.get('limit'))||0);if(!name)return;if(d.sup.some(s=>s.name.toLocaleLowerCase()===name.toLocaleLowerCase())){toast.error(t('duplicateSupplier'));return;}void commit(x=>x.sup.push({id:Math.max(0,...x.sup.map(s=>s.id))+1,name,terms,creditLimit})).then(ok=>ok&&toast.success(t('supplierSaved')));e.currentTarget.reset();}
+  function saveSupplier(e:React.FormEvent<HTMLFormElement>,id:number){e.preventDefault();const f=new FormData(e.currentTarget),name=String(f.get('name')||'').trim(),terms=Math.max(0,Number(f.get('terms'))||0),creditLimit=Math.max(0,Number(f.get('limit'))||0);if(!name)return;void commit(x=>{const s=x.sup.find(y=>y.id===id);if(s){const old=s.name;s.name=name;s.terms=terms;s.creditLimit=creditLimit;x.R.forEach(o=>{if(o.supplier===old)o.supplier=name;});}}).then(ok=>ok&&toast.success(t('supplierSaved')));}
+  function applyPayment(e:React.FormEvent<HTMLFormElement>,id:number){e.preventDefault();const form=e.currentTarget,amount=Number(new FormData(form).get('amount'));const row=rows.find(x=>x.o.id===id);if(!row||!Number.isFinite(amount)||amount<=0||amount>row.remaining){toast.error(t('invalidPayment'));return;}void commit(x=>{const o=x.R.find(y=>y.id===id);if(o)o.paid=(o.paid??0)+amount;}).then(ok=>{if(ok){toast.success(t('paymentSaved'));form.reset();}});}
+  const summary=[['overdue',r.overdue],['dueWeek',r.week],['dueMonth',r.month],['dueLater',r.later]] as const;
+  return <div className="space-y-8"><ScreenIntro q={t('payablesRunway')} a={`${t('outstanding')}: ${money(d,r.total,lang)} · ${t('overdue')}: ${money(d,r.overdue,lang)}`}/>
+    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{summary.map(([key,value])=><div className={card} key={key}><p className="text-sm text-muted-foreground">{t(key)}</p><p className="mt-2 text-2xl tabular-nums">{money(d,value,lang)}</p></div>)}</div>
+    <section className="space-y-3"><h2 className="text-xl">{t('payablesRunway')}</h2>{!rows.length?<p className="text-sm text-muted-foreground">{t('noPayables')}</p>:<div className="overflow-x-auto rounded-lg border border-border bg-card"><table className="w-full text-sm"><thead><tr>{['name','supplier','date','nextDue','outstanding','payment'].map(k=><th key={k} className={th}>{t(k as 'name')}</th>)}</tr></thead><tbody>{rows.map(({o,due,remaining,supplier})=><tr key={o.id} className={tr}><td className={td}>{d.P.find(p=>p.id===o.pid)?.name??t('na')}</td><td className={td}>{supplier?.name??t('na')}</td><td className={td}><span dir="ltr">{o.t}</span></td><td className={td}><span dir="ltr">{due}</span></td><td className={`${td} tabular-nums`}>{money(d,remaining,lang)}</td><td className={td}><form className="flex min-w-48 gap-2" onSubmit={e=>applyPayment(e,o.id)}><input name="amount" type="number" min="0.01" max={remaining} step="0.01" required aria-label={t('paymentAmount')} placeholder={t('paymentAmount')} className={`${inp} w-32`} disabled={!canEdit(role)||busy}/><button className={btn2} disabled={!canEdit(role)||busy}>{t('applyPayment')}</button></form></td></tr>)}</tbody></table></div>}</section>
+    <section className="space-y-3"><div><h2 className="text-xl">{t('supplierCredit')}</h2><p className="mt-1 text-sm text-muted-foreground">{t('noSuppliers')}</p></div>{canEdit(role)&&<form onSubmit={addSupplier} className="flex flex-wrap gap-2"><input name="name" required placeholder={t('supplierName')} className={inp}/><input name="terms" type="number" min="0" step="1" defaultValue="0" aria-label={t('creditTerms')} className={`${inp} w-32`}/><input name="limit" type="number" min="0" step="0.01" defaultValue="0" aria-label={t('creditLimit')} className={`${inp} w-40`}/><button className={btn} disabled={busy}>{t('addSupplier')}</button></form>}
+    <div className="space-y-3">{suppliers.map(({s,outstanding,pending,utilization,available,overLimit,nextDue})=><form key={s.id} onSubmit={e=>saveSupplier(e,s.id)} className={`${card} flex flex-wrap items-end gap-3`}><label className="grid gap-1 text-xs text-muted-foreground">{t('supplierName')}<input name="name" defaultValue={s.name} required disabled={!canEdit(role)} className={inp}/></label><label className="grid gap-1 text-xs text-muted-foreground">{t('creditTerms')}<input name="terms" type="number" min="0" step="1" defaultValue={s.terms} disabled={!canEdit(role)} className={`${inp} w-28`}/></label><label className="grid gap-1 text-xs text-muted-foreground">{t('creditLimit')}<input name="limit" type="number" min="0" step="0.01" defaultValue={s.creditLimit} disabled={!canEdit(role)} className={`${inp} w-36`}/></label><span className="text-sm">{t('outstanding')}: <b className="tabular-nums">{money(d,outstanding,lang)}</b></span><span className="text-sm">{t('pendingApprovals')}: <b className="tabular-nums">{money(d,pending,lang)}</b></span><span className="text-sm">{t('availableCredit')}: <b className="tabular-nums">{available===null?t('cashTerms'):money(d,available,lang)}</b></span><span className={`text-sm tabular-nums ${overLimit?'text-destructive':'text-muted-foreground'}`}>{t('utilization')}: {utilization===null?'—':`${Math.round(utilization*100)}%`}</span><span className="text-sm text-muted-foreground">{t('nextDue')}: <span dir="ltr">{nextDue??'—'}</span></span>{canEdit(role)&&<button className={btn2} disabled={busy}>{t('saveTerms')}</button>}</form>)}</div></section>
+  </div>;
+}
+
 function Orders(){
   const {t,lang}=useT(),{data:d,commit,role,busy}=useInventra();const name=(id:number)=>d.P.find(p=>p.id===id)?.name??t('na');
-  const step=(id:number,to:string)=>void commit(x=>{
+  const step=(id:number,to:string)=>{
+    const order=d.R.find(r=>r.id===id);
+    if(to==='Confirmed'&&order){const check=creditCheck(d,order.supplier,orderTotal(d,order));if(check?.exceeds){toast.error(fmt(t('creditLimitWarning'),{limit:money(d,check.limit,lang)}));return;}}
+    void commit(x=>{
     const o=x.R.find(r=>r.id===id)!;
     o.status=to;
     if(to==='Received'){
@@ -777,14 +796,15 @@ function Orders(){
       }
       o.got=o.qty;
     }
-  });
+    });
+  };
   const st:Record<string,[string,Tone]>={'Pending Approval':[t('stPending'),'low'],Confirmed:[t('stConfirmed'),'idle'],Received:[t('stReceived'),'ok'],Cancelled:[t('stCancelled'),'idle']};
   const pend=d.R.filter(o=>o.status==='Pending Approval').length,conf=d.R.filter(o=>o.status==='Confirmed').length;
   return <div className="space-y-8">
     <ScreenIntro q={t('qOrders')} a={fmt(t('aOrders'),{p:pend,c:conf})}/>
     {!d.R.length?<Empty line={t('emptyOrders')} action={t('goRestock')} to="restock"/>:
     <div className="overflow-x-auto rounded-lg border border-border bg-card"><table className="w-full text-sm"><thead><tr>{['name','qty','supplier','date','status','actions'].map(k=><th key={k} className={`${th} ${k==='qty'?'text-end':''}`}>{t(k as 'name')}</th>)}</tr></thead>
-    <tbody>{d.R.map(o=>{const [l,tone]=st[o.status]??[o.status,'idle' as Tone];return <tr key={o.id} className={tr}><td className={`${td} font-medium`}>{name(o.pid)}</td><td className={`${td} text-end font-semibold`}>{o.qty}</td><td className={td}>{o.supplier??t('na')}</td><td className={`${td} text-muted-foreground`}>{o.t}</td><td className={td}><Status tone={tone}>{l}</Status></td>
+    <tbody>{d.R.map(o=>{const [l,tone]=st[o.status]??[o.status,'idle' as Tone];return <tr key={o.id} className={tr}><td className={`${td} font-medium`}>{name(o.pid)}</td><td className={`${td} text-end font-semibold`}>{o.qty}</td><td className={td}>{o.status==='Pending Approval'&&canEdit(role)&&d.sup.length?<select aria-label={t('supplier')} value={o.supplier??''} disabled={busy} className={inp} onChange={e=>void commit(x=>{const target=x.R.find(y=>y.id===o.id);if(target){target.supplier=e.target.value||undefined;const p=x.P.find(y=>y.id===target.pid);target.unitCost=p?.repCost??p?.cost??0;}})}><option value="">{t('supplier')}</option>{d.sup.map(s=><option key={s.id} value={s.name}>{s.name}</option>)}</select>:o.supplier??t('na')}</td><td className={`${td} text-muted-foreground`}>{o.t}</td><td className={td}><Status tone={tone}>{l}</Status></td>
       <td className={td}>{o.status==='Pending Approval'&&(role==='head'||role==='manager')&&<button disabled={busy} className={btn} onClick={()=>step(o.id,'Confirmed')}>{t('approve')}</button>}{o.status==='Confirmed'&&canEdit(role)&&<button disabled={busy} className={btn2} onClick={()=>step(o.id,'Received')}>{t('receive')}</button>}</td></tr>;})}</tbody></table></div>}
   </div>;
 }
