@@ -4,7 +4,7 @@ import C from '../lib/inventra/core';
 import type { WorkspaceData } from '../lib/inventra/types';
 import {
   orderTotal, orderRemaining, dueDateOf, bucketOf, payableRows, runway,
-  supplierCreditRows, creditCheck
+  supplierCreditRows, creditCheck, findPaymentReminders, generateSupplierMessage
 } from '../lib/inventra/credit';
 
 function fixture(): WorkspaceData {
@@ -81,5 +81,26 @@ describe('Supplier credit terms & payables runway', () => {
     expect(creditCheck(d, 'Fresh', 2500)?.exceeds).toBe(true);
     expect(creditCheck(d, 'Fresh', 2000)?.exceeds).toBe(false);
     expect(creditCheck(d, 'Swift', 100)).toBe(null);
+  });
+  it('finds overdue, due today, and the 7-day threshold without including day eight',()=>{
+    const d=emptyData(),reference='2026-11-04';
+    d.P.push({id:1,sku:'A',name:'Alpha',cat:'x',wh:'W1',stock:10,min:1,max:20,cost:100,price:150,exp:0});
+    d.sup=[{id:7,name:'Fresh',terms:10,creditLimit:0}];
+    d.R.push(
+      {id:1,pid:1,qty:1,got:1,status:'Received',t:'2026-10-24',supplier:'Fresh',unitCost:100},
+      {id:2,pid:1,qty:2,got:2,status:'Received',t:'2026-10-25',supplier:'Fresh',unitCost:100},
+      {id:3,pid:1,qty:3,got:3,status:'Confirmed',t:'2026-11-01',supplier:'Fresh',unitCost:100},
+      {id:4,pid:1,qty:4,got:4,status:'Confirmed',t:'2026-11-02',supplier:'Fresh',unitCost:100},
+    );
+    const reminders=findPaymentReminders(d,reference);
+    expect(reminders.map(x=>[x.orderId,x.status,x.daysRemaining])).toEqual([
+      [1,'overdue',-1],[2,'due_today',0],[3,'due_soon',7],
+    ]);
+    expect(reminders[0]).toMatchObject({supplierId:7,supplierName:'Fresh',amountDue:100,dueDate:'2026-11-03'});
+  });
+  it('formats settlement notices in English and Arabic',()=>{
+    const reminder={orderId:42,supplierId:7,supplierName:'Fresh Foods',amountDue:1234.5,dueDate:'2026-11-11',status:'due_soon' as const,daysRemaining:7};
+    expect(generateSupplierMessage(reminder,'en','EGP')).toBe('Dear Fresh Foods Accounts team, regarding payment for PO #42 of 1234.50 EGP due on 2026-11-11. Please confirm settlement schedule.');
+    expect(generateSupplierMessage(reminder,'ar','EGP')).toBe('تحية طيبة من إدارة الحسابات، بخصوص مستحقات توريد Fresh Foods لأمر الشراء #42 بمبلغ 1234.50 EGP المستحق في 2026-11-11. نرجو تأكيد ميعاد الصرف.');
   });
 });

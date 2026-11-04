@@ -36,6 +36,35 @@ export function bucketOf(due: string, today: string): Bucket {
 
 export interface PayableRow { o: Order; supplier?: Supplier | undefined; terms: number; due: string; total: number; remaining: number; bucket: Bucket; }
 
+export interface PaymentReminder {
+  orderId: number;
+  supplierId: number;
+  supplierName: string;
+  amountDue: number;
+  dueDate: string;
+  status: 'overdue' | 'due_soon' | 'due_today';
+  daysRemaining: number;
+}
+
+export function findPaymentReminders(d:WorkspaceData,referenceDateISO=C.todayISO()):PaymentReminder[]{
+  return payableRows(d).flatMap(row=>{
+    const daysRemaining=C.diffDays(referenceDateISO,row.due);
+    let status:PaymentReminder['status'];
+    if(daysRemaining<0)status='overdue';
+    else if(daysRemaining===0)status='due_today';
+    else if(daysRemaining<=7)status='due_soon';
+    else return [];
+    return [{orderId:row.o.id,supplierId:row.supplier?.id??0,supplierName:row.supplier?.name??row.o.supplier??'',
+      amountDue:row.remaining,dueDate:row.due,status,daysRemaining}];
+  }).sort((a,b)=>a.daysRemaining-b.daysRemaining||a.orderId-b.orderId);
+}
+
+export function generateSupplierMessage(rem:PaymentReminder,lang:'ar'|'en',currency:string):string{
+  const amount=rem.amountDue.toFixed(2);
+  if(lang==='ar')return `تحية طيبة من إدارة الحسابات، بخصوص مستحقات توريد ${rem.supplierName} لأمر الشراء #${rem.orderId} بمبلغ ${amount} ${currency} المستحق في ${rem.dueDate}. نرجو تأكيد ميعاد الصرف.`;
+  return `Dear ${rem.supplierName} Accounts team, regarding payment for PO #${rem.orderId} of ${amount} ${currency} due on ${rem.dueDate}. Please confirm settlement schedule.`;
+}
+
 export function payableRows(d: WorkspaceData): PayableRow[] {
   const today = C.todayISO();
   return (d.R ?? [])

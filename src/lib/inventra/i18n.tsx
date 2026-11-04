@@ -131,6 +131,8 @@ const en={
   statementEmpty:'No usable rows found. Expected columns: tracking, status, COD amount, fee, date.',
   downloadSampleCsv:'Download sample CSV',batchCreateTransfers:'Batch create all transfers',urgency:'Urgency',urgencyCritical:'Critical shortage',urgencyModerate:'Moderate',triggersAlertTitle:'Internal rebalance alerts',triggersAlertDesc:'Branch shortages can be covered by surplus stock in other hubs, saving new purchase capital.',criticalTriggerSummary:'{count} branch shortages can be resolved without placing supplier orders, saving {amount}.',
   matched:'matched',unmatched:'unmatched',
+  scanToVerify:'Scan to verify',scanInputPlaceholder:'Scan SKU or barcode...',scanComplete:'All items verified',itemVerified:'Verified',scanProgress:'{sku}: {scanned} / {expected} scanned',confirmDispatch:'Confirm & Dispatch',confirmReceive:'Confirm & Receive',scanMismatch:'Code does not match an outstanding item.',
+  paymentReminders:'Payment Reminders',copyNotice:'Copy settlement notice',noticeCopied:'Notice copied to clipboard',dueToday:'Due today',dueInDays:'Due in {d} days',logPaymentAlerts:'Log alerts to notifications',alertsLogged:'Payment reminders logged to notifications.',noPaymentReminders:'No payments are due within the next 7 days.',clipboardUnavailable:'Could not access the clipboard.',
   clearanceApply:'Apply clearance price',clearanceApplied:'Clearance applied',clearanceSaved:'Clearance price applied. New sales book at this price.',
   // Clearance actions
 };
@@ -264,6 +266,8 @@ const ar:Dict={
   statementEmpty:'لا توجد صفوف صالحة. الأعمدة المتوقعة: التتبع، الحالة، مبلغ التحصيل، العمولة، التاريخ.',
   downloadSampleCsv:'تحميل نموذج كشف تجريبي (CSV)',batchCreateTransfers:'إنشاء جميع التحويلات دفعة واحدة',urgency:'مستوى الأهمية',urgencyCritical:'عجز حرج',urgencyModerate:'عجز متوسط',triggersAlertTitle:'تنبيهات المناقلة الداخلية للمخزون',triggersAlertDesc:'يمكن تغطية عجز الفروع من الفائض في المخازن الأخرى وتوفير سيولة المشتريات.',criticalTriggerSummary:'يمكن حل {count} حالة عجز في الفروع دون طلبات شراء من الموردين، مع توفير {amount}.',
   matched:'مطابق',unmatched:'غير مطابق',
+  scanToVerify:'فحص الباركود للتحقق',scanInputPlaceholder:'امسح الباركود أو اكتب رمز SKU...',scanComplete:'تم التحقق من كافة المنتجات',itemVerified:'تم الفحص',scanProgress:'{sku}: تم فحص {scanned} من {expected}',confirmDispatch:'تأكيد وإرسال',confirmReceive:'تأكيد واستلام',scanMismatch:'الرمز لا يطابق أي منتج متبقٍ.',
+  paymentReminders:'تنبيهات مواعيد السداد',copyNotice:'نسخ إشعار السداد للواتساب',noticeCopied:'تم نسخ الإشعار للحافظة',dueToday:'مستحق اليوم',dueInDays:'مستحق خلال {d} أيام',logPaymentAlerts:'تسجيل التنبيهات في الإشعارات',alertsLogged:'تم تسجيل تذكيرات السداد في الإشعارات.',noPaymentReminders:'لا توجد مستحقات خلال الأيام السبعة القادمة.',clipboardUnavailable:'تعذر الوصول إلى الحافظة.',
   clearanceApply:'تطبيق سعر التصفية',clearanceApplied:'تم تطبيق التصفية',clearanceSaved:'تم تطبيق سعر التصفية. ستُسجَّل المبيعات الجديدة بهذا السعر.',
 };
 const dicts={en,ar};
