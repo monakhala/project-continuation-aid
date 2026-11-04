@@ -1,4 +1,5 @@
 import {useMemo,useState} from 'react';
+import {toast} from 'sonner';
 import {Link} from '@tanstack/react-router';
 import {ArrowDownRight,ArrowUpRight,Minus,Info,AlertTriangle,ShieldAlert,Clock} from 'lucide-react';
 import {useInventra} from '@/components/inventra/provider';
@@ -6,7 +7,7 @@ import {useT,fmt} from '@/lib/inventra/i18n';
 import {Empty,ScreenIntro,Status} from '@/components/inventra/ui';
 import {money,getExpiryInfo,SUPPORTED_CURRENCIES} from '@/lib/inventra/data';
 import {analytics,priceRow,weekly,type Insight} from '@/lib/inventra/pricing';
-import {liquidationRows} from '@/lib/inventra/liquidation';
+import {liquidationRows,applyClearance,clearanceApplied} from '@/lib/inventra/liquidation';
 import type {Currency} from '@/lib/inventra/types';
 
 const panel='overflow-hidden rounded-lg border border-border bg-card';
@@ -32,7 +33,8 @@ function Kpi({label,value,delta,note,secondary}:{label:string;value:string;delta
 }
 
 function LiquidationPanel(){
-  const {t,lang}=useT(),{data:d}=useInventra();
+  const {t,lang}=useT();
+  const {data:d,commit,role}=useInventra();
   const rows=useMemo(()=>liquidationRows(d),[d]);
   const sum=(k:'trapped'|'cashRecovered'|'holdingCost')=>rows.reduce((s,x)=>s+x.r[k],0);
   return <section className={panel}>
@@ -46,7 +48,7 @@ function LiquidationPanel(){
           <div key={k} className="bg-card px-6 py-4"><p className="text-xs text-muted-foreground">{t(l)}</p><p className="mt-1 text-xl font-semibold tnum">{money(d,sum(k),lang)}</p></div>)}
       </div>
       <div className="overflow-x-auto"><table className="w-full text-sm">
-        <thead><tr><th className={th}>{t('item')}</th><th className={th}>{t('liqReason')}</th><th className={`${th} text-end`}>{t('stock')}</th><th className={`${th} text-end`}>{t('liqCover')}</th><th className={`${th} text-end`}>{t('liqAtRisk')}</th><th className={`${th} text-end`}>{t('liqTrapped')}</th><th className={`${th} text-end`}>{t('price')}</th><th className={`${th} text-end`}>{t('liqFloor')}</th><th className={`${th} text-end`}>{t('liqPrice')}</th></tr></thead>
+        <thead><tr><th className={th}>{t('item')}</th><th className={th}>{t('liqReason')}</th><th className={`${th} text-end`}>{t('stock')}</th><th className={`${th} text-end`}>{t('liqCover')}</th><th className={`${th} text-end`}>{t('liqAtRisk')}</th><th className={`${th} text-end`}>{t('liqTrapped')}</th><th className={`${th} text-end`}>{t('price')}</th><th className={`${th} text-end`}>{t('liqFloor')}</th><th className={`${th} text-end`}>{t('liqPrice')}</th><th className={`${th} text-end`}>{t('actions')}</th></tr></thead>
         <tbody>{rows.map(({p,r})=><tr key={p.id} className="hover:bg-muted/40">
           <td className={`${td} font-medium`}>{p.name} <span className="ms-1 font-mono text-xs text-muted-foreground">{p.sku}</span></td>
           <td className={td}><Status tone={r.reason==='expiry'?'crit':'low'}>{t(r.reason==='expiry'?'liqExpiry':'liqSlow')}</Status></td>
@@ -57,6 +59,7 @@ function LiquidationPanel(){
           <td className={`${td} text-end text-muted-foreground`}>{money(d,p.price,lang)}</td>
           <td className={`${td} text-end text-muted-foreground`}>{money(d,r.floorPrice,lang)}</td>
           <td className={`${td} text-end font-semibold`}>{money(d,r.clearancePrice,lang)} <span className="text-xs text-muted-foreground">−{Math.round((1-r.clearancePrice/p.price)*100)}%</span></td>
+          <td className={`${td} text-end`}>{clearanceApplied(d,p.id)?<Status tone="ok">{t('clearanceApplied')}</Status>:<button className="rounded-md border border-border px-2.5 py-1 text-xs hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 cursor-pointer" disabled={role==='supplier'} onClick={async()=>{const ok=await commit(x=>applyClearance(x,p.id));if(ok)toast.success(t('clearanceSaved'));}}>{t('clearanceApply')}</button>}</td>
         </tr>)}</tbody>
       </table></div>
     </>:<p className="px-6 py-5 text-sm text-muted-foreground">{t('liqNone')}</p>}

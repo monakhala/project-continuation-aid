@@ -39,3 +39,19 @@ export function liquidationRows(d: WorkspaceData) {
     return { p, r: liquidate({ stock: p.stock, cost: p.cost, price: p.price, dailyVel: sold / 30, daysLeft }) };
   }).filter(x => x.r.candidate).sort((a, b) => b.r.trapped - a.r.trapped);
 }
+
+export function clearanceApplied(d: WorkspaceData, pid: number): boolean {
+  return d.P.find(p => p.id === pid)?.clearanceApplied === true;
+}
+
+export function applyClearance(d: WorkspaceData, pid: number): { ok: true } | { ok: false; error: 'not_found' | 'not_candidate' | 'already_applied' } {
+  const p = d.P.find(x => x.id === pid);
+  if (!p) return { ok: false, error: 'not_found' };
+  if (p.clearanceApplied) return { ok: false, error: 'already_applied' };
+  const row = liquidationRows(d).find(x => x.p.id === pid);
+  if (!row) return { ok: false, error: 'not_candidate' };
+  p.price = row.r.floorPrice;
+  p.clearanceApplied = true;
+  d.mv.push({pid,t:C.todayISO(),type:'clearance',q:p.stock,who:'app',note:`Clearance price applied: ${row.r.clearancePrice}`});
+  return { ok: true };
+}

@@ -177,7 +177,7 @@ const hashData=o=>{const s=JSON.stringify(o);let h=0x811c9dc5;for(let i=0;i<s.le
 
 /* ---------- backup / restore / saved-data validation ---------- */
 const DATA_KEYS=['P','archived','SR','mv','R','sup','transfers','shipments','N','snooze','watch','alerts','px','imports','settings','nid','rid'];
-const PFIELDS=['id','sku','name','cat','wh','stock','min','max','cost','price','exp','lead','bc','moq','pack','shelf','src','archived','archivedOn','repCost','batch_number','expiry_date','locations'];
+const PFIELDS=['id','sku','name','cat','wh','stock','min','max','cost','price','exp','lead','bc','moq','pack','shelf','src','archived','archivedOn','repCost','batch_number','expiry_date','locations','clearanceApplied'];
 const PO_STATUS=['Pending Approval','Approved','Sent to Supplier','Confirmed','Partially Received','Received','Rejected','Cancelled'];
 const LIM={P:20000,SR:500000};
 function validateData(d){const err=[],warn=[],E=m=>err.length<50?err.push(m):0;

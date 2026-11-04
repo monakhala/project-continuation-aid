@@ -24,6 +24,7 @@ export interface Product {
   archived?: boolean;
   archivedOn?: string;
   src?: string;
+  clearanceApplied?: boolean | undefined;
 }
 
 export interface Sale { pid: number; date: string; qty: number; }
