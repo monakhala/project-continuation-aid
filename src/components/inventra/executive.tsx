@@ -1,4 +1,5 @@
 import {useMemo,useState} from 'react';
+import {toast} from 'sonner';
 import {Link} from '@tanstack/react-router';
 import {ArrowDownRight,ArrowUpRight,Minus,Info,AlertTriangle,ShieldAlert,Clock} from 'lucide-react';
 import {useInventra} from '@/components/inventra/provider';
@@ -6,7 +7,7 @@ import {useT,fmt} from '@/lib/inventra/i18n';
 import {Empty,ScreenIntro,Status} from '@/components/inventra/ui';
 import {money,getExpiryInfo,SUPPORTED_CURRENCIES} from '@/lib/inventra/data';
 import {analytics,priceRow,weekly,type Insight} from '@/lib/inventra/pricing';
-import {liquidationRows} from '@/lib/inventra/liquidation';
+import {liquidationRows,applyClearance,clearanceApplied} from '@/lib/inventra/liquidation';
 import type {Currency} from '@/lib/inventra/types';
 
 const panel='overflow-hidden rounded-lg border border-border bg-card';
