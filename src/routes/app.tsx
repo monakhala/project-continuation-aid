@@ -17,7 +17,7 @@ import {supabase} from '@/integrations/supabase/client';
 import C from '@/lib/inventra/core';
 import {payableRows,runway,supplierCreditRows,creditCheck,orderTotal} from '@/lib/inventra/credit';
 import {findRebalanceOpportunities,totalCapitalSaved,dispatchTransfer,receiveTransfer} from '@/lib/inventra/transfers';
-import {courierSummary,shipmentsByCourier} from '@/lib/inventra/courier';
+import {courierSummary,shipmentsByCourier,parseCourierCsv,applyCourierStatement,type StatementResult} from '@/lib/inventra/courier';
 
 type Search={s?:Section|'copilot'|undefined};
 export const Route=createFileRoute('/app')({
@@ -788,7 +788,15 @@ function TransfersScreen(){
 
 function CourierReconciliationScreen(){
  const {t,lang}=useT(),{data:d,commit,busy,role}=useInventra(),s=courierSummary(d),by=shipmentsByCourier(d);
+ const fileRef=useRef<HTMLInputElement>(null);
  const action=(id:number,status:'delivered'|'rto'|'remitted',amount?:number)=>void commit(x=>{const sh=x.shipments.find(v=>v.id===id);if(!sh)return;sh.status=status;if(status==='delivered')sh.deliveredAt=C.todayISO();if(status==='remitted'){sh.remittedAmount=amount??sh.codAmount;sh.remittedAt=C.todayISO();}});
+ async function onStatement(f:File){
+   const parsed=parseCourierCsv(await f.text());
+   if(!parsed.rows.length){toast.error(t('statementEmpty'));return;}
+   let res:StatementResult|undefined;
+   const ok=await commit(x=>{res=applyCourierStatement(x,parsed.rows,f.name);});
+   if(ok&&res)toast.success(fmt(t('statementImported'),{m:res.updated,u:res.unmatched.length}));
+ }
  return <div className="space-y-8"><ScreenIntro q={t('courierIntroQ')} a={t('courierIntroA')}/><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{[[t('pendingCashRemittance'),money(d,s.deliveredPendingCash,lang)],[t('ghostStockInTransit'),money(d,s.inTransitGhostStockValue,lang)],[t('rtoRateLabel'),`${(s.rtoRate*100).toFixed(1)}%`],[t('remittedCash'),money(d,s.remittedCash,lang)]].map(([k,v])=><div className={card} key={k}><p className="text-sm text-muted-foreground">{k}</p><p className="mt-2 text-2xl tabular-nums">{v}</p></div>)}</div><section className="space-y-3"><h2 className="text-xl">{t('courierExposure')}</h2>{by.map(c=><div className={`${card} flex flex-wrap justify-between gap-3`} key={c.courier}><b>{c.courier}</b><span>{t('shipmentsCount')}: {c.shipmentsCount}</span><span>{t('pendingCashRemittance')}: {money(d,c.pendingCash,lang)}</span><span>{t('rtoRateLabel')}: {(c.rtoRate*100).toFixed(1)}%</span></div>)}</section><section className="space-y-3"><h2 className="text-xl">{t('shipments')}</h2>{d.shipments.map(x=><div className={`${card} flex flex-wrap items-center justify-between gap-3`} key={x.id}><span>{x.tracking}</span><span>{x.courier} · {x.customer}</span><span>{money(d,x.codAmount,lang)}</span><Status tone={x.status==='remitted'?'ok':x.status==='rto'?'crit':'low'}>{t(x.status==='in_transit'?'inTransit':x.status==='delivered'?'delivered':x.status==='rto'?'rto':'remitted')}</Status>{canEdit(role)&&<div className="flex gap-2">{x.status==='in_transit'&&<button className={btn2} disabled={busy} onClick={()=>action(x.id,'delivered')}>{t('markDelivered')}</button>}{x.status==='delivered'&&<button className={btn} disabled={busy} onClick={()=>action(x.id,'remitted')}>{t('reconcilePayout')}</button>}{x.status!=='rto'&&x.status!=='remitted'&&<button className={btn2} disabled={busy} onClick={()=>action(x.id,'rto')}>{t('markRTO')}</button>}</div>}</div>)}</section></div>;
 }
 
