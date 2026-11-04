@@ -39,3 +39,31 @@ export function liquidationRows(d: WorkspaceData) {
     return { p, r: liquidate({ stock: p.stock, cost: p.cost, price: p.price, dailyVel: sold / 30, daysLeft }) };
   }).filter(x => x.r.candidate).sort((a, b) => b.r.trapped - a.r.trapped);
 }
+
+/* ============ Clearance actions ============
+   Applies the liquidation engine's clearance price to a product. The applied
+   marker lives in px so the price is never ratcheted down twice. New sales
+   recorded afterwards book revenue at the clearance price. */
+
+type Px = { clear?: Record<string, { t: string; from: number; to: number }> };
+
+export function clearanceApplied(d: WorkspaceData, pid: number): boolean {
+  return !!((d.px ?? {}) as Px).clear?.[String(pid)];
+}
+
+export type ClearanceError = 'not_found' | 'not_candidate' | 'already_applied';
+
+export function applyClearance(d: WorkspaceData, pid: number): { ok: true } | { ok: false; error: ClearanceError } {
+  const p = d.P.find(x => x.id === pid);
+  if (!p) return { ok: false, error: 'not_found' };
+  if (clearanceApplied(d, pid)) return { ok: false, error: 'already_applied' };
+  const row = liquidationRows(d).find(x => x.p.id === pid);
+  if (!row) return { ok: false, error: 'not_candidate' };
+  const from = p.price;
+  p.price = row.r.clearancePrice;
+  const px = (d.px ??={}) as Px;
+  px.clear = { ...(px.clear ?? {}), [String(pid)]: { t: C.todayISO(), from, to: row.r.clearancePrice } };
+  d.mv.unshift({ pid, t: C.todayISO(), type: 'clearance', q: p.stock, who: 'app', note: `Clearance price ${from} -> ${row.r.clearancePrice}` });
+  d.N.unshift({ id: d.nid++, text: `${p.name}: clearance price set to ${row.r.clearancePrice} (was ${from}).`, read: false });
+  return { ok: true };
+}
