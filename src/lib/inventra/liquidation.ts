@@ -50,8 +50,9 @@ export function applyClearance(d: WorkspaceData, pid: number): { ok: true } | { 
   if (p.clearanceApplied) return { ok: false, error: 'already_applied' };
   const row = liquidationRows(d).find(x => x.p.id === pid);
   if (!row) return { ok: false, error: 'not_candidate' };
+  const from = p.price;
   p.price = row.r.floorPrice;
   p.clearanceApplied = true;
-  d.mv.push({pid,t:C.todayISO(),type:'clearance',q:p.stock,who:'app',note:`Clearance price applied: ${row.r.clearancePrice}`});
+  d.mv.unshift({pid,t:C.todayISO(),type:'clearance',q:p.stock,who:'app',note:`Clearance price ${from} -> ${row.r.floorPrice}`});
   return { ok: true };
 }

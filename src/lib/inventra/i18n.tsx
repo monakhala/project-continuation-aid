@@ -11,7 +11,6 @@ const en={
   f3:'Team roles',f3d:'Owners, managers, warehouse staff and suppliers each see and do only what their role allows.',
   f4:'AI copilot in English & Arabic',f4d:'Ask about stockout risk, restock budget or pricing. Answers are grounded in your numbers.',
   demoBadge:'Sample data. These products are examples, not your business',
-  importStatement:'Import courier statement',matched:'matched',unmatched:'unmatched',clearanceApply:'Apply clearance price',clearanceApplied:'Applied',clearanceSaved:'Clearance price applied.',
   dashboard:'Dashboard',inventory:'Inventory',restock:'Restock',orders:'Purchase orders',credit:'Supplier credit',transfers:'Stock transfers',courier:'Courier & COD',forecast:'Forecast',notifications:'Notifications',data:'Backup',team:'Team',copilot:'AI copilot',
   rebalanceIntroQ:'How can internal stock transfers prevent unnecessary supplier orders?',rebalanceIntroA:'Move surplus stock to hubs with low cover before raising new purchase orders.',capitalSaved:'Rebalancing capital saved',activeTransfers:'Transfers in transit',completedTransfers:'Completed transfers',recommendations:'Recommended rebalancing',createTransfer:'Create transfer',transferOrders:'Transfer orders',dispatchTransfer:'Dispatch',receiveTransfer:'Receive',inTransit:'In transit',draft:'Draft',completed:'Completed',cancelled:'Cancelled',courierIntroQ:'How much cash is trapped in courier hands and what is our return rate?',courierIntroA:'Track cash due from delivery partners and inventory still travelling to customers.',pendingCashRemittance:'Pending cash remittance',ghostStockInTransit:'Stock in courier limbo',rtoRateLabel:'RTO return rate',remittedCash:'Remitted cash collected',courierExposure:'Courier performance and exposure',shipments:'Shipments',shipmentsCount:'Shipments',markDelivered:'Mark delivered',reconcilePayout:'Reconcile / remit cash',markRTO:'Mark RTO',delivered:'Delivered',rto:'Returned to origin',remitted:'Remitted',
   products:'Products',lowStock:'Low stock',outStock:'Out of stock',stockValue:'Stock value',openOrders:'Open orders',
@@ -125,6 +124,14 @@ const en={
   mainHub:'Main Warehouse - 10th of Ramadan',
   cairoHub:'Cairo Store / Transit Hub',
   alexHub:'Alexandria Hub',
+  // Courier statement import
+  importStatement:'Import courier statement (CSV)',
+  importStatementHelp:'Upload the statement your courier exports. Inventra matches tracking numbers and updates delivery, return and remittance statuses.',
+  statementImported:'Statement imported: {m} shipments updated, {u} tracking numbers not found.',
+  statementEmpty:'No usable rows found. Expected columns: tracking, status, COD amount, fee, date.',
+  matched:'matched',unmatched:'unmatched',
+  clearanceApply:'Apply clearance price',clearanceApplied:'Clearance applied',clearanceSaved:'Clearance price applied. New sales book at this price.',
+  // Clearance actions
 };
 type Dict=typeof en;
 const ar:Dict={
@@ -137,7 +144,6 @@ const ar:Dict={
   f3:'أدوار الفريق',f3d:'المالك والمدير وموظفو المستودع والموردون؛ كلٌّ يرى ويفعل ما يسمح به دوره فقط.',
   f4:'مساعد ذكي بالعربية والإنجليزية',f4d:'اسأل عن خطر النفاد أو ميزانية الشراء أو الأسعار؛ الإجابات مبنية على أرقامك.',
   demoBadge:'بيانات تجريبية: منتجات نموذجية وليست بيانات عملك',
-  importStatement:'استيراد كشف شركة الشحن',matched:'مطابق',unmatched:'غير مطابق',clearanceApply:'تطبيق سعر التصفية',clearanceApplied:'تم التطبيق',clearanceSaved:'تم تطبيق سعر التصفية.',
   dashboard:'لوحة التحكم',inventory:'المخزون',restock:'إعادة التخزين',orders:'أوامر الشراء',credit:'آجل ومستحقات الموردين',transfers:'موازنة المخزون',courier:'شحن الدفع عند الاستلام',forecast:'التوقعات',notifications:'الإشعارات',data:'النسخ الاحتياطي',team:'الفريق',copilot:'المساعد الذكي',
   rebalanceIntroQ:'كيف تمنع التحويلات الداخلية طلبات الموردين غير الضرورية؟',rebalanceIntroA:'انقل الفائض إلى الفروع ذات التغطية المنخفضة قبل إنشاء أوامر شراء جديدة.',capitalSaved:'رأس المال الذي تم توفيره',activeTransfers:'تحويلات قيد النقل',completedTransfers:'تحويلات مكتملة',recommendations:'التحويلات المقترحة',createTransfer:'إنشاء تحويل',transferOrders:'أوامر التحويل',dispatchTransfer:'إرسال',receiveTransfer:'استلام',inTransit:'قيد النقل',draft:'مسودة',completed:'مكتمل',cancelled:'ملغى',courierIntroQ:'كم من النقد لدى شركات الشحن وما معدل المرتجعات؟',courierIntroA:'تابع مستحقات شركات التوصيل والمخزون الذي ما زال في الطريق إلى العملاء.',pendingCashRemittance:'متحصلات نقدية معلقة',ghostStockInTransit:'مخزون لدى شركة الشحن',rtoRateLabel:'معدل المرتجعات للمصدر',remittedCash:'النقد المحصل والمحول',courierExposure:'أداء شركات الشحن والتعرض النقدي',shipments:'الشحنات',shipmentsCount:'عدد الشحنات',markDelivered:'تأكيد التوصيل',reconcilePayout:'مطابقة وتحويل النقد',markRTO:'تسجيل مرتجع',delivered:'تم التوصيل',rto:'مرتجع للمصدر',remitted:'تم التحويل',
   products:'المنتجات',lowStock:'مخزون منخفض',outStock:'نفد المخزون',stockValue:'قيمة المخزون',openOrders:'أوامر مفتوحة',
@@ -251,6 +257,12 @@ const ar:Dict={
   mainHub:'المستودع الرئيسي - العاشر من رمضان',
   cairoHub:'فرع القاهرة - مركز التوزيع',
   alexHub:'فرع الإسكندرية',
+  importStatement:'استيراد كشف شركة الشحن (CSV)',
+  importStatementHelp:'ارفع كشف الحساب الصادر من شركة الشحن. يطابق Inventra أرقام التتبع ويحدّث حالات التوصيل والمرتجع والتحويل النقدي.',
+  statementImported:'تم استيراد الكشف: تحديث {m} شحنة، و{u} رقم تتبع غير موجود.',
+  statementEmpty:'لا توجد صفوف صالحة. الأعمدة المتوقعة: التتبع، الحالة، مبلغ التحصيل، العمولة، التاريخ.',
+  matched:'مطابق',unmatched:'غير مطابق',
+  clearanceApply:'تطبيق سعر التصفية',clearanceApplied:'تم تطبيق التصفية',clearanceSaved:'تم تطبيق سعر التصفية. ستُسجَّل المبيعات الجديدة بهذا السعر.',
 };
 const dicts={en,ar};
 const Ctx=createContext<{lang:Lang;setLang:(l:Lang)=>void;t:(k:keyof Dict)=>string}>({lang:'en',setLang:()=>{},t:k=>en[k]});
