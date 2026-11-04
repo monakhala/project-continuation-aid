@@ -124,6 +124,15 @@ const en={
   mainHub:'Main Warehouse - 10th of Ramadan',
   cairoHub:'Cairo Store / Transit Hub',
   alexHub:'Alexandria Hub',
+  // Courier statement import
+  importStatement:'Import courier statement (CSV)',
+  importStatementHelp:'Upload the statement your courier exports. Inventra matches tracking numbers and updates delivery, return and remittance statuses.',
+  statementImported:'Statement imported: {m} shipments updated, {u} tracking numbers not found.',
+  statementEmpty:'No usable rows found. Expected columns: tracking, status, COD amount, fee, date.',
+  // Clearance actions
+  clearanceApply:'Apply clearance price',
+  clearanceApplied:'Clearance applied',
+  clearanceSaved:'Clearance price applied. New sales book at this price.',
 };
 type Dict=typeof en;
 const ar:Dict={
@@ -249,6 +258,13 @@ const ar:Dict={
   mainHub:'المستودع الرئيسي - العاشر من رمضان',
   cairoHub:'فرع القاهرة - مركز التوزيع',
   alexHub:'فرع الإسكندرية',
+  importStatement:'استيراد كشف شركة الشحن (CSV)',
+  importStatementHelp:'ارفع كشف الحساب الصادر من شركة الشحن. يطابق Inventra أرقام التتبع ويحدّث حالات التوصيل والمرتجع والتحويل النقدي.',
+  statementImported:'تم استيراد الكشف: تحديث {m} شحنة، و{u} رقم تتبع غير موجود.',
+  statementEmpty:'لا توجد صفوف صالحة. الأعمدة المتوقعة: التتبع، الحالة، مبلغ التحصيل، العمولة، التاريخ.',
+  clearanceApply:'تطبيق سعر التصفية',
+  clearanceApplied:'تم تطبيق التصفية',
+  clearanceSaved:'تم تطبيق سعر التصفية. ستُسجَّل المبيعات الجديدة بهذا السعر.',
 };
 const dicts={en,ar};
 const Ctx=createContext<{lang:Lang;setLang:(l:Lang)=>void;t:(k:keyof Dict)=>string}>({lang:'en',setLang:()=>{},t:k=>en[k]});
