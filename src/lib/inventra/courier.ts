@@ -14,16 +14,32 @@ export interface StatementRow{tracking:string;courier:string;status:StatementSta
 export interface ParsedStatement{rows:StatementRow[];errors:string[];}
 export interface StatementResult{updated:number;skipped:number;matched:number;unmatched:string[];}
 
+export function generateSampleCourierCsv(d:WorkspaceData):string{
+  const quote=(value:string|number)=>`"${String(value).replace(/"/g,'""')}"`;
+  const date=C.todayISO();
+  const lines=['Tracking Number,Courier,Status,COD Amount,Fee,Remittance Date'];
+  for(const shipment of d.shipments){
+    let status:string,cod=shipment.codAmount;
+    if(shipment.status==='in_transit')status='Delivered';
+    else if(shipment.status==='rto'){status='Returned';cod=0;}
+    else if(shipment.status==='remitted')status='Remitted';
+    else status='Delivered';
+    lines.push([shipment.tracking,shipment.courier,status,cod.toFixed(2),shipment.fee.toFixed(2),date].map(quote).join(','));
+  }
+  lines.push(['BSTA-TEST-UNMATCHED','Bosta','Delivered','450.00','35.00',date].map(quote).join(','));
+  return lines.join('\r\n');
+}
+
 // Column aliases cover the common export headers of Egyptian/regional couriers.
 const COLS:{
   tracking:string[];courier:string[];status:string[];cod:string[];fee:string[];date:string[];
 }={
-  tracking:['tracking','trackingno','awb','waybill','airwaybill','shipmentid','ordernumber','order'],
+  tracking:['tracking','trackingno','trackingnumber','awb','waybill','airwaybill','shipmentid','ordernumber','order'],
   courier:['courier','carrier','company','provider'],
   status:['status','state','shipmentstatus'],
   cod:['cod','codamount','codcollected','collected','cashcollected','amount','totalcod'],
   fee:['fee','deliveryfee','shippingfee','courierfee','servicefee'],
-  date:['date','statementdate','delivereddate','remitteddate','updatedat'],
+  date:['date','statementdate','delivereddate','remitteddate','remittancedate','updatedat'],
 };
 
 const STATUS_MAP:(v:string)=>StatementStatus|null=v=>{

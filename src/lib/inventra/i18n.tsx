@@ -129,6 +129,7 @@ const en={
   importStatementHelp:'Upload the statement your courier exports. Inventra matches tracking numbers and updates delivery, return and remittance statuses.',
   statementImported:'Statement imported: {m} shipments updated, {u} tracking numbers not found.',
   statementEmpty:'No usable rows found. Expected columns: tracking, status, COD amount, fee, date.',
+  downloadSampleCsv:'Download sample CSV',batchCreateTransfers:'Batch create all transfers',urgency:'Urgency',urgencyCritical:'Critical shortage',urgencyModerate:'Moderate',triggersAlertTitle:'Internal rebalance alerts',triggersAlertDesc:'Branch shortages can be covered by surplus stock in other hubs, saving new purchase capital.',criticalTriggerSummary:'{count} branch shortages can be resolved without placing supplier orders, saving {amount}.',
   matched:'matched',unmatched:'unmatched',
   clearanceApply:'Apply clearance price',clearanceApplied:'Clearance applied',clearanceSaved:'Clearance price applied. New sales book at this price.',
   // Clearance actions
@@ -261,6 +262,7 @@ const ar:Dict={
   importStatementHelp:'ارفع كشف الحساب الصادر من شركة الشحن. يطابق Inventra أرقام التتبع ويحدّث حالات التوصيل والمرتجع والتحويل النقدي.',
   statementImported:'تم استيراد الكشف: تحديث {m} شحنة، و{u} رقم تتبع غير موجود.',
   statementEmpty:'لا توجد صفوف صالحة. الأعمدة المتوقعة: التتبع، الحالة، مبلغ التحصيل، العمولة، التاريخ.',
+  downloadSampleCsv:'تحميل نموذج كشف تجريبي (CSV)',batchCreateTransfers:'إنشاء جميع التحويلات دفعة واحدة',urgency:'مستوى الأهمية',urgencyCritical:'عجز حرج',urgencyModerate:'عجز متوسط',triggersAlertTitle:'تنبيهات المناقلة الداخلية للمخزون',triggersAlertDesc:'يمكن تغطية عجز الفروع من الفائض في المخازن الأخرى وتوفير سيولة المشتريات.',criticalTriggerSummary:'يمكن حل {count} حالة عجز في الفروع دون طلبات شراء من الموردين، مع توفير {amount}.',
   matched:'مطابق',unmatched:'غير مطابق',
   clearanceApply:'تطبيق سعر التصفية',clearanceApplied:'تم تطبيق التصفية',clearanceSaved:'تم تطبيق سعر التصفية. ستُسجَّل المبيعات الجديدة بهذا السعر.',
 };

@@ -1,2 +1,2 @@
-export { findRebalanceOpportunities, activeTransfers, totalCapitalSaved, dispatchTransfer, receiveTransfer } from './rebalancing';
-export type { RebalanceOpportunity } from './rebalancing';
+export { findRebalanceOpportunities, findTransferTriggers, batchCreateTransfers, activeTransfers, totalCapitalSaved, dispatchTransfer, receiveTransfer } from './rebalancing';
+export type { RebalanceOpportunity, TransferTrigger } from './rebalancing';

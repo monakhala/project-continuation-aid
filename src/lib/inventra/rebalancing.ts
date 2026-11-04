@@ -1,6 +1,64 @@
+import C from './core';
 import type { WorkspaceData, Transfer } from './types';
 
 export interface RebalanceOpportunity { pid:number; fromWh:string; toWh:string; transferQty:number; capitalSaved:number; }
+export interface TransferTrigger {
+  pid:number;
+  sku:string;
+  fromWh:string;
+  toWh:string;
+  currentStockAtTarget:number;
+  transferQty:number;
+  urgency:'critical'|'moderate';
+  capitalSaved:number;
+}
+
+export function findTransferTriggers(d:WorkspaceData):TransferTrigger[]{
+  const triggers:TransferTrigger[]=[];
+  for(const p of d.P){
+    const locations=Object.entries(p.locations??{});
+    if(locations.length<2)continue;
+    const pack=Math.max(1,p.pack??1);
+    const remainingSurplus=new Map(locations.filter(([,stock])=>stock>p.min).map(([hub,stock])=>[hub,stock-p.min]));
+    const targets=locations.filter(([,stock])=>stock<p.min).sort(([,a],[,b])=>{
+      const aCritical=a<=Math.floor(p.min/2),bCritical=b<=Math.floor(p.min/2);
+      return Number(bCritical)-Number(aCritical)||(p.min-a)-(p.min-b);
+    });
+    for(const [toWh,targetStock] of targets){
+      let remainingDeficit=p.min-targetStock;
+      for(const [fromWh] of locations){
+        const surplus=remainingSurplus.get(fromWh)??0;
+        if(fromWh===toWh||surplus<=0||remainingDeficit<=0)continue;
+        const transferQty=Math.floor(Math.min(surplus,remainingDeficit)/pack)*pack;
+        if(transferQty<=0)continue;
+        triggers.push({pid:p.id,sku:p.sku,fromWh,toWh,currentStockAtTarget:targetStock,transferQty,
+          urgency:targetStock<=Math.floor(p.min/2)?'critical':'moderate',
+          capitalSaved:transferQty*(p.repCost??p.cost)});
+        remainingSurplus.set(fromWh,surplus-transferQty);
+        remainingDeficit-=transferQty;
+      }
+    }
+  }
+  return triggers.sort((a,b)=>Number(b.urgency==='critical')-Number(a.urgency==='critical')||b.capitalSaved-a.capitalSaved);
+}
+
+export function batchCreateTransfers(d:WorkspaceData,triggers:TransferTrigger[]):WorkspaceData{
+  const groups=new Map<string,Transfer>();
+  let nextId=Math.max(0,...d.transfers.map(x=>x.id))+1;
+  for(const trigger of triggers){
+    const key=JSON.stringify([trigger.fromWh,trigger.toWh]);
+    let transfer=groups.get(key);
+    if(!transfer){
+      transfer={id:nextId++,fromWh:trigger.fromWh,toWh:trigger.toWh,items:[],status:'draft',t:C.todayISO()};
+      groups.set(key,transfer);
+      d.transfers.push(transfer);
+    }
+    const existing=transfer.items.find(item=>item.pid===trigger.pid);
+    if(existing)existing.qty+=trigger.transferQty;
+    else transfer.items.push({pid:trigger.pid,qty:trigger.transferQty});
+  }
+  return d;
+}
 
 export function findRebalanceOpportunities(d:WorkspaceData):RebalanceOpportunity[]{
   const out:RebalanceOpportunity[]=[];
