@@ -5,17 +5,23 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system definition.
+ * Inventra design system — glass edition.
  *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
+ * Source of truth: the user's Inventra brand board (navy #04264D, azure
+ * #087DFD, slate neutrals, brand white #FCFCFC) re-skinned with the visual
+ * principles of the reference: warm tinted surfaces, one structural accent
+ * used in steps, rounded geometry, icon + large-numeral stat cards.
  *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
+ * Surface strategy (restrained glassmorphism):
+ *   - Floating chrome (top bar, sidebar, dialogs, toasts, KPI cards) uses
+ *     frosted "paper glass": high fill opacity + backdrop blur + hairline
+ *     borders, so text keeps >= 4.5:1 contrast over the quiet wash field.
+ *   - Dense reading surfaces (tables, long forms, panels) stay solid bg-card.
+ *   - Depth comes from translucency plus a single soft float shadow on
+ *     overlay layers only; content surfaces remain flush.
  *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ * The @theme inline block maps CSS custom properties to Tailwind utilities.
+ * :root and .dark define the light and dark values.
  */
 
 @theme inline {
@@ -63,67 +69,152 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  /* Type scale for a dense data UI: 12px floor for labels/captions,
+     10px reserved for non-interactive chart micro-labels. */
+  --text-2xs: 10px;
+  --text-2xs--line-height: 1.35;
+  --text-xs: 12px;
+  --text-xs--line-height: 1.45;
+  --text-sm: 13px;
+  --text-sm--line-height: 1.5;
+  --text-base: 14px;
+  --text-base--line-height: 1.55;
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: #FAF8F5; --foreground: #1A1A18;
-  --card: #FFFEFB; --card-foreground: #1A1A18;
-  --popover: #FFFEFB; --popover-foreground: #1A1A18;
-  --primary: #1F3A5F; --primary-foreground: #FFFEFB;
-  --secondary: #F2EFE9; --secondary-foreground: #1A1A18;
-  --muted: #F2EFE9; --muted-foreground: #6B6860;
-  --accent: #ECEFF3; --accent-foreground: #1F3A5F;
-  --success: #2E7D32; --warning: #B7791F; --destructive: #B42318; --destructive-foreground: #FFFEFB;
-  --border: #E7E3DB; --input: #E7E3DB; --ring: #1F3A5F;
-  --chart-1: #1F3A5F; --chart-2: #6B6860; --chart-3: #8FB0E0; --chart-4: #A19D92; --chart-5: #C9C3B6;
-  --sidebar: #FFFEFB; --sidebar-foreground: #1A1A18; --sidebar-primary: #1F3A5F; --sidebar-primary-foreground: #FFFEFB;
-  --sidebar-accent: #F2EFE9; --sidebar-accent-foreground: #1A1A18; --sidebar-border: #E7E3DB; --sidebar-ring: #1F3A5F;
+  --radius: 0.75rem;
+
+  /* Ink & paper */
+  --background: #FAF8F5;
+  --foreground: #212732;
+  --card: #FFFEFB; --card-foreground: #212732;
+  --popover: #FFFEFB; --popover-foreground: #212732;
+
+  /* Brand: Inventra navy ink + azure signal */
+  --primary: #04264D; --primary-foreground: #FCFCFC;
+  --secondary: #F2EFE9; --secondary-foreground: #212732;
+  --muted: #F2EFE9; --muted-foreground: #5C6B78;
+  --accent: #E9F1FD; --accent-foreground: #075DCC;
+
+  /* Semantic (strictly functional; the brand board defines none, so these
+     stay restrained and are darkened where they appear as text for 4.5:1) */
+  --success: #2E7D32; --warning: #9C661A; --destructive: #B42318; --destructive-foreground: #FCFCFC;
+
+  --border: #E5E1DA; --input: #E4E0D8; --ring: #087DFD;
+  --chart-1: #04264D; --chart-2: #6A7C8A; --chart-3: #087DFD; --chart-4: #8ABEF7; --chart-5: #C9C3B6;
+
+  --sidebar: rgb(255 254 251 / 0.62); --sidebar-foreground: #212732;
+  --sidebar-primary: #04264D; --sidebar-primary-foreground: #FCFCFC;
+  --sidebar-accent: rgb(8 125 253 / 0.10); --sidebar-accent-foreground: #04264D;
+  --sidebar-border: rgb(4 38 77 / 0.10); --sidebar-ring: #087DFD;
+
+  /* Frosted-glass material (floating chrome only) */
+  --glass-fill: rgb(255 254 251 / 0.66);
+  --glass-fill-strong: rgb(255 254 251 / 0.88);
+  --glass-blur: 14px;
+  --glass-blur-strong: 18px;
+  --shadow-float: 0 1px 2px rgb(4 38 77 / 0.05), 0 16px 40px -20px rgb(4 38 77 / 0.28);
 }
 
 .dark {
-  --background: #14130F; --foreground: #F2EFE8;
-  --card: #1C1B17; --card-foreground: #F2EFE8;
-  --popover: #1C1B17; --popover-foreground: #F2EFE8;
-  --primary: #8FB0E0; --primary-foreground: #14130F;
-  --secondary: #24231E; --secondary-foreground: #F2EFE8;
-  --muted: #24231E; --muted-foreground: #A19D92;
-  --accent: #232A35; --accent-foreground: #8FB0E0;
-  --success: #5FAF63; --warning: #D69E3A; --destructive: #E0614F; --destructive-foreground: #14130F;
-  --border: #2E2C26; --input: #2E2C26; --ring: #8FB0E0;
-  --chart-1: #8FB0E0; --chart-2: #A19D92; --chart-3: #5F7FAF; --chart-4: #6B6860; --chart-5: #3A3833;
-  --sidebar: #1C1B17; --sidebar-foreground: #F2EFE8; --sidebar-primary: #8FB0E0; --sidebar-primary-foreground: #14130F;
-  --sidebar-accent: #24231E; --sidebar-accent-foreground: #F2EFE8; --sidebar-border: #2E2C26; --sidebar-ring: #8FB0E0;
+  --background: #0E1522; --foreground: #E9EDF4;
+  --card: #16202F; --card-foreground: #E9EDF4;
+  --popover: #16202F; --popover-foreground: #E9EDF4;
+  --primary: #8ABEF7; --primary-foreground: #0B1220;
+  --secondary: #1D2735; --secondary-foreground: #E9EDF4;
+  --muted: #1D2735; --muted-foreground: #93A1B4;
+  --accent: #1B2A44; --accent-foreground: #A9CBF9;
+  --success: #5FAF63; --warning: #D69E3A; --destructive: #E0614F; --destructive-foreground: #0B1220;
+  --border: #263650; --input: #263650; --ring: #8ABEF7;
+  --chart-1: #8ABEF7; --chart-2: #93A1B4; --chart-3: #4D9EFD; --chart-4: #2E5FA8; --chart-5: #223050;
+  --sidebar: rgb(22 32 47 / 0.62); --sidebar-foreground: #E9EDF4;
+  --sidebar-primary: #8ABEF7; --sidebar-primary-foreground: #0B1220;
+  --sidebar-accent: rgb(138 190 247 / 0.12); --sidebar-accent-foreground: #E9EDF4;
+  --sidebar-border: rgb(138 190 247 / 0.12); --sidebar-ring: #8ABEF7;
+  --glass-fill: rgb(22 32 47 / 0.66);
+  --glass-fill-strong: rgb(22 32 47 / 0.88);
+  --shadow-float: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -20px rgb(0 0 0 / 0.55);
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
-
+  * { border-color: var(--color-border); }
   html { font-size: 14px; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    line-height: 1.5;
+    line-height: 1.55;
+  }
+  /* Quiet wash field so frosted chrome reads as glass. Fixed, non-interactive. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1200px 800px at 85% -15%, rgb(8 125 253 / 0.13), transparent 60%),
+      radial-gradient(1000px 700px at -15% 30%, rgb(4 38 77 / 0.09), transparent 55%),
+      radial-gradient(900px 600px at 50% 115%, rgb(226 195 181 / 0.17), transparent 58%);
   }
   h1, .font-display { font-family: var(--font-serif); font-weight: 400; letter-spacing: -0.01em; }
   /* Instrument Serif has no Arabic glyphs: use Plex Sans Arabic for headings in RTL */
   [dir="rtl"] h1, [dir="rtl"] .font-display { font-family: "IBM Plex Sans Arabic", var(--font-sans); font-weight: 600; }
+  /* Arabic needs taller leading */
+  [dir="rtl"] body { line-height: 1.7; }
   table, input[type="number"], .tnum, [class*="text-2xl"], [class*="text-3xl"], [class*="text-4xl"] { font-variant-numeric: tabular-nums; }
   label, th { font-size: 12px; }
-  *, *::before, *::after { box-shadow: none !important; }
+  ::selection { background: rgb(8 125 253 / 0.22); }
+  * { scrollbar-width: thin; scrollbar-color: rgb(4 38 77 / 0.28) transparent; }
   a, button, tr, input, select, [role="tab"] { transition: color .15s ease, background-color .15s ease, border-color .15s ease, opacity .15s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    html { scroll-behavior: auto; }
+  }
 }
 
-/* Large KPI numbers in the serif face, 32-40px */
 @layer components {
+  /* Large KPI numbers in the serif face, 32-40px */
   .kpi-num { font-family: var(--font-serif); font-size: clamp(2rem, 2.6vw, 2.5rem); line-height: 1.1; font-variant-numeric: tabular-nums; }
   [dir="rtl"] .kpi-num { font-family: "IBM Plex Sans Arabic", var(--font-sans); font-weight: 600; }
+
+  /* Frosted-glass surfaces for floating chrome. Combine with border utilities. */
+  .glass {
+    background: var(--glass-fill);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  }
+  .glass-strong {
+    background: var(--glass-fill-strong);
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(140%);
+  }
+  /* Soft depth for overlay layers only (dialogs, toasts); content stays flush */
+  .float { box-shadow: var(--shadow-float); }
+
+  /* Azure-frosted KPI stat card: follows the accent token in both themes.
+     Pairs with `border` + `rounded-xl` utilities (no border-color utility). */
+  .kpi-card {
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    border-color: color-mix(in srgb, var(--chart-3) 22%, transparent);
+  }
+
+  /* Tinted table-header band for editorial hierarchy */
+  thead th { background: color-mix(in srgb, var(--muted) 40%, transparent); }
 }
 
-.brand-link{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;font-size:1.25rem;letter-spacing:-.02em}
-.brand-mark{display:inline-grid;place-items:center;width:2rem;height:2rem;border-radius:.5rem;background:var(--color-primary);color:var(--color-primary-foreground)}
-.brand-dot{color:var(--color-primary)}
-.tnum{font-variant-numeric:tabular-nums}
+/* Graceful degradation: without backdrop-filter support, glass becomes solid card */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass, .glass-strong { background: var(--color-card); }
+  .kpi-card { background: var(--color-accent); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* Brand lockup: the supplied Inventra emblem and wordmark images */
+.brand-link { display: inline-flex; align-items: center; gap: .6rem; }
+.brand-mark { display: block; height: 1.9rem; width: auto; border-radius: .45rem; }
+.brand-name { font-weight: 600; font-size: 1.05rem; letter-spacing: -.02em; color: var(--color-primary); }
+.brand-dot { color: var(--color-chart-3); }
+.brand-logo { display: block; height: 2.4rem; width: auto; border-radius: .55rem; }
+.tnum { font-variant-numeric: tabular-nums; }

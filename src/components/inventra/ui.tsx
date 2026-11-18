@@ -7,7 +7,7 @@ import type {Section} from '@/lib/inventra/types';
 /** Small consistent tag for anything built on simulated data. */
 export function SampleTag(){
   const {t}=useT();
-  return <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-[11px] font-medium text-muted-foreground"><span className="h-1.5 w-1.5 rounded-full bg-warning"/>{t('sample')}</span>;
+  return <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground"><span className="h-1.5 w-1.5 rounded-full bg-warning"/>{t('sample')}</span>;
 }
 
 /** Opens each screen: the one question it answers, then the answer. */
@@ -30,7 +30,7 @@ export function Status({tone,children}:{tone:Tone;children:ReactNode}){
 
 export function Empty({line,action,to,onClick}:{line:string;action:string;to?:Section;onClick?:(()=>void)|undefined}){
   const cls='mt-4 inline-flex rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground';
-  return <div className="rounded-lg border border-dashed border-border px-6 py-12 text-center">
+  return <div className="rounded-xl border border-dashed border-border px-6 py-12 text-center">
     <p className="text-sm text-muted-foreground">{line}</p>
     {to?<Link to="/app" search={{s:to}} className={cls}>{action}</Link>:<button type="button" onClick={onClick} className={cls}>{action}</button>}
   </div>;

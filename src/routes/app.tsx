@@ -4,7 +4,6 @@ import {toast} from 'sonner';
 import {useServerFn} from '@tanstack/react-start';
 import {ArrowRightLeft,Clock,Layers,CheckCircle2,AlertCircle} from 'lucide-react';
 import {SampleTag,ScreenIntro,Status,Empty,th,td,tr,type Tone} from '@/components/inventra/ui';
-import {Brand} from '@/components/inventra/brand';
 import {useInventra} from '@/components/inventra/provider';
 import {ExecutiveDashboard,PriceIntelligence} from '@/components/inventra/executive';
 import {useT,LangToggle,fmt} from '@/lib/inventra/i18n';
@@ -26,7 +25,7 @@ export const Route=createFileRoute('/app')({
   head:()=>({meta:[{title:'Workspace | Inventra'},{name:'description',content:'Your Inventra inventory workspace: stock, forecasts, restocking and purchase orders.'},{property:'og:title',content:'Workspace | Inventra'},{property:'og:description',content:'Stock, forecasts, restocking and purchase orders.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),
   component:AppPage,
 });
-const card='rounded-lg border border-border bg-card p-6';
+const card='rounded-xl border border-border bg-card p-6';
 const btn='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const btn2='rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const inp='rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring';
@@ -44,13 +43,13 @@ function AppPage(){
   };
 
   return <div className="flex min-h-screen bg-background text-foreground">
-    <aside className={`${open?'flex':'hidden'} fixed inset-y-0 start-0 z-30 w-60 flex-col border-e border-sidebar-border bg-sidebar p-4 text-sidebar-foreground md:sticky md:top-0 md:flex md:h-screen`}>
-      <div className="mb-6 border-b border-sidebar-border pb-4 [&_.brand-link]:text-sidebar-accent-foreground"><Brand/></div>
+    <aside className={`${open?'flex':'hidden'} fixed inset-y-0 start-0 z-30 w-60 flex-col border-e border-sidebar-border glass p-4 text-sidebar-foreground md:sticky md:top-0 md:flex md:h-screen`}>
+      <div className="mb-6 border-b border-sidebar-border pb-5"><Link to="/" aria-label="Inventra"><img src="/logo.png" alt="Inventra" width={536} height={482} className="mx-auto block h-24 w-auto rounded-xl"/></Link></div>
       <nav className="flex-1 space-y-0.5">{items.map(k=><Link key={k} to="/app" search={{s:k}} onClick={()=>setOpen(false)} aria-current={s===k?'page':undefined} className={`block rounded-md px-3 py-2 text-sm transition-colors ${s===k?'bg-sidebar-accent font-semibold text-sidebar-foreground':'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}`}>{t(k as 'dashboard')}</Link>)}</nav>
       {ctx.session&&<button onClick={async()=>{await supabase.auth.signOut();void nav({to:'/'});}} className="px-3 py-2 text-start text-sm text-muted-foreground hover:text-sidebar-foreground">{t('signOut')}</button>}
     </aside>
     <main className="min-w-0 flex-1">
-      <header className="sticky top-0 z-20 flex flex-wrap items-center gap-3 border-b border-border bg-card px-6 py-3">
+      <header className="sticky top-0 z-20 flex flex-wrap items-center gap-3 border-b border-border glass px-6 py-3">
         <button className="text-sm md:hidden" onClick={()=>setOpen(!open)} aria-label="Menu">{t('menu')}</button>
         <h1 className="text-2xl">{t(s as 'dashboard')}</h1>
         <span className="text-sm text-muted-foreground">{ctx.demo?t('workspaceDemo'):ctx.name} · {t(ctx.role==='supplier'?'supplierRole':ctx.role)}</span>
@@ -61,7 +60,7 @@ function AppPage(){
             value={ctx.data.settings?.currency||'EGP'}
             disabled={ctx.busy||(!ctx.demo&&ctx.role==='supplier')}
             onChange={e=>setCurrency(e.target.value as Currency)}
-            className="rounded-md border border-input bg-background px-2.5 py-1 text-sm font-semibold text-foreground"
+            className="rounded-md border border-input bg-background px-2.5 py-1 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             aria-label={t('currencySelect')}
           >
             {SUPPORTED_CURRENCIES.map(c=><option key={c} value={c}>{c}</option>)}
@@ -207,7 +206,7 @@ function Inventory(){
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-medium text-muted-foreground">{t('hub')}:</span>
         <button
-          className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${whFilter==='all'?'bg-primary text-primary-foreground':'border border-border hover:bg-accent'}`}
+          className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${whFilter==='all'?'bg-primary text-primary-foreground':'border border-border hover:bg-accent'}`}
           onClick={()=>setWhFilter('all')}
         >
           {t('allHubs')} ({d.P.length})
@@ -215,7 +214,7 @@ function Inventory(){
         {hubs.map(h=>(
           <button
             key={h}
-            className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${whFilter===h?'bg-primary text-primary-foreground':'border border-border hover:bg-accent'}`}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${whFilter===h?'bg-primary text-primary-foreground':'border border-border hover:bg-accent'}`}
             onClick={()=>setWhFilter(h)}
           >
             {h}
@@ -226,8 +225,8 @@ function Inventory(){
 
     {/* Inter-warehouse Transfer Modal */}
     {transfer&&(
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-xs">
-        <div className={`${card} w-full max-w-md shadow-lg`}>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/25 p-4 backdrop-blur-sm">
+        <div className="glass-strong float w-full max-w-md rounded-2xl border border-border p-6">
           <div className="flex items-center justify-between border-b border-border pb-3">
             <h3 className="font-semibold">{t('transferTitle')}</h3>
             <button className="text-muted-foreground hover:text-foreground" onClick={()=>setTransfer(null)}>✕</button>
@@ -334,7 +333,7 @@ function Inventory(){
               <td className={`${td} text-xs`}>
                 <div>{p.wh}</div>
                 {p.locations&&Object.keys(p.locations).length>1&&(
-                  <div className="text-[11px] text-muted-foreground">
+                  <div className="text-xs text-muted-foreground">
                     {Object.entries(p.locations).map(([h,q])=>`${h.split(' - ')[0]}: ${q}`).join(' · ')}
                   </div>
                 )}
@@ -352,9 +351,9 @@ function Inventory(){
                     <Status tone={exp.tone}>
                       <span className="text-xs">{t(exp.labelKey)} {exp.daysLeft!==null&&exp.daysLeft>0?`(${exp.daysLeft}d)`:''}</span>
                     </Status>
-                    {p.batch_number&&<div className="font-mono text-[11px] text-muted-foreground">{p.batch_number}</div>}
+                    {p.batch_number&&<div className="font-mono text-xs text-muted-foreground">{p.batch_number}</div>}
                     {exp.markdownActionKey!=='mdNone'&&(
-                      <span className="inline-block rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium text-accent-foreground">
+                      <span className="inline-block rounded bg-accent px-1.5 py-0.5 text-2xs font-medium text-accent-foreground">
                         {t(exp.markdownActionKey)}
                       </span>
                     )}
@@ -589,7 +588,7 @@ function Restock(){
               <button
                 key={v}
                 type="button"
-                className={`rounded px-2.5 py-1 text-xs font-medium border border-border ${budgetCap===v?'bg-primary text-primary-foreground':'hover:bg-accent'}`}
+                className={`rounded-full px-3 py-1 text-xs font-medium border border-border ${budgetCap===v?'bg-primary text-primary-foreground':'hover:bg-accent'}`}
                 onClick={()=>setBudgetCapInput(String(v))}
               >
                 {money(d,v,lang)}
@@ -603,19 +602,19 @@ function Restock(){
             <div>
               <p className="text-xs text-muted-foreground">{t('allocatedSpend')}</p>
               <p className="text-lg font-semibold tnum">{money(d,totalAllocated,lang)}</p>
-              <p className="text-[11px] text-muted-foreground">{t('budgetCap')}: {money(d,budgetCap,lang)}</p>
+              <p className="text-xs text-muted-foreground">{t('budgetCap')}: {money(d,budgetCap,lang)}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t('budgetUtilization')}</p>
               <p className="text-lg font-semibold tnum">{Math.round((totalAllocated/budgetCap)*100)}%</p>
               <div className="mt-1 h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-primary" style={{width:`${Math.min(100,(totalAllocated/budgetCap)*100)}%`}}/>
+                <div className="h-full bg-chart-3" style={{width:`${Math.min(100,(totalAllocated/budgetCap)*100)}%`}}/>
               </div>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t('expectedGP')}</p>
               <p className="text-lg font-semibold text-success tnum">+{money(d,totalExpectedGP,lang)}</p>
-              <p className="text-[11px] text-muted-foreground">{t('budgetNote')}</p>
+              <p className="text-xs text-muted-foreground">{t('budgetNote')}</p>
             </div>
             <div className="flex flex-wrap items-center gap-2 sm:justify-end">
               {canEdit(role)&&(
@@ -680,15 +679,15 @@ function Restock(){
                   {budgetCap!==null&&(
                     <div>
                       {allocStatus==='allocated'?(
-                        <span className="inline-flex items-center gap-1 rounded bg-success/10 px-1.5 py-0.5 text-[10px] font-semibold text-success">
+                        <span className="inline-flex items-center gap-1 rounded bg-success/10 px-1.5 py-0.5 text-2xs font-semibold text-success">
                           <CheckCircle2 size={11}/>{t('allocated')}
                         </span>
                       ):allocStatus==='partial'?(
-                        <span className="inline-flex items-center gap-1 rounded bg-warning/10 px-1.5 py-0.5 text-[10px] font-semibold text-warning">
+                        <span className="inline-flex items-center gap-1 rounded bg-warning/10 px-1.5 py-0.5 text-2xs font-semibold text-warning">
                           <AlertCircle size={11}/>{t('partial')}
                         </span>
                       ):(
-                        <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                        <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-2xs font-medium text-muted-foreground">
                           {t('deferred')}
                         </span>
                       )}
@@ -701,7 +700,7 @@ function Restock(){
                 {budgetCap!==null?(
                   <div>
                     <span>{allocQty}</span>
-                    {allocQty<r.qty&&<span className="block text-[11px] text-muted-foreground">/ {r.qty}</span>}
+                    {allocQty<r.qty&&<span className="block text-xs text-muted-foreground">/ {r.qty}</span>}
                   </div>
                 ):r.action==='order'?r.qty:''}
               </td>
@@ -713,14 +712,14 @@ function Restock(){
                 {/* Task D: Inter-warehouse alternative pill */}
                 {otherHubStock&&(
                   <div className="mt-1.5 rounded border border-accent bg-accent/40 p-1.5 text-foreground flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-medium">
+                    <span className="text-xs font-medium">
                       {fmt(t('stockAvailableOtherHub'),{q:otherHubStock[1],h:otherHubStock[0]})}
                     </span>
                     {canEdit(role)&&(
                       <button
                         type="button"
                         onClick={()=>executeTransferOrder(p,otherHubStock[0],Math.min(otherHubStock[1],r.qty))}
-                        className="rounded bg-card px-2 py-0.5 text-[11px] font-semibold text-primary hover:bg-card/80 border border-border"
+                        className="rounded bg-card px-2 py-0.5 text-xs font-semibold text-primary hover:bg-card/80 border border-border"
                       >
                         {t('transferInstead')}
                       </button>
@@ -793,7 +792,7 @@ function TransfersScreen(){
  function openScanner(id:number){const transfer=d.transfers.find(x=>x.id===id);if(!transfer)return;setScanTransferId(id);setScanSession(initScanSession(transfer.items,d.P));setScanCode('');}
  function submitScan(e:React.FormEvent<HTMLFormElement>){e.preventDefault();if(!scanCode.trim())return;const result=recordScan(scanSession,scanCode);if(!result.matched)toast.error(t('scanMismatch'));setScanSession(result.session);setScanCode('');}
  async function confirmScannedTransfer(id:number){const transfer=d.transfers.find(x=>x.id===id);if(!transfer||!scanSession.length||!scanSession.every(i=>i.scannedQty>=i.expectedQty))return;const ok=await commit(x=>transfer.status==='draft'?dispatchTransfer(x,id):receiveTransfer(x,id,C.todayISO()));if(ok){setScanTransferId(null);setScanSession([]);toast.success(t('scanComplete'));}}
- return <div className="space-y-8"><ScreenIntro q={t('rebalanceIntroQ')} a={t('rebalanceIntroA')}/><div className="grid gap-4 sm:grid-cols-3">{[[t('capitalSaved'),money(d,saved,lang)],[t('activeTransfers'),active],[t('completedTransfers'),done]].map(([k,v])=><div className={card} key={k}><p className="text-sm text-muted-foreground">{k}</p><p className="mt-2 text-2xl tabular-nums">{v}</p></div>)}</div>{critical.length>0&&<aside className={`${card} border-amber-500/40 bg-amber-500/5`}><h2 className="font-semibold">{t('triggersAlertTitle')}</h2><p className="mt-1 text-sm text-muted-foreground">{t('triggersAlertDesc')}</p><p className="mt-2 text-sm font-medium">{fmt(t('criticalTriggerSummary'),{count:critical.length,amount:money(d,criticalSaved,lang)})}</p></aside>}{triggers.length>0&&<button className={btn} disabled={!canEdit(role)||busy} onClick={()=>void commit(x=>batchCreateTransfers(x,triggers))}>{t('batchCreateTransfers')}</button>}<section className="space-y-3"><h2 className="text-xl">{t('recommendations')}</h2><div className="overflow-auto rounded-lg border border-border"><table className="w-full text-sm"><thead><tr>{['sku','transferFrom','transferTo','qty','urgency','capitalSaved','actions'].map(x=><th className={th} key={x}>{t(x as 'name')}</th>)}</tr></thead><tbody>{ops.map((o,i)=>{const urgency=triggerFor(o)?.urgency??((d.P.find(p=>p.id===o.pid)?.locations?.[o.toWh]??0)<=Math.floor((d.P.find(p=>p.id===o.pid)?.min??0)/2)?'critical':'moderate');return <tr className={tr} key={`${o.pid}-${i}`}><td className={td}>{d.P.find(p=>p.id===o.pid)?.sku}</td><td className={td}>{o.fromWh}</td><td className={td}>{o.toWh}</td><td className={td}>{o.transferQty}</td><td className={td}><Status tone={urgency==='critical'?'crit':'low'}>{t(urgency==='critical'?'urgencyCritical':'urgencyModerate')}</Status></td><td className={td}>{money(d,o.capitalSaved,lang)}</td><td className={td}><button className={btn} disabled={!canEdit(role)||busy} onClick={()=>create(o)}>{t('createTransfer')}</button></td></tr>;})}</tbody></table></div></section><section className="space-y-3"><h2 className="text-xl">{t('transferOrders')}</h2>{d.transfers.map(x=>{const open=scanTransferId===x.id,complete=open&&scanSession.length>0&&scanSession.every(i=>i.scannedQty>=i.expectedQty);return <article className={`${card} space-y-3`} key={x.id}><div className="flex flex-wrap items-center justify-between gap-3"><span>#{x.id} · {x.fromWh} → {x.toWh}</span><Status tone={x.status==='completed'?'ok':x.status==='in_transit'?'low':'idle'}>{t(x.status==='in_transit'?'inTransit':x.status==='completed'?'completed':x.status==='cancelled'?'cancelled':'draft')}</Status><span>{x.items.map(i=>`${d.P.find(p=>p.id===i.pid)?.sku} × ${i.qty}`).join(', ')}</span>{canEdit(role)&&['draft','in_transit'].includes(x.status)&&<button className={btn2} disabled={busy} onClick={()=>open?setScanTransferId(null):openScanner(x.id)}>{t('scanToVerify')}</button>}</div>{open&&<div className="rounded-md border border-border bg-muted/20 p-4"><form className="flex flex-wrap gap-2" onSubmit={submitScan}><input autoFocus value={scanCode} onChange={e=>setScanCode(e.target.value)} placeholder={t('scanInputPlaceholder')} className={`${inp} min-w-64 flex-1`} aria-label={t('scanInputPlaceholder')} /><button type="submit" className={btn2} disabled={busy||!scanCode.trim()}>{t('scanToVerify')}</button></form><ul className="mt-4 space-y-2">{scanSession.map(item=>{const verified=item.scannedQty>=item.expectedQty;const percent=item.expectedQty?Math.min(100,item.scannedQty/item.expectedQty*100):100;return <li key={item.pid} className={`rounded-md border p-3 ${verified?'border-emerald-500/40 bg-emerald-500/10':'border-border'}`}><div className="flex flex-wrap items-center justify-between gap-2"><span><b dir="ltr">{item.sku}</b> · {item.name}</span><span className="tabular-nums" dir="ltr">{fmt(t('scanProgress'),{sku:item.sku,scanned:item.scannedQty,expected:item.expectedQty})}</span>{verified&&<Status tone="ok">{t('itemVerified')}</Status>}</div><progress className="mt-2 h-2 w-full accent-primary" max={100} value={percent}/></li>;})}</ul>{complete&&<div className="mt-4 flex flex-wrap items-center justify-between gap-3"><p className="text-sm font-medium text-emerald-700">{t('scanComplete')}</p><button className={btn} disabled={busy} onClick={()=>void confirmScannedTransfer(x.id)}>{t(x.status==='draft'?'confirmDispatch':'confirmReceive')}</button></div>}</div>}</article>;})}</section></div>;
+ return <div className="space-y-8"><ScreenIntro q={t('rebalanceIntroQ')} a={t('rebalanceIntroA')}/><div className="grid gap-4 sm:grid-cols-3">{[[t('capitalSaved'),money(d,saved,lang)],[t('activeTransfers'),active],[t('completedTransfers'),done]].map(([k,v])=><div className={card} key={k}><p className="text-sm text-muted-foreground">{k}</p><p className="mt-2 text-2xl tabular-nums">{v}</p></div>)}</div>{critical.length>0&&<aside className={`${card} border-warning/40 bg-warning/10`}><h2 className="font-semibold">{t('triggersAlertTitle')}</h2><p className="mt-1 text-sm text-muted-foreground">{t('triggersAlertDesc')}</p><p className="mt-2 text-sm font-medium">{fmt(t('criticalTriggerSummary'),{count:critical.length,amount:money(d,criticalSaved,lang)})}</p></aside>}{triggers.length>0&&<button className={btn} disabled={!canEdit(role)||busy} onClick={()=>void commit(x=>batchCreateTransfers(x,triggers))}>{t('batchCreateTransfers')}</button>}<section className="space-y-3"><h2 className="text-xl">{t('recommendations')}</h2><div className="overflow-auto rounded-lg border border-border"><table className="w-full text-sm"><thead><tr>{['sku','transferFrom','transferTo','qty','urgency','capitalSaved','actions'].map(x=><th className={th} key={x}>{t(x as 'name')}</th>)}</tr></thead><tbody>{ops.map((o,i)=>{const urgency=triggerFor(o)?.urgency??((d.P.find(p=>p.id===o.pid)?.locations?.[o.toWh]??0)<=Math.floor((d.P.find(p=>p.id===o.pid)?.min??0)/2)?'critical':'moderate');return <tr className={tr} key={`${o.pid}-${i}`}><td className={td}>{d.P.find(p=>p.id===o.pid)?.sku}</td><td className={td}>{o.fromWh}</td><td className={td}>{o.toWh}</td><td className={td}>{o.transferQty}</td><td className={td}><Status tone={urgency==='critical'?'crit':'low'}>{t(urgency==='critical'?'urgencyCritical':'urgencyModerate')}</Status></td><td className={td}>{money(d,o.capitalSaved,lang)}</td><td className={td}><button className={btn} disabled={!canEdit(role)||busy} onClick={()=>create(o)}>{t('createTransfer')}</button></td></tr>;})}</tbody></table></div></section><section className="space-y-3"><h2 className="text-xl">{t('transferOrders')}</h2>{d.transfers.map(x=>{const open=scanTransferId===x.id,complete=open&&scanSession.length>0&&scanSession.every(i=>i.scannedQty>=i.expectedQty);return <article className={`${card} space-y-3`} key={x.id}><div className="flex flex-wrap items-center justify-between gap-3"><span>#{x.id} · {x.fromWh} → {x.toWh}</span><Status tone={x.status==='completed'?'ok':x.status==='in_transit'?'low':'idle'}>{t(x.status==='in_transit'?'inTransit':x.status==='completed'?'completed':x.status==='cancelled'?'cancelled':'draft')}</Status><span>{x.items.map(i=>`${d.P.find(p=>p.id===i.pid)?.sku} × ${i.qty}`).join(', ')}</span>{canEdit(role)&&['draft','in_transit'].includes(x.status)&&<button className={btn2} disabled={busy} onClick={()=>open?setScanTransferId(null):openScanner(x.id)}>{t('scanToVerify')}</button>}</div>{open&&<div className="rounded-md border border-border bg-muted/20 p-4"><form className="flex flex-wrap gap-2" onSubmit={submitScan}><input autoFocus value={scanCode} onChange={e=>setScanCode(e.target.value)} placeholder={t('scanInputPlaceholder')} className={`${inp} min-w-64 flex-1`} aria-label={t('scanInputPlaceholder')} /><button type="submit" className={btn2} disabled={busy||!scanCode.trim()}>{t('scanToVerify')}</button></form><ul className="mt-4 space-y-2">{scanSession.map(item=>{const verified=item.scannedQty>=item.expectedQty;const percent=item.expectedQty?Math.min(100,item.scannedQty/item.expectedQty*100):100;return <li key={item.pid} className={`rounded-md border p-3 ${verified?'border-emerald-500/40 bg-emerald-500/10':'border-border'}`}><div className="flex flex-wrap items-center justify-between gap-2"><span><b dir="ltr">{item.sku}</b> · {item.name}</span><span className="tabular-nums" dir="ltr">{fmt(t('scanProgress'),{sku:item.sku,scanned:item.scannedQty,expected:item.expectedQty})}</span>{verified&&<Status tone="ok">{t('itemVerified')}</Status>}</div><progress className="mt-2 h-2 w-full accent-primary" max={100} value={percent}/></li>;})}</ul>{complete&&<div className="mt-4 flex flex-wrap items-center justify-between gap-3"><p className="text-sm font-medium text-emerald-700">{t('scanComplete')}</p><button className={btn} disabled={busy} onClick={()=>void confirmScannedTransfer(x.id)}>{t(x.status==='draft'?'confirmDispatch':'confirmReceive')}</button></div>}</div>}</article>;})}</section></div>;
 }
 
 function CourierReconciliationScreen(){
@@ -855,14 +854,14 @@ function ForecastChart({actual,fc,wape}:{actual:number[];fc:number[];wape:number
   const o=actual.length-1,fcl=[actual[actual.length-1]??fc[0]??0,...fc];
   const band=wape===null?'':`M${x(o)},${y(fcl[0]!)} `+hi.map((v,i)=>`L${x(i+o+1)},${y(v)}`).join(' ')+' '+[...lo].reverse().map((v,i)=>`L${x(o+fc.length-i)},${y(v)}`).join(' ')+' Z';
   return <svg viewBox={`0 0 ${W} ${H}`} className="mt-4 w-full" direction="ltr" role="img" aria-label={t('forecast')}>
-    {[0,.5,1].map(f=><g key={f}><line x1={pl} x2={W-pr} y1={pt+ih*(1-f)} y2={pt+ih*(1-f)} className="stroke-border" strokeWidth={0.5}/><text x={pl-4} y={pt+ih*(1-f)+3} textAnchor="end" className="fill-muted-foreground text-[9px] tnum">{Math.round(max*f)}</text></g>)}
+    {[0,.5,1].map(f=><g key={f}><line x1={pl} x2={W-pr} y1={pt+ih*(1-f)} y2={pt+ih*(1-f)} className="stroke-border" strokeWidth={0.5}/><text x={pl-4} y={pt+ih*(1-f)+3} textAnchor="end" className="fill-muted-foreground text-2xs tnum">{Math.round(max*f)}</text></g>)}
     <line x1={x(o)} x2={x(o)} y1={pt} y2={pt+ih} className="stroke-border" strokeDasharray="2 3"/>
     {band&&<path d={band} className="fill-primary/10"/>}
     <path d={path(actual,0)} fill="none" className="stroke-foreground" strokeWidth={1.5}/>
     <path d={path(fcl,o)} fill="none" className="stroke-primary" strokeWidth={1.5} strokeDasharray="5 4"/>
-    <text x={x(o)-4} y={y(actual[o]??0)-6} textAnchor="end" className="fill-foreground text-[10px]">{t('actual')}</text>
-    <text x={x(n-1)+4} y={y(fc[fc.length-1]??0)+3} className="fill-primary text-[10px]">{t('fcLabel')}</text>
-    {band&&<text x={x(n-1)+4} y={y(hi[hi.length-1]??0)-4} className="fill-muted-foreground text-[9px]">{t('band')}</text>}
+    <text x={x(o)-4} y={y(actual[o]??0)-6} textAnchor="end" className="fill-foreground text-2xs">{t('actual')}</text>
+    <text x={x(n-1)+4} y={y(fc[fc.length-1]??0)+3} className="fill-primary text-2xs">{t('fcLabel')}</text>
+    {band&&<text x={x(n-1)+4} y={y(hi[hi.length-1]??0)-4} className="fill-muted-foreground text-2xs">{t('band')}</text>}
   </svg>;
 }
 

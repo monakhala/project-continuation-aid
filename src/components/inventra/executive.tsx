@@ -10,7 +10,7 @@ import {analytics,priceRow,weekly,type Insight} from '@/lib/inventra/pricing';
 import {liquidationRows,applyClearance,clearanceApplied} from '@/lib/inventra/liquidation';
 import type {Currency} from '@/lib/inventra/types';
 
-const panel='overflow-hidden rounded-lg border border-border bg-card';
+const panel='overflow-hidden rounded-xl border border-border bg-card';
 const th='px-4 py-3 text-start text-xs font-medium text-muted-foreground';
 const td='border-t border-border px-4 py-3 tnum';
 const pct=(n:number,dp=1)=>`${(n*100).toFixed(dp)}%`;
@@ -24,7 +24,7 @@ function Delta({v,unit='%',good=1}:{v:number|null;unit?:string;good?:1|-1}){
 }
 
 function Kpi({label,value,delta,note,secondary}:{label:string;value:string;delta:React.ReactNode;note:string;secondary?:React.ReactNode}){
-  return <div className="min-w-0 rounded-lg border border-border bg-card p-6">
+  return <div className="kpi-card min-w-0 rounded-xl border p-6">
     <p className="text-xs font-medium text-muted-foreground">{label}</p>
     <p className="mt-3 break-words kpi-num">{value}</p>
     <div className="mt-2 flex flex-wrap items-center gap-2">{delta}<span className="text-xs text-muted-foreground">{note}</span></div>
@@ -106,7 +106,7 @@ export function ExecutiveDashboard(){
       <div className="min-w-0 xl:col-span-1">
         <p className="text-xs font-medium text-muted-foreground">{t('summary')}</p>
         <p className="mt-2 text-sm">{t('health')} <b className="ms-1 text-xl font-semibold tnum">{health}/100</b></p>
-        <div className="mt-3 h-1 w-full max-w-[220px] bg-muted"><div className="h-full bg-primary" style={{width:`${health}%`}}/></div>
+        <div className="mt-3 h-1 w-full max-w-[220px] bg-muted"><div className="h-full bg-chart-3" style={{width:`${health}%`}}/></div>
       </div>
       {[[t('activeSkus'),d.P.length],[t('coverage'),below],[t('exposure'),out],[t('openOrders'),d.R.filter(r=>!['Received','Cancelled'].includes(r.status)).length]].map(([k,v])=>
         <div key={k as string} className="border-s border-border ps-4"><p className="text-xs text-muted-foreground">{k}</p><p className="mt-2 text-2xl font-semibold tnum">{v}</p></div>)}
@@ -204,12 +204,12 @@ function TrendChart({pid}:{pid:number}){
     <div className="mb-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground"><span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 bg-chart-3/50"/>{t('volume')}</span><span className="inline-flex items-center gap-2"><span className="h-0.5 w-4 bg-primary"/>{t('price')}</span></div>
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={t('trendTitle')}>
       {[0,.5,1].map(f=><g key={f}><line x1={pad.l} x2={W-pad.r} y1={pad.t+ih*(1-f)} y2={pad.t+ih*(1-f)} className="stroke-border"/>
-        <text x={pad.l-6} y={pad.t+ih*(1-f)+4} textAnchor="end" className="fill-muted-foreground text-[10px]">{Math.round(qMax*f)}</text>
-        <text x={W-pad.r+6} y={pad.t+ih*(1-f)+4} className="fill-muted-foreground text-[10px]">{(pMin+(pMax-pMin)*f).toFixed(2)}</text></g>)}
+        <text x={pad.l-6} y={pad.t+ih*(1-f)+4} textAnchor="end" className="fill-muted-foreground text-2xs">{Math.round(qMax*f)}</text>
+        <text x={W-pad.r+6} y={pad.t+ih*(1-f)+4} className="fill-muted-foreground text-2xs">{(pMin+(pMax-pMin)*f).toFixed(2)}</text></g>)}
       {w.map((v,i)=><rect key={i} x={pad.l+i*bw+bw*0.18} width={bw*0.64} y={pad.t+ih-(v.qty/qMax)*ih} height={(v.qty/qMax)*ih} className="fill-chart-3/50"/>)}
       <path d={line} fill="none" strokeWidth={2} className="stroke-primary"/>
       {w.map((v,i)=><circle key={i} cx={x(i)} cy={yP(v.price)} r={3} className="fill-card stroke-primary" strokeWidth={2}/>)}
-      {w.map((v,i)=>i%2===0&&<text key={i} x={x(i)} y={H-8} textAnchor="middle" className="fill-muted-foreground text-[10px]">{v.start.slice(5).replace('-', '/')}</text>)}
+      {w.map((v,i)=>i%2===0&&<text key={i} x={x(i)} y={H-8} textAnchor="middle" className="fill-muted-foreground text-2xs">{v.start.slice(5).replace('-', '/')}</text>)}
     </svg></div>;
 }
 
@@ -252,7 +252,7 @@ export function PriceIntelligence(){
           value={d.settings.currency||'EGP'}
           disabled={busy||!edit}
           onChange={e=>setCurrency(e.target.value as Currency)}
-          className="rounded-md border border-input bg-card px-2.5 py-1 text-sm font-semibold text-foreground focus:outline-none"
+          className="rounded-md border border-input bg-background px-2.5 py-1 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           {SUPPORTED_CURRENCIES.map(c=><option key={c} value={c}>{c}</option>)}
         </select>
@@ -340,7 +340,7 @@ export function PriceIntelligence(){
                   className="w-24 rounded border border-input bg-background px-2 py-1 text-end text-sm tnum transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 />
               ):r.comp!==null?money(d,r.comp,lang):<span className="text-muted-foreground">{t('notSet')}</span>}
-              {gap!==null&&<div className={`text-[11px] tnum ${gap>5?'text-warning':gap<-5?'text-primary':'text-muted-foreground'}`} dir="ltr">{gap>0?'+':''}{gap.toFixed(1)}%</div>}
+              {gap!==null&&<div className={`text-xs tnum ${gap>5?'text-warning':gap<-5?'text-primary':'text-muted-foreground'}`} dir="ltr">{gap>0?'+':''}{gap.toFixed(1)}%</div>}
             </td>
             {/* Historical Margin */}
             <td className={`${td} text-end`}><span className={r.gm<0.2?'font-semibold text-destructive':r.gm<0.3?'font-semibold text-warning':''}>{pct(r.gm)}</span></td>
@@ -358,7 +358,7 @@ export function PriceIntelligence(){
                 <Status tone="ok">{t('inStock')}</Status>
               )}
             </td>
-            <td className={`${td} text-end`}>{r.el?<span title={`${t('fit')} R² ${r.el.r2.toFixed(2)} · ${r.el.n} ${t('weeks')}`} dir="ltr">{r.el.e.toFixed(2)}<span className="ms-1 text-[11px] text-muted-foreground">R² {r.el.r2.toFixed(2)}</span></span>:<span className="text-xs text-muted-foreground">{t('notMeasurable')}</span>}</td>
+            <td className={`${td} text-end`}>{r.el?<span title={`${t('fit')} R² ${r.el.r2.toFixed(2)} · ${r.el.n} ${t('weeks')}`} dir="ltr">{r.el.e.toFixed(2)}<span className="ms-1 text-xs text-muted-foreground">R² {r.el.r2.toFixed(2)}</span></span>:<span className="text-xs text-muted-foreground">{t('notMeasurable')}</span>}</td>
             <td className={`${td} text-end font-semibold`}>{r.opt===null?<span className="text-xs font-normal text-muted-foreground">{t('na')}</span>:r.opt===r.p.price?<span className="text-xs font-normal text-muted-foreground">{t('hold')}</span>:<span className="text-primary">{money(d,r.opt,lang)}</span>}</td>
             <td className={`${td} text-end`}>{r.liftWeekly>0?<span className="font-semibold text-success" dir="ltr">+{money(d,r.liftWeekly,lang)}</span>:<span className="text-muted-foreground">{t('na')}</span>}</td>
           </tr>;

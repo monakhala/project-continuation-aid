@@ -1,28 +1,30 @@
 ---
 name: Inventra
-description: High-end B2B Inventory Intelligence with an editorial, financial-report aesthetic.
+description: High-end B2B Inventory Intelligence with a warm-paper editorial base and restrained glassmorphism chrome.
 colors:
-  primary: "#1F3A5F"
-  primary-foreground: "#FFFEFB"
+  primary: "#04264D"
+  primary-foreground: "#FCFCFC"
   background: "#FAF8F5"
-  foreground: "#1A1A18"
+  foreground: "#212732"
   card: "#FFFEFB"
-  card-foreground: "#1A1A18"
+  card-foreground: "#212732"
   muted: "#F2EFE9"
-  muted-foreground: "#6B6860"
-  accent: "#ECEFF3"
-  accent-foreground: "#1F3A5F"
-  border: "#E7E3DB"
-  input: "#E7E3DB"
+  muted-foreground: "#5C6B78"
+  accent: "#E9F1FD"
+  accent-foreground: "#075DCC"
+  signal: "#087DFD"
+  border: "#E5E1DA"
+  input: "#E4E0D8"
+  ring: "#087DFD"
   success: "#2E7D32"
-  warning: "#B7791F"
+  warning: "#9C661A"
   destructive: "#B42318"
-  destructive-foreground: "#FFFEFB"
-  dark-background: "#14130F"
-  dark-foreground: "#F2EFE8"
-  dark-card: "#1C1B17"
-  dark-border: "#2E2C26"
-  dark-primary: "#8FB0E0"
+  destructive-foreground: "#FCFCFC"
+  dark-background: "#0E1522"
+  dark-foreground: "#E9EDF4"
+  dark-card: "#16202F"
+  dark-border: "#263650"
+  dark-primary: "#8ABEF7"
 typography:
   display:
     fontFamily: "Instrument Serif, IBM Plex Sans Arabic, Georgia, serif"
@@ -33,10 +35,17 @@ typography:
   numbers:
     fontFamily: "IBM Plex Sans, monospace"
     fontVariantNumeric: "tabular-nums"
+  scale:
+    "2xs": "10px (chart micro-labels only)"
+    xs: "12px"
+    sm: "13px"
+    base: "14px"
 rounded:
-  sm: "4px"
-  md: "6px"
-  lg: "8px"
+  sm: "8px"
+  md: "10px"
+  lg: "12px"
+  xl: "16px"
+  2xl: "20px"
 spacing:
   xs: "4px"
   sm: "8px"
@@ -49,60 +58,70 @@ spacing:
 
 ## Overview
 
-Inventra adopts an editorial, financial-report aesthetic modeled after print financial journals, classical ledgers, and bespoke analytics terminals. The interface conveys quiet authority, mathematical precision, and absolute restraint. Every screen opens with a direct question and executive answer. Decorative embellishments, gradients, and box-shadows are banned.
+Inventra pairs the calm authority of an editorial financial journal with a restrained, frosted-glass material for floating chrome. The interface conveys mathematical precision and operational serenity: dense data stays on solid paper surfaces, while the chrome that floats above scrolling content (top bar, sidebar, dialogs, toasts, KPI cards) is rendered as high-fill "paper glass" — translucent enough to feel layered, opaque enough to keep 4.5:1 text contrast over the composed backdrop.
+
+Every screen opens with a direct question and an executive answer. One accent (azure) carries structure; the navy ink brand color carries identity.
+
+## Brand
+
+- **Logo**: the supplied Inventra lockup (emblem + wordmark on brand navy). The full lockup appears in the workspace sidebar and on the auth screen; the emblem mark with the typographic wordmark appears in compact chrome (landing header). Assets: `public/logo.png`, `public/logo-mark.png`, `public/favicon.png`, `public/favicon.ico`, `public/apple-touch-icon.png`.
+- Never stretch, recolor, or add effects to the logo. Display it at its natural aspect ratio.
 
 ## Colors
 
-- **Paper Backgrounds**: `#FAF8F5` (light mode warm parchment) and `#14130F` (dark mode charcoal ink).
-- **Cards & Surfaces**: `#FFFEFB` (light) and `#1C1B17` (dark).
-- **Primary Ink**: `#1F3A5F` (deep navy ink) in light mode, `#8FB0E0` (soft cobalt) in dark mode.
-- **Borders & Dividers**: Crisp 1px `#E7E3DB` (light) and `#2E2C26` (dark).
-- **Status Indicators (Strictly Functional)**:
-  - Healthy / OK: `#2E7D32` (dark forest green)
-  - Warning / Low Stock / Approaching Expiry: `#B7791F` (warm amber)
-  - Critical / Stockout / Expired / Margin Erosion: `#B42318` (deep crimson)
+- **Paper & Ink**: warm parchment background `#FAF8F5`, blue-black ink `#212732`, tinted-white cards `#FFFEFB`.
+- **Primary (Inventra navy)**: `#04264D` — buttons, active states, primary chart series.
+- **Signal (azure)**: `#087DFD` — the single structural accent: focus rings, progress fills, highlight chart series, feature icons. Darker azure `#075DCC` (accent-foreground) for accent text.
+- **Surfaces**: secondary/muted `#F2EFE9`; accent wash `#E9F1FD` (azure-tinted) for hovers and selections.
+- **Borders & Dividers**: crisp 1px `#E5E1DA` light / `#263650` dark; sidebar hairlines use navy-alpha.
+- **Status Indicators (Strictly Functional)**: Healthy `#2E7D32`, Warning `#9C661A` (darkened to pass 4.5:1 as text), Critical `#B42318`.
+- **Charts**: navy `#04264D`, slate `#6A7C8A`, azure `#087DFD`, light azure `#8ABEF7`, warm gray `#C9C3B6`.
 
 ## Typography
 
-- **Headlines & Display Figures**: *Instrument Serif* paired seamlessly with *IBM Plex Sans Arabic* for RTL localization.
-- **Body & Controls**: *IBM Plex Sans* (Latin) and *IBM Plex Sans Arabic* (Arabic).
-- **Data & Tables**: Strict tabular numerals (`tabular-nums` / `tnum`) across all monetary values, percentages, quantities, dates, and SKUs to prevent layout jitter.
-- **Copywriting**: Calm, direct, authoritative. No hyphens or dashes in visible prose.
+- **Headlines & Display Figures**: Instrument Serif (400 only — never synthetic bold), paired with IBM Plex Sans Arabic for RTL headings.
+- **Body & Controls**: IBM Plex Sans + IBM Plex Sans Arabic; 400 body, 500 labels, 600 buttons and inline emphasis.
+- **Scale (dense data UI)**: 2xs 10px (chart micro-labels only, never interactive text) · xs 12px · sm 13px · base 14px · display figures 32–40px via `.kpi-num` clamp.
+- **Data & Tables**: strict tabular numerals across all monetary values, percentages, quantities, dates, and SKUs.
+- **Arabic**: taller leading (1.7); numerics and dates stay LTR inside RTL prose.
 
-## Layout
+## Surface Material (glass system)
 
-- Strict 8px baseline grid with standard container padding (`p-6` to `p-8`).
-- Header bar pinned to top with workspace title, status badges, currency selector, and language toggle.
-- Dense, highly readable information architecture optimized for desktop displays and tablet warehouse operations.
+- **Glass chrome** (`.glass`): fill `rgba(255,254,251,0.66)`, `backdrop-filter: blur(14px) saturate(150%)` — sticky header, sidebar.
+- **Strong glass** (`.glass-strong`): fill `rgba(255,254,251,0.88)`, blur 18px — dialogs, toasts, auth card.
+- **KPI cards**: `bg-card/75 backdrop-blur-sm` — the lightest frost, reserved for glanceable figures.
+- **Reading surfaces** (tables, long forms): solid `bg-card`. Glass is never stacked on glass.
+- **Background field**: a fixed, non-interactive wash (azure, navy, warm-cream radial tints at ≤6% opacity) gives frosted chrome something to refract. Flat and quiet.
+- **Fallback**: `@supports not (backdrop-filter…)` renders glass as solid card — no contrast or functionality depends on blur.
 
 ## Elevation & Depth
 
-- **Zero Drop-Shadows**: All cards and panels sit flush with the background, distinguished solely by 1px solid borders (`border border-border`) and subtle card fill contrast.
-- Visual hierarchy is established through typographic scale, weight, and whitespace rather than elevation layers.
+- Content surfaces sit flush: hierarchy comes from typography, borders, and fill contrast.
+- Floating layers only (dialogs, toasts) receive the soft `--shadow-float`. No glow effects, no hard offset shadows, no decorative shadows on content.
 
 ## Shapes
 
-- Consistent 8px border radius (`rounded-lg`) for cards and tables.
-- 6px border radius (`rounded-md`) for buttons, badges, and form inputs.
-- Pill badges (`rounded-full`) reserved exclusively for status indicators.
+- 12px radius (`rounded-lg`) for cards and tables; 10px (`rounded-md`) for buttons and inputs; 16–20px for dialogs and hero cards; pills (`rounded-full`) reserved for status chips, filter chips, and the language toggle.
 
 ## Components
 
-- **Executive KPI Cards**: Clean borders, top-level micro-label, prominent serif number, inline delta indicator (`Delta`), and baseline comparison note.
-- **Status Pills**: Discrete 8px colored dot followed by concise label text.
-- **Allocator Bar**: Dedicated budget cap input with quick preset chips and live capital utilization progress bar.
-- **Tables**: Subtle column headers (`th`), tabular numerals (`td`), and quiet row highlight on hover (`hover:bg-muted/40`).
+- **Executive KPI Cards**: light paper-glass frost, micro-label, prominent serif figure, inline delta, baseline comparison note.
+- **Status Pills**: 8px tone dot + concise label; never color alone.
+- **Allocator Bar**: budget cap input, preset pill chips, azure capital-utilization progress.
+- **Tables**: quiet headers, tabular numerals, `hover:bg-muted/40` rows.
 
 ## Do's and Don'ts
 
 ### Do
-- Always use tabular numbers (`tabular-nums`) for currency, quantities, percentages, and dates.
-- Render all user data through native React text children (zero raw HTML injection).
-- Provide complete bilingual parity between English and Arabic (RTL).
-- Highlight margin erosion immediately when selling price falls below current replacement cost.
+- Use tabular numbers for currency, quantities, percentages, and dates.
+- Render all user data through native React text children.
+- Keep full bilingual parity (EN/AR, RTL) with logical CSS properties.
+- Verify text contrast over glass against the composed backdrop.
+- Respect `prefers-reduced-motion`.
 
 ### Don't
-- Never use drop shadows or blur glows (`box-shadow`, `shadow-md`, `shadow-xl`).
-- Never use chunky colored vertical border stripes on nav items or cards (`border-s-2` / `border-s-4`).
-- Never invent demand numbers or fake confidence scores when sales history is insufficient.
-- Never use emojis or decorative iconography in financial tables.
+- Don't apply glass to dense reading surfaces or stack glass on glass.
+- Don't use emojis as interface icons or loud decorative gradients beyond the quiet background field.
+- Don't invent demand numbers or fake confidence scores.
+- Don't use chunky colored border stripes on nav items or cards.
+- Don't synthetic-bold Instrument Serif (it only ships weight 400).

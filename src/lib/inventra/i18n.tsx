@@ -280,6 +280,6 @@ export function LangProvider({children}:{children:ReactNode}){
   return <Ctx.Provider value={{lang,setLang,t:k=>dicts[lang][k]}}>{children}</Ctx.Provider>;
 }
 export const useT=()=>useContext(Ctx);
-export function LangToggle(){const {lang,setLang,t}=useT();return <button type="button" onClick={()=>setLang(lang==='ar'?'en':'ar')} className="rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent">{t('lang')}</button>;}
+export function LangToggle(){const {lang,setLang,t}=useT();return <button type="button" onClick={()=>setLang(lang==='ar'?'en':'ar')} className="rounded-full border border-border px-3.5 py-1.5 text-sm font-medium transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{t('lang')}</button>;}
 
 export const fmt=(s:string,v:Record<string,string|number>)=>s.replace(/\{(\w+)\}/g,(_,k)=>String(v[k]??''));
