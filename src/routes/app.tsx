@@ -43,15 +43,15 @@ function AppPage(){
   };
 
   return <div className="flex min-h-screen bg-background text-foreground">
-    <aside className={`${open?'flex':'hidden'} fixed inset-y-0 start-0 z-30 w-60 flex-col border-e border-sidebar-border glass p-4 text-sidebar-foreground md:sticky md:top-0 md:flex md:h-screen`}>
+    <aside className={`${open?'flex':'hidden'} fixed inset-y-0 start-0 z-30 w-60 flex-col border-e border-sidebar-border glass-ink p-4 text-sidebar-foreground md:sticky md:top-0 md:flex md:h-screen`}>
       <div className="mb-6 border-b border-sidebar-border pb-5"><Link to="/" aria-label="Inventra"><img src="/logo.png" alt="Inventra" width={536} height={482} className="mx-auto block h-24 w-auto rounded-xl"/></Link></div>
-      <nav className="flex-1 space-y-0.5">{items.map(k=><Link key={k} to="/app" search={{s:k}} onClick={()=>setOpen(false)} aria-current={s===k?'page':undefined} className={`block rounded-md px-3 py-2 text-sm transition-colors ${s===k?'bg-sidebar-accent font-semibold text-sidebar-foreground':'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}`}>{t(k as 'dashboard')}</Link>)}</nav>
-      {ctx.session&&<button onClick={async()=>{await supabase.auth.signOut();void nav({to:'/'});}} className="px-3 py-2 text-start text-sm text-muted-foreground hover:text-sidebar-foreground">{t('signOut')}</button>}
+      <nav className="flex-1 space-y-0.5">{items.map(k=><Link key={k} to="/app" search={{s:k}} onClick={()=>setOpen(false)} aria-current={s===k?'page':undefined} className={`block rounded-md px-3 py-2 text-sm transition-colors ${s===k?'bg-sidebar-accent font-semibold text-sidebar-accent-foreground':'text-ink-muted hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}`}>{t(k as 'dashboard')}</Link>)}</nav>
+      {ctx.session&&<button onClick={async()=>{await supabase.auth.signOut();void nav({to:'/'});}} className="px-3 py-2 text-start text-sm text-ink-muted transition-colors hover:text-sidebar-foreground">{t('signOut')}</button>}
     </aside>
     <main className="min-w-0 flex-1">
       <header className="sticky top-0 z-20 flex flex-wrap items-center gap-3 border-b border-border glass px-6 py-3">
         <button className="text-sm md:hidden" onClick={()=>setOpen(!open)} aria-label="Menu">{t('menu')}</button>
-        <h1 className="text-2xl">{t(s as 'dashboard')}</h1>
+        <h1 className="text-3xl">{t(s as 'dashboard')}</h1>
         <span className="text-sm text-muted-foreground">{ctx.demo?t('workspaceDemo'):ctx.name} · {t(ctx.role==='supplier'?'supplierRole':ctx.role)}</span>
         {ctx.demo&&<SampleTag/>}
         <div className="ms-auto flex items-center gap-2">
@@ -913,10 +913,10 @@ function Copilot(){
     return {name:p.name,sku:p.sku,stock:p.stock,min:p.min,cost:p.cost,repCost:p.repCost,price:p.price,wh:p.wh,locations:p.locations,batch:p.batch_number,expiry:p.expiry_date,lead:p.lead,forecast14:f.ok?Math.round(f.daily.slice(0,14).reduce((a:number,b:number)=>a+b,0)):null,forecastNote:f.ok?null:f.reason,dailyWape:f.ok&&f.accuracy?f.accuracy.wapeDaily:null,recommendation:r.action,orderQty:r.qty};}),
     openOrders:d.R.filter(r=>!['Received','Cancelled'].includes(r.status)).map(r=>({pid:r.pid,qty:r.qty,status:r.status}))}),[d]);
   async function send(text:string){if(!text.trim()||busy)return;setBusy(true);setQ('');try{const a=await ask({data:{question:text,lang,summary}});setMsgs(m=>[...m,{q:text,a}]);}catch(e){toast.error(e instanceof Error?e.message:'Error');}finally{setBusy(false);}}
-  return <div className="mx-auto max-w-3xl space-y-4">
-    <div className="flex flex-wrap gap-2">{(['q1','q2','q3'] as const).map(k=><button key={k} className={btn2} disabled={busy} onClick={()=>void send(t(k))}>{t(k)}</button>)}</div>
-    {msgs.map((m,i)=><div key={i} className="space-y-2"><p className="ms-auto w-fit max-w-[85%] rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">{m.q}</p><div className={`${card} whitespace-pre-wrap text-sm`}>{m.a}</div></div>)}
-    {busy&&<p className="text-sm text-muted-foreground">{t('thinking')}</p>}
-    <form onSubmit={e=>{e.preventDefault();void send(q);}} className="flex gap-2"><input value={q} onChange={e=>setQ(e.target.value)} placeholder={t('askPlaceholder')} className={`${inp} flex-1`} maxLength={1000}/><button disabled={busy} className={btn}>{t('ask')}</button></form>
+  return <div className="mx-auto max-w-3xl space-y-4 rounded-2xl border border-ink-border bg-ink p-6 text-ink-foreground">
+    <div className="flex flex-wrap gap-2">{(['q1','q2','q3'] as const).map(k=><button key={k} className="rounded-full border border-ink-border bg-white/5 px-3.5 py-1.5 text-sm font-medium transition-colors hover:bg-white/10 disabled:opacity-50" disabled={busy} onClick={()=>void send(t(k))}>{t(k)}</button>)}</div>
+    {msgs.map((m,i)=><div key={i} className="space-y-2"><p className="ms-auto w-fit max-w-[85%] rounded-2xl bg-azure-deep px-3 py-2 text-sm text-white">{m.q}</p><div className="whitespace-pre-wrap rounded-2xl border border-ink-border bg-white/5 p-4 text-sm">{m.a}</div></div>)}
+    {busy&&<p className="text-sm text-ink-muted">{t('thinking')}</p>}
+    <form onSubmit={e=>{e.preventDefault();void send(q);}} className="flex gap-2"><input value={q} onChange={e=>setQ(e.target.value)} placeholder={t('askPlaceholder')} className="flex-1 rounded-md border border-ink-border bg-white/5 px-3 py-2 text-sm text-ink-foreground transition-colors placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring" maxLength={1000}/><button disabled={busy} className="rounded-md bg-azure-deep px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-azure-deep/90 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{t('ask')}</button></form>
   </div>;
 }

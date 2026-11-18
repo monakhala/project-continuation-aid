@@ -13,6 +13,10 @@ colors:
   accent: "#E9F1FD"
   accent-foreground: "#075DCC"
   signal: "#087DFD"
+  ink: "#0B1E38"
+  ink-foreground: "#E7EBF1"
+  ink-muted: "#A2B4CE"
+  azure-deep: "#075DCC"
   border: "#E5E1DA"
   input: "#E4E0D8"
   ring: "#087DFD"
@@ -44,8 +48,8 @@ rounded:
   sm: "8px"
   md: "10px"
   lg: "12px"
-  xl: "16px"
-  2xl: "20px"
+  xl: "16px (cards, KPI, panels — reference geometry)"
+  2xl: "20px (hero band, dialogs, ink panels)"
 spacing:
   xs: "4px"
   sm: "8px"
@@ -81,7 +85,8 @@ Every screen opens with a direct question and an executive answer. One accent (a
 
 - **Headlines & Display Figures**: Instrument Serif (400 only — never synthetic bold), paired with IBM Plex Sans Arabic for RTL headings.
 - **Body & Controls**: IBM Plex Sans + IBM Plex Sans Arabic; 400 body, 500 labels, 600 buttons and inline emphasis.
-- **Scale (dense data UI)**: 2xs 10px (chart micro-labels only, never interactive text) · xs 12px · sm 13px · base 14px · display figures 32–40px via `.kpi-num` clamp.
+- **Scale (dense data UI)**: 2xs 10px (chart micro-labels only, never interactive text) · xs 12px · sm 13px · base 14px · page titles 26px · hero answers 31.5px serif · display figures 34–45px via `.kpi-num` clamp.
+- **Small caps**: table headers and stat eyebrows are 12px uppercase with 0.08–0.1em tracking (`th`, `.eyebrow`) — data labels only, never page headings. Arabic is exempt (`[dir="rtl"]` disables transform and letterspacing to protect glyph joining).
 - **Data & Tables**: strict tabular numerals across all monetary values, percentages, quantities, dates, and SKUs.
 - **Arabic**: taller leading (1.7); numerics and dates stay LTR inside RTL prose.
 
@@ -91,8 +96,9 @@ Every screen opens with a direct question and an executive answer. One accent (a
 - **Strong glass** (`.glass-strong`): fill `rgba(255,254,251,0.88)`, blur 18px — dialogs, toasts, auth card.
 - **KPI cards**: `bg-card/75 backdrop-blur-sm` — the lightest frost, reserved for glanceable figures.
 - **Reading surfaces** (tables, long forms): solid `bg-card`. Glass is never stacked on glass.
-- **Background field**: a fixed, non-interactive wash (azure, navy, warm-cream radial tints at ≤6% opacity) gives frosted chrome something to refract. Flat and quiet.
-- **Fallback**: `@supports not (backdrop-filter…)` renders glass as solid card — no contrast or functionality depends on blur.
+- **Background field**: a fixed, non-interactive wash (azure, navy, warm-cream radial tints) gives frosted chrome something to refract — the warm field echoes the reference's tinted zones.
+- **Dark structural zone** (`.glass-ink`, `bg-ink`): the frosted sidebar and the AI copilot panel render as deep navy ink with white-alpha hairlines — the reference's dark technical zone, translated to the brand navy. Text on ink: `#E7EBF1` / `#A2B4CE` (7.8:1+).
+- **Fallback**: `@supports not (backdrop-filter…)` renders glass as solid card or solid ink — no contrast or functionality depends on blur.
 
 ## Elevation & Depth
 
@@ -105,7 +111,9 @@ Every screen opens with a direct question and an executive answer. One accent (a
 
 ## Components
 
-- **Executive KPI Cards**: light paper-glass frost, micro-label, prominent serif figure, inline delta, baseline comparison note.
+- **Hero band**: every screen opens with a tinted azure band — small-caps eyebrow question, large serif answer (reference greeting-hero principle).
+- **Executive KPI Cards**: frosted glass, each card carrying its own quiet tint (azure, navy, cream, slate — the reference's tinted stat-grid principle), micro-label eyebrow, prominent serif figure, inline delta, baseline note.
+- **AI Copilot**: dark ink panel with glass bubbles — azure-deep user messages, white-alpha assistant surfaces.
 - **Status Pills**: 8px tone dot + concise label; never color alone.
 - **Allocator Bar**: budget cap input, preset pill chips, azure capital-utilization progress.
 - **Tables**: quiet headers, tabular numerals, `hover:bg-muted/40` rows.

@@ -20,8 +20,8 @@ function Landing(){
     </header>
     <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-12 md:grid-cols-2 md:py-20">
       <div>
-        <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-primary">{t('tagline')}</p>
-        <h1 className="text-4xl leading-tight md:text-5xl">{t('heroTitle')}</h1>
+        <p className="eyebrow mb-4 text-sm">{t('tagline')}</p>
+        <h1 className="text-4xl leading-tight md:text-6xl">{t('heroTitle')}</h1>
         <p className="mt-5 text-lg text-muted-foreground">{t('heroSub')}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link to="/app" onClick={()=>setDemo(true)} className="rounded-xl bg-primary px-5 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{t('tryDemo')}</Link>

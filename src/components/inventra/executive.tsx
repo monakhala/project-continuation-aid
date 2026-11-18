@@ -11,7 +11,7 @@ import {liquidationRows,applyClearance,clearanceApplied} from '@/lib/inventra/li
 import type {Currency} from '@/lib/inventra/types';
 
 const panel='overflow-hidden rounded-xl border border-border bg-card';
-const th='px-4 py-3 text-start text-xs font-medium text-muted-foreground';
+const th='px-4 py-3 text-start text-xs font-semibold text-muted-foreground';
 const td='border-t border-border px-4 py-3 tnum';
 const pct=(n:number,dp=1)=>`${(n*100).toFixed(dp)}%`;
 

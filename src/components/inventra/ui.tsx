@@ -10,13 +10,13 @@ export function SampleTag(){
   return <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground"><span className="h-1.5 w-1.5 rounded-full bg-warning"/>{t('sample')}</span>;
 }
 
-/** Opens each screen: the one question it answers, then the answer. */
+/** Opens each screen: the one question it answers, then the answer — as a tinted hero band. */
 export function ScreenIntro({q,a,children}:{q:string;a:ReactNode;children?:ReactNode}){
   const {demo}=useInventra();
-  return <section className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+  return <section className="hero-band flex flex-wrap items-end justify-between gap-4 rounded-2xl border px-6 py-6">
     <div className="min-w-0">
-      <div className="flex items-center gap-3"><p className="text-xs font-medium text-muted-foreground">{q}</p>{demo&&<SampleTag/>}</div>
-      <p className="font-display mt-2 text-3xl leading-tight">{a}</p>
+      <div className="flex items-center gap-3"><p className="eyebrow">{q}</p>{demo&&<SampleTag/>}</div>
+      <p className="font-display mt-3 text-4xl leading-tight">{a}</p>
     </div>
     {children}
   </section>;
@@ -36,6 +36,6 @@ export function Empty({line,action,to,onClick}:{line:string;action:string;to?:Se
   </div>;
 }
 
-export const th='px-3 py-2 text-start text-xs font-medium text-muted-foreground border-b border-border';
+export const th='px-3 py-2 text-start text-xs font-semibold text-muted-foreground border-b border-border';
 export const td='px-3 py-2.5 tnum';
 export const tr='border-b border-border last:border-b-0 hover:bg-muted/40';
