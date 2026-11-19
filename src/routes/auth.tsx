@@ -19,7 +19,7 @@ function Auth(){
     const r=mode==='in'?await supabase.auth.signInWithPassword({email,password:pw}):await supabase.auth.signUp({email,password:pw,options:{emailRedirectTo:window.location.origin+'/auth'}});
     setBusy(false);if(r.error)toast.error(r.error.message);else if(mode==='up'&&!r.data.session)toast.success(t('checkEmail'));}
   async function google(){const r=await lovable.auth.signInWithOAuth('google',{redirect_uri:window.location.origin+'/auth'});if(r.error)toast.error(r.error.message);}
-  return <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
+  return <div className="flex min-h-screen flex-col items-center justify-center px-4">
     <div className="absolute end-4 top-4"><LangToggle/></div>
     <div className="w-full max-w-sm rounded-2xl border border-border glass-strong float p-6">
       <div className="flex justify-center"><Link to="/" aria-label="Inventra"><img src="/logo.png" alt="Inventra" width={536} height={482} className="h-20 w-auto rounded-xl"/></Link></div><h1 className="mt-4 text-xl font-semibold">{t('signInTitle')}</h1>

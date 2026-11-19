@@ -90,22 +90,22 @@
   --radius: 12px;
 
   /* Ink & paper */
-  --background: #FAF8F5;
-  --foreground: #212732;
-  --card: #FFFEFB; --card-foreground: #212732;
-  --popover: #FFFEFB; --popover-foreground: #212732;
+  --background: #AFC8E5;
+  --foreground: #172C45;
+  --card: #DCE9F7; --card-foreground: #172C45;
+  --popover: #DCE9F7; --popover-foreground: #172C45;
 
   /* Brand: Inventra navy ink + azure signal */
   --primary: #04264D; --primary-foreground: #FCFCFC;
   --secondary: #F2EFE9; --secondary-foreground: #212732;
-  --muted: #F2EFE9; --muted-foreground: #5C6B78;
+  --muted: #C5D8EE; --muted-foreground: #354D66;
   --accent: #E9F1FD; --accent-foreground: #075DCC;
 
   /* Semantic (strictly functional; the brand board defines none, so these
      stay restrained and are darkened where they appear as text for 4.5:1) */
   --success: #2E7D32; --warning: #9C661A; --destructive: #B42318; --destructive-foreground: #FCFCFC;
 
-  --border: #E5E1DA; --input: #E4E0D8; --ring: #087DFD;
+  --border: #9CB6D3; --input: #93AFCD; --ring: #087DFD;
   --chart-1: #04264D; --chart-2: #6A7C8A; --chart-3: #087DFD; --chart-4: #8ABEF7; --chart-5: #C9C3B6;
 
   --sidebar: rgb(11 30 56 / 0.92); --sidebar-foreground: #E7EBF1;
@@ -118,9 +118,9 @@
   --azure-deep: #075DCC;
 
   /* Frosted-glass material (floating chrome only) */
-  --glass-fill: rgb(255 254 251 / 0.66);
-  --glass-fill-strong: rgb(255 254 251 / 0.88);
-  --glass-ink-fill: rgb(11 30 56 / 0.92);
+  --glass-fill: rgb(207 226 248 / 0.28);
+  --glass-fill-strong: rgb(220 234 250 / 0.56);
+  --glass-ink-fill: rgb(11 30 56 / 0.52);
   --glass-blur: 14px;
   --glass-blur-strong: 18px;
   --shadow-float: 0 1px 2px rgb(4 38 77 / 0.05), 0 16px 40px -20px rgb(4 38 77 / 0.28);
@@ -143,7 +143,7 @@
   --sidebar-border: rgb(138 190 247 / 0.12); --sidebar-ring: #8ABEF7;
   --ink: #0A1626; --ink-foreground: #E9EDF4; --ink-muted: #93A1B4; --ink-border: rgb(138 190 247 / 0.16);
   --azure-deep: #3D8BF0;
-  --glass-ink-fill: rgb(10 22 38 / 0.92);
+  --glass-ink-fill: rgb(10 22 38 / 0.78);
   --glass-fill: rgb(22 32 47 / 0.66);
   --glass-fill-strong: rgb(22 32 47 / 0.88);
   --shadow-float: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -20px rgb(0 0 0 / 0.55);
@@ -154,25 +154,28 @@
   html { font-size: 14px; }
   body {
     background-color: var(--color-background);
+    background-image:
+      radial-gradient(900px 720px at 6% 8%, rgb(8 125 253 / 0.40), transparent 72%),
+      radial-gradient(1000px 820px at 96% 12%, rgb(4 38 77 / 0.24), transparent 70%),
+      radial-gradient(900px 760px at 58% 104%, rgb(42 125 213 / 0.38), transparent 68%),
+      linear-gradient(132deg, #9CB9DC 0%, #BED3EB 46%, #8FADCE 100%);
+    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     line-height: 1.55;
   }
-  /* Quiet wash field so frosted chrome reads as glass. Fixed, non-interactive. */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
+  .dark body {
+    background-color: var(--color-background);
     background-image:
-      radial-gradient(1200px 800px at 85% -15%, rgb(8 125 253 / 0.16), transparent 60%),
-      radial-gradient(1000px 700px at -15% 30%, rgb(4 38 77 / 0.10), transparent 55%),
-      radial-gradient(1000px 700px at 55% 115%, rgb(226 195 181 / 0.24), transparent 58%);
+      radial-gradient(900px 720px at 6% 8%, rgb(8 125 253 / 0.30), transparent 72%),
+      radial-gradient(1000px 820px at 96% 12%, rgb(4 38 77 / 0.68), transparent 70%),
+      linear-gradient(132deg, #0E1522 0%, #14243A 52%, #101D31 100%);
   }
-  h1, .font-display { font-family: var(--font-serif); font-weight: 400; letter-spacing: -0.01em; }
-  /* Instrument Serif has no Arabic glyphs: use Plex Sans Arabic for headings in RTL */
-  [dir="rtl"] h1, [dir="rtl"] .font-display { font-family: "IBM Plex Sans Arabic", var(--font-sans); font-weight: 600; }
+  /* Plex Sans carries functional hierarchy; Instrument Serif is reserved for
+     selected editorial statements, not applied indiscriminately to every heading. */
+  h1 { font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.035em; }
+  .font-display { font-family: var(--font-serif); font-weight: 400; letter-spacing: -0.02em; }
+  [dir="rtl"] h1, [dir="rtl"] .font-display { font-family: "IBM Plex Sans Arabic", var(--font-sans); font-weight: 600; letter-spacing: normal; }
   /* Arabic needs taller leading */
   [dir="rtl"] body { line-height: 1.7; }
   table, input[type="number"], .tnum, [class*="text-2xl"], [class*="text-3xl"], [class*="text-4xl"] { font-variant-numeric: tabular-nums; }
@@ -190,9 +193,9 @@
 }
 
 @layer components {
-  /* Large KPI numbers in the serif face, 34-45px display scale */
-  .kpi-num { font-family: var(--font-serif); font-size: clamp(2.4rem, 3.4vw, 3.2rem); line-height: 1.05; font-variant-numeric: tabular-nums; }
-  [dir="rtl"] .kpi-num { font-family: "IBM Plex Sans Arabic", var(--font-sans); font-weight: 600; }
+  /* Operational numbers use Plex Sans for fast scanning and stable tabular alignment. */
+  .kpi-num { font-family: var(--font-sans); font-size: clamp(1.35rem, 2vw, 2rem); font-weight: 600; letter-spacing: -0.05em; line-height: 1.08; font-variant-numeric: tabular-nums; }
+  [dir="rtl"] .kpi-num { font-family: "IBM Plex Sans Arabic", var(--font-sans); font-weight: 600; letter-spacing: normal; }
 
   /* Frosted-glass surfaces for floating chrome. Combine with border utilities. */
   .glass {
@@ -211,29 +214,92 @@
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
     backdrop-filter: blur(var(--glass-blur)) saturate(150%);
   }
+  .glass-surface {
+    background: rgb(205 226 250 / 0.35);
+    border-color: rgb(255 255 255 / 0.42);
+    -webkit-backdrop-filter: blur(18px) saturate(155%);
+    backdrop-filter: blur(18px) saturate(155%);
+    box-shadow: inset 0 1px rgb(255 255 255 / 0.55), 0 14px 38px -30px rgb(4 38 77 / 0.38);
+  }
   /* Soft depth for overlay layers only (dialogs, toasts); content stays flush */
   .float { box-shadow: var(--shadow-float); }
 
   /* Screen hero band: tinted panel opening every screen (reference hero principle) */
   .hero-band {
-    background: color-mix(in srgb, var(--accent) 34%, transparent);
-    border-color: color-mix(in srgb, var(--chart-3) 18%, transparent);
+    background: color-mix(in srgb, var(--accent) 60%, transparent);
+    border-color: color-mix(in srgb, var(--chart-3) 28%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(155%);
+    backdrop-filter: blur(16px) saturate(155%);
   }
   /* Small-caps eyebrow label (data labels only, never above page headings) */
   .eyebrow { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--accent-foreground); }
   [dir="rtl"] .eyebrow { text-transform: none; letter-spacing: normal; }
 
-  /* Azure-frosted KPI stat card; each card carries its own quiet tint (reference stat-grid principle).
+  /* Blue-frosted KPI stat card; each card gets a distinct blue-family tint.
      Pairs with `border` + `rounded-xl` utilities (no border-color utility). */
   .kpi-card {
-    background: color-mix(in srgb, var(--accent) 45%, transparent);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-    border-color: color-mix(in srgb, var(--chart-3) 22%, transparent);
+    background: color-mix(in srgb, #DDEBFC 40%, transparent);
+    -webkit-backdrop-filter: blur(18px) saturate(165%);
+    backdrop-filter: blur(18px) saturate(165%);
+    border-color: color-mix(in srgb, #4D91E8 34%, transparent);
   }
-  .kpi-card:nth-child(4n+2) { background: color-mix(in srgb, var(--primary) 10%, transparent); border-color: color-mix(in srgb, var(--primary) 20%, transparent); }
-  .kpi-card:nth-child(4n+3) { background: color-mix(in srgb, #E5C5B9 32%, transparent); border-color: color-mix(in srgb, #B49588 32%, transparent); }
-  .kpi-card:nth-child(4n+4) { background: color-mix(in srgb, var(--chart-2) 18%, transparent); border-color: color-mix(in srgb, var(--chart-2) 28%, transparent); }
+  .kpi-card:nth-child(4n+2) { background: color-mix(in srgb, #CBE0FA 42%, transparent); border-color: color-mix(in srgb, #3578CF 36%, transparent); }
+  .kpi-card:nth-child(4n+3) { background: color-mix(in srgb, #E8F2FE 44%, transparent); border-color: color-mix(in srgb, #78A9E5 42%, transparent); }
+  .kpi-card:nth-child(4n+4) { background: color-mix(in srgb, #D4E4F7 40%, transparent); border-color: color-mix(in srgb, #5B83B2 38%, transparent); }
+
+  /* Dashboard composition: oversized blue glass hero + compact attention panel. */
+  .dashboard-feature {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    color: #F6FAFF;
+    border: 1px solid rgb(255 255 255 / 0.28);
+    background:
+      radial-gradient(360px 260px at 92% 4%, rgb(111 176 255 / 0.46), transparent 72%),
+      linear-gradient(128deg, rgb(4 38 77 / 0.78), rgb(7 93 204 / 0.72));
+    -webkit-backdrop-filter: blur(22px) saturate(165%);
+    backdrop-filter: blur(22px) saturate(165%);
+    box-shadow: 0 18px 54px -28px rgb(4 38 77 / 0.62), inset 0 1px rgb(255 255 255 / 0.22);
+  }
+  .dashboard-feature::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 19rem;
+    aspect-ratio: 1;
+    inset-inline-end: -7rem;
+    inset-block-end: -13rem;
+    border: 1px solid rgb(255 255 255 / 0.18);
+    border-radius: 50%;
+    box-shadow: 0 0 0 28px rgb(255 255 255 / 0.045), 0 0 0 60px rgb(255 255 255 / 0.035);
+  }
+  .dashboard-feature .eyebrow { color: #B9D8FF; }
+  .dashboard-feature h2 { font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.035em; }
+  .dashboard-feature-copy { color: rgb(246 250 255 / 0.76); }
+  .dashboard-feature-stat { border-color: rgb(255 255 255 / 0.2); }
+  .dashboard-ring-track { stroke: rgb(255 255 255 / 0.18); }
+  .dashboard-ring-value { stroke: #8CC5FF; filter: drop-shadow(0 0 8px rgb(140 197 255 / 0.42)); }
+  .dashboard-ring-number { font-family: var(--font-serif); font-size: 2.8rem; }
+  .dashboard-ring-label { white-space: nowrap; font-size: 9px; line-height: 1.1; }
+  .dashboard-watch {
+    background: color-mix(in srgb, #DCEBFA 42%, transparent);
+    border-color: rgb(70 128 198 / 0.28);
+    -webkit-backdrop-filter: blur(18px) saturate(155%);
+    backdrop-filter: blur(18px) saturate(155%);
+    box-shadow: inset 0 1px rgb(255 255 255 / 0.8), 0 12px 38px -28px rgb(4 38 77 / 0.42);
+  }
+  .dashboard-watch-row + .dashboard-watch-row { border-color: rgb(4 38 77 / 0.11); }
+  .dashboard-watch-row { align-items: flex-start; flex-direction: column; gap: 0.25rem; }
+  .dashboard-watch-row > div { width: 100%; }
+  .dashboard-watch-row > span { white-space: normal; }
+  @media (min-width: 900px) {
+    .dashboard-hero { grid-template-columns: minmax(0, 1.7fr) minmax(15rem, 0.9fr); }
+  }
+  .dark .kpi-card { background: color-mix(in srgb, var(--card) 78%, transparent); border-color: color-mix(in srgb, var(--chart-3) 30%, transparent); }
+  .dark .kpi-card:nth-child(4n+2) { background: color-mix(in srgb, var(--card) 88%, transparent); border-color: color-mix(in srgb, var(--primary) 24%, transparent); }
+  .dark .kpi-card:nth-child(4n+3) { background: color-mix(in srgb, var(--card) 72%, transparent); border-color: color-mix(in srgb, var(--chart-3) 26%, transparent); }
+  .dark .kpi-card:nth-child(4n+4) { background: color-mix(in srgb, var(--card) 82%, transparent); border-color: color-mix(in srgb, var(--chart-2) 28%, transparent); }
+  .dark .dashboard-watch { background: color-mix(in srgb, var(--card) 90%, transparent); border-color: var(--border); }
 
   /* Tinted table-header band for editorial hierarchy */
   thead th { background: color-mix(in srgb, var(--muted) 40%, transparent); }
@@ -243,7 +309,10 @@
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass, .glass-strong { background: var(--color-card); }
   .glass-ink { background: var(--ink); }
+  .glass-surface { background: var(--color-card); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .kpi-card { background: var(--color-accent); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .hero-band, .dashboard-watch { background: var(--color-accent); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .dashboard-feature { background: var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 
 /* Brand lockup: the supplied Inventra emblem and wordmark images */

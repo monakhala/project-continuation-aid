@@ -25,7 +25,7 @@ export const Route=createFileRoute('/app')({
   head:()=>({meta:[{title:'Workspace | Inventra'},{name:'description',content:'Your Inventra inventory workspace: stock, forecasts, restocking and purchase orders.'},{property:'og:title',content:'Workspace | Inventra'},{property:'og:description',content:'Stock, forecasts, restocking and purchase orders.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),
   component:AppPage,
 });
-const card='rounded-xl border border-border bg-card p-6';
+const card='glass-surface rounded-xl border p-6';
 const btn='rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const btn2='rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const inp='rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring';
@@ -42,8 +42,8 @@ function AppPage(){
     });
   };
 
-  return <div className="flex min-h-screen bg-background text-foreground">
-    <aside className={`${open?'flex':'hidden'} fixed inset-y-0 start-0 z-30 w-60 flex-col border-e border-sidebar-border glass-ink p-4 text-sidebar-foreground md:sticky md:top-0 md:flex md:h-screen`}>
+  return <div className="flex min-h-screen text-foreground">
+    <aside className={`${open?'flex':'hidden'} fixed inset-y-3 start-3 z-30 w-60 flex-col rounded-2xl border border-sidebar-border glass-ink p-4 text-sidebar-foreground md:sticky md:top-3 md:m-3 md:flex md:h-[calc(100vh-1.5rem)]`}>
       <div className="mb-6 border-b border-sidebar-border pb-5"><Link to="/" aria-label="Inventra"><img src="/logo.png" alt="Inventra" width={536} height={482} className="mx-auto block h-24 w-auto rounded-xl"/></Link></div>
       <nav className="flex-1 space-y-0.5">{items.map(k=><Link key={k} to="/app" search={{s:k}} onClick={()=>setOpen(false)} aria-current={s===k?'page':undefined} className={`block rounded-md px-3 py-2 text-sm transition-colors ${s===k?'bg-sidebar-accent font-semibold text-sidebar-accent-foreground':'text-ink-muted hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}`}>{t(k as 'dashboard')}</Link>)}</nav>
       {ctx.session&&<button onClick={async()=>{await supabase.auth.signOut();void nav({to:'/'});}} className="px-3 py-2 text-start text-sm text-ink-muted transition-colors hover:text-sidebar-foreground">{t('signOut')}</button>}
@@ -51,7 +51,7 @@ function AppPage(){
     <main className="min-w-0 flex-1">
       <header className="sticky top-0 z-20 flex flex-wrap items-center gap-3 border-b border-border glass px-6 py-3">
         <button className="text-sm md:hidden" onClick={()=>setOpen(!open)} aria-label="Menu">{t('menu')}</button>
-        <h1 className="text-3xl">{t(s as 'dashboard')}</h1>
+        <h1 className="font-sans text-2xl font-semibold tracking-tight">{t(s as 'dashboard')}</h1>
         <span className="text-sm text-muted-foreground">{ctx.demo?t('workspaceDemo'):ctx.name} · {t(ctx.role==='supplier'?'supplierRole':ctx.role)}</span>
         {ctx.demo&&<SampleTag/>}
         <div className="ms-auto flex items-center gap-2">

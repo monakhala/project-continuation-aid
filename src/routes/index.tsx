@@ -13,7 +13,7 @@ export const Route=createFileRoute('/')({
 function Landing(){
   const {t}=useT(),{session,setDemo}=useInventra();
   const feats=[[LineChart,'f1','f1d'],[ClipboardList,'f2','f2d'],[Users,'f3','f3d'],[Sparkles,'f4','f4d']] as const;
-  return <div className="min-h-screen bg-background text-foreground">
+  return <div className="min-h-screen text-foreground">
     <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
       <Brand compact/>
       <div className="flex items-center gap-2"><LangToggle/>{session?<Link to="/app" onClick={()=>setDemo(false)} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{t('openApp')}</Link>:<Link to="/auth" className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{t('signIn')}</Link>}</div>
@@ -21,7 +21,7 @@ function Landing(){
     <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-12 md:grid-cols-2 md:py-20">
       <div>
         <p className="eyebrow mb-4 text-sm">{t('tagline')}</p>
-        <h1 className="text-4xl leading-tight md:text-6xl">{t('heroTitle')}</h1>
+        <h1 className="font-display text-4xl leading-tight md:text-6xl">{t('heroTitle')}</h1>
         <p className="mt-5 text-lg text-muted-foreground">{t('heroSub')}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link to="/app" onClick={()=>setDemo(true)} className="rounded-xl bg-primary px-5 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{t('tryDemo')}</Link>

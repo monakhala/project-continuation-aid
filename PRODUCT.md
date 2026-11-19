@@ -37,7 +37,7 @@ Unlike bloated, opaque enterprise ERPs or generic spreadsheet tools, Inventra pr
 
 ## Brand Commitments
 
-- Aesthetic: Editorial financial publication on warm paper with restrained frosted-glass floating chrome (header, sidebar, dialogs, toasts); flush content surfaces, 1px borders, 12px card radii.
+- Aesthetic: Blue atmospheric glass interface with a floating frosted sidebar, translucent KPI cards, and solid blue-tinted reading surfaces; 1px borders and rounded card geometry.
 - Colors: Inventra navy primary (`#04264D` light / `#8ABEF7` dark) with azure signal accents (`#087DFD`), paper background (`#FAF8F5` light / `#0E1522` dark), functional status indicators (Healthy `#2E7D32`, Warning `#9C661A`, Critical `#B42318`).
 - Typography: Instrument Serif for headlines and large KPI numbers, IBM Plex Sans for body text, falling back to IBM Plex Sans Arabic in RTL.
 - Microcopy: Calm, definitive, no hyphens/dashes in visible text, opening with a direct question and executive answer on every screen.

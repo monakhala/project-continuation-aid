@@ -1,15 +1,15 @@
 ---
 name: Inventra
-description: High-end B2B Inventory Intelligence with a warm-paper editorial base and restrained glassmorphism chrome.
+description: High-end B2B Inventory Intelligence with an atmospheric blue glass canvas and precision data typography.
 colors:
   primary: "#04264D"
   primary-foreground: "#FCFCFC"
-  background: "#FAF8F5"
-  foreground: "#212732"
-  card: "#FFFEFB"
-  card-foreground: "#212732"
-  muted: "#F2EFE9"
-  muted-foreground: "#5C6B78"
+  background: "#AFC8E5"
+  foreground: "#172C45"
+  card: "#DCE9F7"
+  card-foreground: "#172C45"
+  muted: "#C5D8EE"
+  muted-foreground: "#354D66"
   accent: "#E9F1FD"
   accent-foreground: "#075DCC"
   signal: "#087DFD"
@@ -17,8 +17,8 @@ colors:
   ink-foreground: "#E7EBF1"
   ink-muted: "#A2B4CE"
   azure-deep: "#075DCC"
-  border: "#E5E1DA"
-  input: "#E4E0D8"
+  border: "#9CB6D3"
+  input: "#93AFCD"
   ring: "#087DFD"
   success: "#2E7D32"
   warning: "#9C661A"
@@ -62,7 +62,7 @@ spacing:
 
 ## Overview
 
-Inventra pairs the calm authority of an editorial financial journal with a restrained, frosted-glass material for floating chrome. The interface conveys mathematical precision and operational serenity: dense data stays on solid paper surfaces, while the chrome that floats above scrolling content (top bar, sidebar, dialogs, toasts, KPI cards) is rendered as high-fill "paper glass" — translucent enough to feel layered, opaque enough to keep 4.5:1 text contrast over the composed backdrop.
+Inventra uses an atmospheric blue canvas with layered frosted-glass surfaces. A deep navy glass hero, floating translucent sidebar, ice-blue metric panels, and a clear expiry-watch surface translate the supplied dashboard composition into the Inventra brand. Density stays purposeful: key signals are glanceable, and detailed tables remain legible.
 
 Every screen opens with a direct question and an executive answer. One accent (azure) carries structure; the navy ink brand color carries identity.
 
@@ -73,30 +73,32 @@ Every screen opens with a direct question and an executive answer. One accent (a
 
 ## Colors
 
-- **Paper & Ink**: warm parchment background `#FAF8F5`, blue-black ink `#212732`, tinted-white cards `#FFFEFB`.
+- **Canvas & Ink**: blue atmosphere `#AFC8E5` with layered azure/navy light; dark blue-black ink `#172C45`; ice-blue reading surfaces `#DCE9F7`.
 - **Primary (Inventra navy)**: `#04264D` — buttons, active states, primary chart series.
 - **Signal (azure)**: `#087DFD` — the single structural accent: focus rings, progress fills, highlight chart series, feature icons. Darker azure `#075DCC` (accent-foreground) for accent text.
-- **Surfaces**: secondary/muted `#F2EFE9`; accent wash `#E9F1FD` (azure-tinted) for hovers and selections.
-- **Borders & Dividers**: crisp 1px `#E5E1DA` light / `#263650` dark; sidebar hairlines use navy-alpha.
+- **Surfaces**: secondary/muted `#C5D8EE`; accent wash `#E9F1FD`; KPI cards use four related translucent blue tints, never neutral white.
+- **Borders & Dividers**: crisp 1px `#9CB6D3` light / `#263650` dark; floating surfaces use white/blue alpha hairlines.
 - **Status Indicators (Strictly Functional)**: Healthy `#2E7D32`, Warning `#9C661A` (darkened to pass 4.5:1 as text), Critical `#B42318`.
 - **Charts**: navy `#04264D`, slate `#6A7C8A`, azure `#087DFD`, light azure `#8ABEF7`, warm gray `#C9C3B6`.
 
 ## Typography
 
-- **Headlines & Display Figures**: Instrument Serif (400 only — never synthetic bold), paired with IBM Plex Sans Arabic for RTL headings.
-- **Body & Controls**: IBM Plex Sans + IBM Plex Sans Arabic; 400 body, 500 labels, 600 buttons and inline emphasis.
-- **Scale (dense data UI)**: 2xs 10px (chart micro-labels only, never interactive text) · xs 12px · sm 13px · base 14px · page titles 26px · hero answers 31.5px serif · display figures 34–45px via `.kpi-num` clamp.
+- **UI, page titles & data figures**: IBM Plex Sans / IBM Plex Sans Arabic; 400 body, 500 secondary labels, 600 headings and key values. Use tabular numbers and tight, deliberate tracking on values.
+- **Editorial voice**: Instrument Serif (400 only) is used sparingly for the public-facing landing statement and selected screen-intro copy, not every heading or KPI.
+- **Scale (dense data UI)**: 2xs 10px (chart micro-labels only, never interactive text) · xs 12px · sm 13px · base 14px · app headings 22–26px · display figures 28–42px via `.kpi-num`.
 - **Small caps**: table headers and stat eyebrows are 12px uppercase with 0.08–0.1em tracking (`th`, `.eyebrow`) — data labels only, never page headings. Arabic is exempt (`[dir="rtl"]` disables transform and letterspacing to protect glyph joining).
 - **Data & Tables**: strict tabular numerals across all monetary values, percentages, quantities, dates, and SKUs.
 - **Arabic**: taller leading (1.7); numerics and dates stay LTR inside RTL prose.
 
 ## Surface Material (glass system)
 
-- **Glass chrome** (`.glass`): fill `rgba(255,254,251,0.66)`, `backdrop-filter: blur(14px) saturate(150%)` — sticky header, sidebar.
-- **Strong glass** (`.glass-strong`): fill `rgba(255,254,251,0.88)`, blur 18px — dialogs, toasts, auth card.
-- **KPI cards**: `bg-card/75 backdrop-blur-sm` — the lightest frost, reserved for glanceable figures.
-- **Reading surfaces** (tables, long forms): solid `bg-card`. Glass is never stacked on glass.
-- **Background field**: a fixed, non-interactive wash (azure, navy, warm-cream radial tints) gives frosted chrome something to refract — the warm field echoes the reference's tinted zones.
+- **Canvas**: fixed layered blue gradients (`#9CB9DC`, `#BED3EB`, `#8FADCE`) provide a visible, non-white field behind translucent UI.
+- **Glass chrome** (`.glass`): blue-white fill `rgba(207,226,248,0.28)`, `backdrop-filter: blur(14px) saturate(150%)` — sticky header.
+- **Floating sidebar** (`.glass-ink`): translucent navy with blur, margin, rounded corners, and a fine light edge.
+- **Strong glass** (`.glass-strong`): blue-white fill `rgba(220,234,250,0.56)`, blur 18px — dialogs, toasts, auth card.
+- **KPI cards**: four distinct translucent blue tints at 40–44% fill with blur 18px; hero glass uses a deep navy-to-azure treatment.
+- **Reading surfaces** (tables, long forms): solid ice-blue `bg-card`. Glass is selective; avoid reducing table contrast.
+- **Background field**: blue-only radial light, with no cream or white page wash.
 - **Dark structural zone** (`.glass-ink`, `bg-ink`): the frosted sidebar and the AI copilot panel render as deep navy ink with white-alpha hairlines — the reference's dark technical zone, translated to the brand navy. Text on ink: `#E7EBF1` / `#A2B4CE` (7.8:1+).
 - **Fallback**: `@supports not (backdrop-filter…)` renders glass as solid card or solid ink — no contrast or functionality depends on blur.
 
@@ -111,8 +113,8 @@ Every screen opens with a direct question and an executive answer. One accent (a
 
 ## Components
 
-- **Hero band**: every screen opens with a tinted azure band — small-caps eyebrow question, large serif answer (reference greeting-hero principle).
-- **Executive KPI Cards**: frosted glass, each card carrying its own quiet tint (azure, navy, cream, slate — the reference's tinted stat-grid principle), micro-label eyebrow, prominent serif figure, inline delta, baseline note.
+- **Dashboard hero**: large blue-glass panel with the real inventory-health score in a circular ring, existing operational counts, and a compact FEFO watch panel beside it.
+- **Executive KPI Cards**: four blue-tinted glass cards with sans-serif tabular figures, inline delta, and baseline note.
 - **AI Copilot**: dark ink panel with glass bubbles — azure-deep user messages, white-alpha assistant surfaces.
 - **Status Pills**: 8px tone dot + concise label; never color alone.
 - **Allocator Bar**: budget cap input, preset pill chips, azure capital-utilization progress.

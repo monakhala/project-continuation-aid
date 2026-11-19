@@ -24,7 +24,7 @@ function Delta({v,unit='%',good=1}:{v:number|null;unit?:string;good?:1|-1}){
 }
 
 function Kpi({label,value,delta,note,secondary}:{label:string;value:string;delta:React.ReactNode;note:string;secondary?:React.ReactNode}){
-  return <div className="kpi-card min-w-0 rounded-xl border p-6">
+  return <div className="kpi-card min-w-0 rounded-xl border p-4 md:p-5">
     <p className="text-xs font-medium text-muted-foreground">{label}</p>
     <p className="mt-3 break-words kpi-num">{value}</p>
     <div className="mt-2 flex flex-wrap items-center gap-2">{delta}<span className="text-xs text-muted-foreground">{note}</span></div>
@@ -67,7 +67,7 @@ function LiquidationPanel(){
 }
 
 export function ExecutiveDashboard(){
-  const {t,lang}=useT(),{data:d}=useInventra();
+  const {t,lang}=useT(),{data:d,demo}=useInventra();
   const a=useMemo(()=>analytics(d),[d]);
   const below=d.P.filter(p=>p.stock<=p.min).length,out=d.P.filter(p=>p.stock===0).length;
   const health=d.P.length?Math.round(100*(d.P.length-below)/d.P.length):0;
@@ -99,20 +99,53 @@ export function ExecutiveDashboard(){
       .sort((a,b)=>(a.exp.daysLeft??999)-(b.exp.daysLeft??999));
   },[d.P]);
 
+  const openOrders=d.R.filter(r=>!['Received','Cancelled'].includes(r.status)).length;
+
   return <div className="space-y-8">
-    <ScreenIntro q={t('qDash')} a={fmt(t('aDash'),{h:d.P.length-below,n:d.P.length,u:below})}/>
-    {!d.P.length?<Empty line={t('emptyInv')} action={t('goInventory')} to="inventory"/>:<>
-    <section className="grid gap-x-8 gap-y-5 border-y border-border py-6 sm:grid-cols-2 xl:grid-cols-5">
-      <div className="min-w-0 xl:col-span-1">
-        <p className="text-xs font-medium text-muted-foreground">{t('summary')}</p>
-        <p className="mt-2 text-sm">{t('health')} <b className="ms-1 text-xl font-semibold tnum">{health}/100</b></p>
-        <div className="mt-3 h-1 w-full max-w-[220px] bg-muted"><div className="h-full bg-chart-3" style={{width:`${health}%`}}/></div>
+    {!d.P.length?<><ScreenIntro q={t('qDash')} a={fmt(t('aDash'),{h:0,n:0,u:0})}/><Empty line={t('emptyInv')} action={t('goInventory')} to="inventory"/></>:<>
+    <section className="dashboard-hero grid gap-4">
+      <div className="dashboard-feature rounded-3xl p-6 md:p-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="eyebrow">{t('qDash')}</p>
+          {demo&&<span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-medium text-white"><span className="h-1.5 w-1.5 rounded-full bg-sky-300"/>{t('sample')}</span>}
+        </div>
+        <div className="mt-6 grid items-center gap-6 sm:grid-cols-[minmax(0,1fr)_auto]">
+          <div className="min-w-0">
+            <h2 className="max-w-2xl font-sans text-3xl font-semibold leading-tight tracking-tight md:text-4xl">{fmt(t('aDash'),{h:d.P.length-below,n:d.P.length,u:below})}</h2>
+          </div>
+          <div className="relative mx-auto grid h-32 w-32 shrink-0 place-items-center sm:me-2" role="img" aria-label={`${t('health')}: ${health}%`}>
+            <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 120 120" aria-hidden="true">
+              <circle className="dashboard-ring-track" cx="60" cy="60" r="48" fill="none" strokeWidth="8"/>
+              {health>0&&<circle className="dashboard-ring-value" cx="60" cy="60" r="48" fill="none" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${(Math.PI*96*health)/100} ${Math.PI*96}`}/>}
+            </svg>
+            <div className="text-center"><span className="dashboard-ring-number block leading-none">{health}%</span><span className="dashboard-feature-copy dashboard-ring-label mt-1 block">{t('health')}</span></div>
+          </div>
+        </div>
+        <div className="mt-6 grid grid-cols-2 gap-3 border-t border-white/20 pt-4 sm:grid-cols-4">
+          {[[t('activeSkus'),d.P.length],[t('coverage'),below],[t('exposure'),out],[t('openOrders'),openOrders]].map(([label,value])=>
+            <div className="dashboard-feature-stat border-s-0 ps-0 sm:border-s sm:ps-3 sm:first:border-s-0 sm:first:ps-0" key={label as string}>
+              <p className="dashboard-feature-copy text-xs">{label}</p><p className="mt-1 text-xl font-semibold tabular-nums">{value}</p>
+            </div>)}
+        </div>
       </div>
-      {[[t('activeSkus'),d.P.length],[t('coverage'),below],[t('exposure'),out],[t('openOrders'),d.R.filter(r=>!['Received','Cancelled'].includes(r.status)).length]].map(([k,v])=>
-        <div key={k as string} className="border-s border-border ps-4"><p className="text-xs text-muted-foreground">{k}</p><p className="mt-2 text-2xl font-semibold tnum">{v}</p></div>)}
+
+      <aside className="dashboard-watch rounded-3xl border p-5 md:p-6">
+        <header className="flex items-start justify-between gap-3">
+          <div><p className="eyebrow">{t('summary')}</p><h2 className="mt-2 text-xl font-semibold">{t('fefoShield')}</h2></div>
+        </header>
+        <div className="mt-4">
+          {expiringBatches.length?expiringBatches.slice(0,3).map(({p,exp})=>
+            <div className="dashboard-watch-row flex flex-col items-start gap-1 border-t py-2.5" key={p.id}>
+              <div className="min-w-0"><p className="truncate text-sm font-semibold">{p.name}</p><p className="mt-1 text-xs text-muted-foreground">{p.batch_number??p.sku}</p></div>
+              <Status tone={exp.tone}><span aria-label={`${t(exp.labelKey)} ${exp.daysLeft??''}`} title={t(exp.labelKey)}>{exp.daysLeft!==null?`${exp.daysLeft}d`:'—'}</span></Status>
+            </div>
+          ):<p className="mt-4 border-t border-border pt-4 text-sm text-muted-foreground">{t('noExpiring')}</p>}
+        </div>
+        <Link to="/app" search={{s:'inventory'}} aria-label={`${t('viewAll')} ${t('fefoShield')}`} className="mt-3 inline-flex text-sm font-semibold text-primary hover:underline">{t('viewAll')} <span aria-hidden="true" className="ms-1">→</span></Link>
+      </aside>
     </section>
 
-    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <Kpi
         label={t('kValuation')}
         value={money(d,a.val,lang)}
