@@ -127,6 +127,7 @@ Every screen opens with a direct question and an executive answer. One accent (a
 - Render all user data through native React text children.
 - Keep full bilingual parity (EN/AR, RTL) with logical CSS properties.
 - Verify text contrast over glass against the composed backdrop.
+- Give glass surfaces a small hover lift, tactile active press, and visible focus-within edge; keep informational cards non-clickable.
 - Respect `prefers-reduced-motion`.
 
 ### Don't
