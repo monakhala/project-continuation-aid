@@ -1,7 +1,8 @@
 import {createServerFn} from '@tanstack/react-start';
+import {requireSupabaseAuth} from '@/integrations/supabase/auth-middleware';
 
-// Public on purpose: the copilot only sees the summary the browser sends (demo or the user's own numbers) and returns text.
 export const askCopilot=createServerFn({method:'POST'})
+  .middleware([requireSupabaseAuth])
   .inputValidator((i:{question:string;lang:'en'|'ar';summary:string})=>{
     if(typeof i?.question!=='string'||!i.question.trim()||i.question.length>1000||typeof i.summary!=='string'||i.summary.length>20000)throw new Error('Invalid request');
     return {question:i.question,lang:(i.lang==='ar'?'ar':'en') as 'en'|'ar',summary:i.summary};
